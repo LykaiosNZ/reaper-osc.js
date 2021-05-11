@@ -1,3 +1,5 @@
+// @ts-check
+
 class OscArgument {
     constructor(type, value) {
         this.type = type;

@@ -1,9 +1,23 @@
+// @ts-check
+import { Track } from './reaper.js'
+
 class MessageHandler {
     handle(message) { };
 }
 
+/**
+ * A callback that can be used to obtain a track using its track number
+ * @callback trackSelector
+ * @param {number} trackNumber - The number of the track
+ * @returns {Track | undefined}
+ */
+
 class TrackMessageHandler extends MessageHandler {
-    constructor(trackSelector = (trackNumber) => { }) {
+    /**
+     * 
+     * @param {trackSelector} trackSelector 
+     */
+    constructor(trackSelector) {
         super();
 
         this._trackSelector = trackSelector;

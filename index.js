@@ -1,9 +1,10 @@
+// @ts-check
 import { Reaper, ReaperConfig } from './reaper.js';
 
-var config = new ReaperConfig({
-    localPort: 49586,
-    reaperPort: 64234
-});
+var config = new ReaperConfig();
+
+config.localPort = 49586;
+config.reaperPort = 64234;
 
 var reaper = new Reaper(config);
 
