@@ -1,4 +1,6 @@
 // @ts-check
+"use strict";
+
 import { OscMessage } from './messages.js';
 import { Track, TrackFx } from './reaper.js'
 
@@ -9,7 +11,7 @@ class MessageHandler {
      * @param {OscMessage} message 
      * @abstract
      */
-    handle(message) { 
+    handle(message) {
         throw new Error('not implemented');
     };
 }
@@ -18,11 +20,11 @@ class MessageHandler {
  * A callback that can be used to obtain a track using its track number
  * @callback trackSelector
  * @param {number} trackNumber - The number of the track
- * @returns {Track | undefined}
+ * @returns {?Track}
  */
 
 /**
- * Handles messages related to Tracks
+ * Routes messages for tracks to the appropriate track
  * @augments MessageHandler
  */
 class TrackMessageHandler extends MessageHandler {
@@ -40,15 +42,23 @@ class TrackMessageHandler extends MessageHandler {
     }
 
     /**
+     * @param {OscMessage} message
      * @override
      */
     handle(message) {
         if (message.address.startsWith('/track')) {
             var addressParts = message.address.split('/');
 
-            var track = this._trackSelector(addressParts[2]);
+            var trackNumber = parseInt(addressParts[2]);
 
-            if (track !== undefined) {
+            // If NaN, probably means that it's a message for the selected track - ignore
+            if (isNaN(trackNumber)) {
+                return;
+            }
+
+            var track = this._trackSelector(trackNumber);
+
+            if (track !== null) {
                 track.handle(message);
             }
         }
@@ -59,12 +69,14 @@ class TrackMessageHandler extends MessageHandler {
  * A callback that can be used to obtain a Track FX by its number on the track
  * @callback trackFxSelector
  * @param {number} fxNumber - The number of the FX on the track
- * @returns {TrackFx | undefined}
+ * @returns {?TrackFx}
  */
 
+/**
+ * Handles messages related to 
+ */
 class TrackFxMessageHandler extends MessageHandler {
     /**
-     * 
      * @param {trackFxSelector} fxSelector
      */
     constructor(fxSelector) {
@@ -86,8 +98,31 @@ class TrackFxMessageHandler extends MessageHandler {
     }
 }
 
-class BinaryMessageHandler extends MessageHandler {
+class BooleanMessageHandler extends MessageHandler {
     constructor(address, callback = (booleanValue) => { }) {
+        super();
+
+        this.address = address;
+        this._callback = callback;
+    }
+
+    /**
+     * @inheritdoc
+     * @param {OscMessage} message 
+     */
+    handle(message) {
+        if (message.address === this.address) {
+            const arg = message.args[0];
+
+            let booleanValue = message.args[0].value === 1 ? true : false;
+
+            this._callback(booleanValue);
+        }
+    }
+}
+
+class IntegerMessageHandler extends MessageHandler {
+    constructor(address, callback) {
         super();
 
         this.address = address;
@@ -96,9 +131,22 @@ class BinaryMessageHandler extends MessageHandler {
 
     handle(message) {
         if (message.address === this.address) {
-            let booleanValue = message.args[0].value === 1 ? true : false;
+            const messageValue = message.args[0].value;
 
-            this._callback(booleanValue);
+            let intValue;
+
+            switch (typeof messageValue) {
+                case 'number':
+                    intValue = messageValue;
+                    break;
+                default:
+                    intValue = parseInt(messageValue);
+                    if (isNaN(intValue)) {
+                        throw new Error('Expected an integer');
+                    }
+            }
+
+            this._callback(intValue);
         }
     }
 }
@@ -126,6 +174,6 @@ export {
     MessageHandler,
     TrackMessageHandler,
     TrackFxMessageHandler,
-    BinaryMessageHandler,
+    BooleanMessageHandler as BinaryMessageHandler,
     StringMessageHandler
 }

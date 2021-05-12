@@ -1,8 +1,19 @@
 // @ts-check
-import { OscMessage, BinaryMessage, ToggleMessage, ActionMessage } from "./messages.js";
+"use strict";
+import { OscMessage, BinaryMessage, ToggleMessage, ActionMessage, StringMessage } from "./messages.js";
 import { BinaryMessageHandler, StringMessageHandler, TrackMessageHandler, TrackFxMessageHandler, MessageHandler } from "./handlers.js";
 import osc from 'osc';
 const { UDPPort } = osc;
+
+/**
+ * @readonly
+ * @enum {number}
+ */
+const RecordMonitorMode = {
+    ON: 0,
+    OFF: 1,
+    AUTO: 2
+}
 
 /**
  * A callback that can be used to send an OSC message to Reaper
@@ -48,6 +59,7 @@ class Track {
          */
         this._isRecordArmed = false;
 
+        // TODO: This is not a boolean
         /**
          * @type {boolean}
          * @private
@@ -145,27 +157,55 @@ class Track {
     }
 
     /**
-     * Mutes the track
+     * Renames the track
+     * @param {string} name 
      */
+    rename(name) {
+        this._sendOscMessage(new StringMessage(this.oscAddress + '/name', name));
+
+        // Haven't figured out why yet (possibly to do with track selection?)
+        // but Reaper doesn't send an OSC message even though it does if you 
+        // change the name in Reaper
+        this.name = name;
+    }
+
+    /** Mutes the track */
     mute() {
-        const message = new BinaryMessage(this.oscAddress + '/mute', true);
-        this._sendOscMessage(message);
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/mute', true));
     }
 
-    /**
-     * Unmutes the track
-     */
+    /** Unmutes the track */
     unmute() {
-        const message = new BinaryMessage(this.oscAddress + '/mute', false);
-        this._sendOscMessage(message);
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/mute', false));
     }
 
-    /**
-     * Toggles the mute status of the track
-     */
+    /** Toggles mute on/off */
     toggleMute() {
-        const message = new ToggleMessage(this.oscAddress + '/mute');
-        this._sendOscMessage(message);
+        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/mute'));
+    }
+
+    solo() {
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/solo', true));
+    }
+
+    unsolo() {
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/solo', false));
+    }
+
+    toggleSolo() {
+        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/solo'));
+    }
+
+    recordArm() {
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/recarm', true));
+    }
+
+    recordDisarm() {
+        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/recarm', false));
+    }
+
+    toggleRecordArm() {
+        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/recarm'));
     }
 
     /**
@@ -196,6 +236,8 @@ class Track {
             new BinaryMessageHandler(this.oscAddress + '/mute', (value) => this.isMuted = value),
             new BinaryMessageHandler(this.oscAddress + '/solo', (value) => this.isSoloed = value),
             new BinaryMessageHandler(this.oscAddress + '/recarm', (value) => this.isRecordArmed = value),
+
+            // TODO: Monitor is not a bool
             new BinaryMessageHandler(this.oscAddress + '/monitor', (value) => this.isMonitoringEnabled = value),
             new BinaryMessageHandler(this.oscAddress + '/select', (value) => this.isSelected = value),
             new TrackFxMessageHandler((fxNumber) => this._fx[fxNumber])
@@ -551,6 +593,8 @@ class Reaper {
         }
 
         this._osc.send(message);
+
+        console.debug('OSC message sent', message);
     }
 
     /** Toggles play */
@@ -643,15 +687,17 @@ class Reaper {
         });
 
         port.on('ready', () => {
-            console.debug('OSC READY', { localAddress: this._config.localAddress, localPort: this._config.localPort, remoteAddress: this._config.remoteAddress, remotePort: this._config.remotePort });
+            console.debug('OSC ready', { localAddress: this._config.localAddress, localPort: this._config.localPort, remoteAddress: this._config.remoteAddress, remotePort: this._config.remotePort });
             this._isReady = true;
         });
 
         port.on('error', (err) => {
-            console.error('OSC ERROR', err);
+            console.error('OSC error received', err);
         });
 
         port.on('message', (message) => {
+            console.debug('OSC message received', message);
+
             this._handlers.forEach((handler, index) => {
                 handler.handle(message);
             });
