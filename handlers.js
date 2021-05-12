@@ -1,8 +1,17 @@
 // @ts-check
-import { Track } from './reaper.js'
+import { OscMessage } from './messages.js';
+import { Track, TrackFx } from './reaper.js'
 
+/** Base class for handling {@link OscMessage} */
 class MessageHandler {
-    handle(message) { };
+    /**
+     * Handle an OSC message
+     * @param {OscMessage} message 
+     * @abstract
+     */
+    handle(message) { 
+        throw new Error('not implemented');
+    };
 }
 
 /**
@@ -12,17 +21,27 @@ class MessageHandler {
  * @returns {Track | undefined}
  */
 
+/**
+ * Handles messages related to Tracks
+ * @augments MessageHandler
+ */
 class TrackMessageHandler extends MessageHandler {
     /**
-     * 
      * @param {trackSelector} trackSelector 
      */
     constructor(trackSelector) {
         super();
 
+        /**
+         * @type {trackSelector}
+         * @private
+         */
         this._trackSelector = trackSelector;
     }
 
+    /**
+     * @override
+     */
     handle(message) {
         if (message.address.startsWith('/track')) {
             var addressParts = message.address.split('/');
@@ -36,8 +55,19 @@ class TrackMessageHandler extends MessageHandler {
     }
 }
 
+/**
+ * A callback that can be used to obtain a Track FX by its number on the track
+ * @callback trackFxSelector
+ * @param {number} fxNumber - The number of the FX on the track
+ * @returns {TrackFx | undefined}
+ */
+
 class TrackFxMessageHandler extends MessageHandler {
-    constructor(fxSelector = (fxNumber) => { }) {
+    /**
+     * 
+     * @param {trackFxSelector} fxSelector
+     */
+    constructor(fxSelector) {
         super();
 
         this._fxSelector = fxSelector;
@@ -47,7 +77,6 @@ class TrackFxMessageHandler extends MessageHandler {
         let addressParts = message.address.split('/');
 
         if (addressParts[1] === 'track' && addressParts[3] === 'fx') {
-            console.debug('fx message', message);
             let fx = this._fxSelector(addressParts[4]);
 
             if (fx !== undefined) {

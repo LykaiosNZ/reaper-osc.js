@@ -4,17 +4,16 @@ import { Reaper, ReaperConfig } from './reaper.js';
 var config = new ReaperConfig();
 
 config.localPort = 49586;
-config.reaperPort = 64234;
+config.remotePort = 64234;
 
 var reaper = new Reaper(config);
-
-reaper.connect();
+reaper.startOsc();
 
 setTimeout(() =>{
-    reaper.startRewind();
+    reaper.stop();
 }, 100);
 
 
 setTimeout(() => {
-    reaper.stopRewind();
-}, 2000);
+    reaper.play();
+}, 10000);

@@ -1,12 +1,12 @@
 // @ts-check
-import { OscMessage, BinaryMessage, ToggleMessage } from "./messages.js";
+import { OscMessage, BinaryMessage, ToggleMessage, ActionMessage } from "./messages.js";
 import { BinaryMessageHandler, StringMessageHandler, TrackMessageHandler, TrackFxMessageHandler, MessageHandler } from "./handlers.js";
 import osc from 'osc';
 const { UDPPort } = osc;
 
 /**
  * A callback that can be used to send an OSC message to Reaper
- * @callback sendMessage
+ * @callback sendOscMessage
  * @param {OscMessage} message - The message to send.
  */
 
@@ -14,9 +14,9 @@ class Track {
     /**
      * @param {number} trackNumber - The track number of this track
      * @param {number} numberOfFx  - The number of FX to initialize for this track
-     * @param {sendMessage} sendMessage
+     * @param {sendOscMessage} sendOscMessage
      */
-    constructor(trackNumber, numberOfFx, sendMessage) {
+    constructor(trackNumber, numberOfFx, sendOscMessage) {
         /**
          * @type {number}
          * @private
@@ -67,10 +67,10 @@ class Track {
         this._fx = this._initFx(numberOfFx);
 
         /**
-         * @type {sendMessage}
+         * @type {sendOscMessage}
          * @private
          */
-        this._sendMessage = sendMessage;
+        this._sendOscMessage = sendOscMessage;
 
         /**
          * @type {MessageHandler[]}
@@ -89,9 +89,7 @@ class Track {
 
     /** @private */
     set name(value) {
-        let oldValue = this._name;
-        this._name = value;
-        this._notifyIfPropertyChanged('name', oldValue, value);
+        this._setFieldAndNotifyIfChanged('name', value);
     }
 
     get isMuted() {
@@ -100,9 +98,7 @@ class Track {
 
     /** @private */
     set isMuted(value) {
-        let oldValue = this._isMuted;
-        this._isMuted = value;
-        this._notifyIfPropertyChanged('isMuted', oldValue, value);
+        this._setFieldAndNotifyIfChanged('isMuted', value);
     }
 
     get isSoloed() {
@@ -111,7 +107,7 @@ class Track {
 
     /** @private */
     set isSoloed(value) {
-        this._isSoloed = value;
+        this._setFieldAndNotifyIfChanged('isSoloed', value);
     }
 
     get isRecordArmed() {
@@ -120,7 +116,7 @@ class Track {
 
     /** @private */
     set isRecordArmed(value) {
-        this._isRecordArmed = value;
+        this._setFieldAndNotifyIfChanged('isRecordArmed', value);
     }
 
     get isMonitoringEnabled() {
@@ -129,7 +125,7 @@ class Track {
 
     /** @private */
     set isMonitoringEnabled(value) {
-        this._isMonitoringEnabled = value;
+        this._setFieldAndNotifyIfChanged('isMonitoringEnabled', value);
     }
 
     get isSelected() {
@@ -138,7 +134,7 @@ class Track {
 
     /** @private */
     set isSelected(value) {
-        this._isSelected = value;
+        this._setFieldAndNotifyIfChanged('isSelected', value);
     }
 
     /**
@@ -152,24 +148,24 @@ class Track {
      * Mutes the track
      */
     mute() {
-        let message = new BinaryMessage(this.oscAddress + '/mute', true);
-        this._sendMessage(message);
+        const message = new BinaryMessage(this.oscAddress + '/mute', true);
+        this._sendOscMessage(message);
     }
 
     /**
      * Unmutes the track
      */
     unmute() {
-        let message = new BinaryMessage(this.oscAddress + '/mute', false);
-        this._sendMessage(message);
+        const message = new BinaryMessage(this.oscAddress + '/mute', false);
+        this._sendOscMessage(message);
     }
 
     /**
      * Toggles the mute status of the track
      */
     toggleMute() {
-        let message = new ToggleMessage(this.oscAddress + '/mute');
-        this._sendMessage(message);
+        const message = new ToggleMessage(this.oscAddress + '/mute');
+        this._sendOscMessage(message);
     }
 
     /**
@@ -184,10 +180,10 @@ class Track {
 
     /** @private */
     _initFx(numberOfFx) {
-        let fx = [];
+        const fx = [];
 
         for (let i = 1; i <= numberOfFx; i++) {
-            fx[i] = new TrackFx(this._trackNumber, i, this._sendMessage);
+            fx[i] = new TrackFx(this._trackNumber, i, this._sendOscMessage);
         }
 
         return fx;
@@ -206,10 +202,19 @@ class Track {
         ]
     }
 
-    /** @private */
-    _notifyIfPropertyChanged(propertyName, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            console.debug('Track property changed', { trackNumber: this._trackNumber, propertyName: propertyName, oldValue: oldValue, newValue: newValue });
+    /** 
+     * @param {string} propertyName
+     * @param {any} value
+     * @private 
+    */
+    _setFieldAndNotifyIfChanged(propertyName, value) {
+        const fieldName = '_' + propertyName;
+        const oldValue = this[fieldName];
+
+        this[fieldName] = value;
+
+        if (oldValue !== value) {
+            console.debug('Track state changed', { trackNumber: this.trackNumber, propertyName: propertyName, oldValue: oldValue, newValue: value });
         }
     }
 }
@@ -218,38 +223,38 @@ class TrackFx {
     /**
      * @param {number} trackNumber - The number of the track that this FX belongs to
      * @param {number} fxNumber - The number of this FX
-     * @param {sendMessage} sendMessage 
+     * @param {sendOscMessage} sendOscMessage 
      */
-    constructor(trackNumber, fxNumber, sendMessage) {
+    constructor(trackNumber, fxNumber, sendOscMessage) {
         /**
          * @type {number}
          */
-        this.trackNumber = trackNumber;
+        this._trackNumber = trackNumber;
 
         /**
          * @type {number}
          */
-        this.fxNumber = fxNumber;
+        this._fxNumber = fxNumber;
 
         /**
          * @type {string}
          */
-        this.name = 'FX ' + fxNumber;
+        this._name = 'FX ' + fxNumber;
 
         /**
          * @type {boolean}
          */
-        this.isBypassed = false;
+        this._isBypassed = false;
 
         /**
          * @type {boolean}
          */
-        this.isUiOpen = false;
+        this._isUiOpen = false;
 
         /**
-         * @type {sendMessage}
+         * @type {sendOscMessage}
          */
-        this._sendMessage = sendMessage;
+        this._sendOscMessage = sendOscMessage;
 
         /**
          * @type {MessageHandler[]}
@@ -257,9 +262,44 @@ class TrackFx {
         this._handlers = this._initHandlers();
     }
 
+    get trackNumber() {
+        return this._trackNumber;
+    }
+
+    get fxNumber() {
+        return this._fxNumber;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    /** @private */
+    set name(value) {
+        this._setFieldAndNotifyIfChanged('name', value);
+    }
+
+    get isBypassed() {
+        return this._isBypassed;
+    }
+
+    /** @private */
+    set isBypassed(value) {
+        this._setFieldAndNotifyIfChanged('isBypassed', value);
+    }
+
+    get isUiOpen() {
+        return this._isUiOpen;
+    }
+
+    /** @private */
+    set isUiOpen(value) {
+        this._setFieldAndNotifyIfChanged('isUiOpen', value);
+    }
+
     /** Gets the base OSC address fragment for this track */
     get oscAddress() {
-        return '/track/' + this.trackNumber + '/fx/' + this.fxNumber;
+        return '/track/' + this._trackNumber + '/fx/' + this._fxNumber;
     }
 
     /**
@@ -272,29 +312,40 @@ class TrackFx {
         });
     }
 
+    /** @private */
     _initHandlers() {
         return [
-            new StringMessageHandler(this.oscAddress + '/name', (value) => this._setPropertyValue('name', value)),
-            new BinaryMessageHandler(this.oscAddress + '/bypass', (value) => this._setPropertyValue('isBypassed', !value)), // Reaper sends 0/false when the track is bypassed
-            new BinaryMessageHandler(this.oscAddress + '/openui', (value) => this._setPropertyValue('isUiOpen', value))
+            new StringMessageHandler(this.oscAddress + '/name', (value) => this.name = value),
+            new BinaryMessageHandler(this.oscAddress + '/bypass', (value) => this.isBypassed = !value), // Reaper sends 0/false when the track is bypassed
+            new BinaryMessageHandler(this.oscAddress + '/openui', (value) => this.isUiOpen = value)
         ]
     }
 
-    _setPropertyValue(propertyName, value) {
-        if (this[propertyName] !== value) {
-            console.debug('Track FX property changed', { trackNumber: this.trackNumber, fxNumber: this.fxNumber, propertyName: propertyName, oldValue: this[propertyName], newValue: value });
-            this[propertyName] = value;
+    /** 
+     * @param {string} propertyName
+     * @param {any} value
+     * @private 
+    */
+    _setFieldAndNotifyIfChanged(propertyName, value) {
+        const fieldName = '_' + propertyName;
+        const oldValue = this[fieldName];
+
+        this[fieldName] = value;
+
+        if (oldValue !== value) {
+            console.debug('Track FX state changed', { trackNumber: this._trackNumber, fxNumber: this._fxNumber, propertyName: propertyName, oldValue: oldValue, newValue: value });
         }
     }
 }
 
+/**
+ * Configuration for connecting to Reaper
+ */
 class ReaperConfig {
-    /**
-     * Configuration for connecting to Reaper
-     */
     constructor() {
         /**
          * @type {string}
+         * @readonly
          */
         this.localAddress = '0.0.0.0';
 
@@ -306,12 +357,12 @@ class ReaperConfig {
         /**
          * @type {string}
          */
-        this.reaperAddress = '127.0.0.1';
+        this.remoteAddress = '127.0.0.1';
 
         /**
          * @type {number}
          */
-        this.reaperPort = 8000;
+        this.remotePort = 8000;
 
         /**
          * @type {number}
@@ -338,97 +389,266 @@ class Reaper {
         this._config = config;
 
         /** @type {boolean} */
-        this.isConnected = false;
+        this._isReady = false;
 
         // Transport
-        this.isPlaying = false;
-        this.isStopped = false;
-        this.isRecording = false;
-        this.isRewinding = false;
-        this.isForwarding = false;
-        this.isRepeatEnabled = false;
-        this.isMetronomeEnabled = false;
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isPlaying = false;
 
-        this.tracks = this._initTracks();
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isStopped = true;
 
-        // OSC
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isRecording = false;
+
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isRewinding = false;
+
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isFastForwarding = false;
+
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isRepeatEnabled = false;
+
+        /** 
+         * @type {boolean}
+         * @private
+         */
+        this._isMetronomeEnabled = false;
+
+        /** 
+         * @type {Track[]}
+         * @private
+         */
+        this._tracks = this._initTracks();
+
+        /** 
+         * @type {UDPPort}
+         * @private
+         */
         this._osc = this._initOsc();
+
+        /** 
+         * @type {MessageHandler[]}
+         * @private
+         */
         this._handlers = this._initHandlers();
     }
 
-    connect() {
+    get isReady() {
+        return this._isReady;
+    }
+
+    /** @private */
+    set isReady(value) {
+        this._setFieldAndNotifyIfChanged('isReady', value);
+    }
+
+    get isPlaying() {
+        return this._isPlaying;
+    }
+
+    /** @private */
+    set isPlaying(value) {
+        this._setFieldAndNotifyIfChanged('isPlaying', value);
+    }
+
+    get isStopped() {
+        return this._isStopped;
+    }
+
+    /** @private */
+    set isStopped(value) {
+        this._setFieldAndNotifyIfChanged('isStopped', value);
+    }
+
+    get isRecording() {
+        return this._isRecording;
+    }
+
+    /** @private */
+    set isRecording(value) {
+        this._setFieldAndNotifyIfChanged('isRecording', value);
+    }
+
+    get isRewinding() {
+        return this._isRewinding;
+    }
+
+    /** @private */
+    set isRewinding(value) {
+        this._setFieldAndNotifyIfChanged('isRewinding', value);
+    }
+
+    get isFastForwarding() {
+        return this._isFastForwarding;
+    }
+
+    /** @private */
+    set isFastForwarding(value) {
+        this._setFieldAndNotifyIfChanged('isFastForwarding', value);
+    }
+
+    get isRepeatEnabled() {
+        return this._isRepeatEnabled;
+    }
+
+    /** @private */
+    set isRepeatEnabled(value) {
+        this._setFieldAndNotifyIfChanged('isRepeatEnabled', value);
+    }
+
+    get isMetronomeEnabled() {
+        return this._isMetronomeEnabled;
+    }
+
+    /** @private */
+    set isMetronomeEnabled(value) {
+        this._setFieldAndNotifyIfChanged('isMetronomeEnabled', value);
+    }
+
+    get tracks() {
+        return this._tracks;
+    }
+
+    /** Start listening for OSC messages */
+    startOsc() {
         this._osc.open();
     }
 
-    disconnect() {
+    /** Stop listening for OSC messages */
+    stopOsc() {
         this._osc.close();
-        this.isConnected = false;
+        this._isReady = false;
     }
 
-    sendMessage(message) {
-        if (!this.isConnected) {
-            console.error("Can't send while disconnected");
+    /**
+     * Send a custom OSC message
+     * @param {OscMessage} message 
+     */
+    sendOscMessage(message) {
+        if (!this._isReady) {
+            console.error("Can't send while OSC is not ready");
             return;
         }
 
         this._osc.send(message);
     }
 
-    // Public methods
+    /** Toggles play */
     play() {
-        this.sendMessage(new OscMessage('/play'));
+        this.sendOscMessage(new OscMessage('/play'));
     }
 
+    /** Toggles pause */
     pause() {
-        this.sendMessage(new OscMessage('/pause'));
+        this.sendOscMessage(new OscMessage('/pause'));
     }
 
-    record() {
-        this.sendMessage(new OscMessage('/record'));
-    }
-
-    startRewind() {
-        this.sendMessage(new BinaryMessage('/rewind', true));
-    }
-
-    stopRewind() {
-        this.sendMessage(new BinaryMessage('/rewind', false));
-    }
-
+    /** Stops playback or recording */
     stop() {
-        this.sendMessage(new OscMessage('/stop'));
+        this.sendOscMessage(new OscMessage('/stop'));
     }
 
-    // Private methods
+    /** Toggles recording */
+    record() {
+        this.sendOscMessage(new OscMessage('/record'));
+    }
+
+    /** Starts rewinding. Will continue until stopped */
+    startRewinding() {
+        this.sendOscMessage(new BinaryMessage('/rewind', true));
+    }
+
+    /** Stop rewinding */
+    stopRewinding() {
+        this.sendOscMessage(new BinaryMessage('/rewind', false));
+    }
+
+    /** Starts fast fowarding. Will continue until stopped */
+    startFastForwarding() {
+        this.sendOscMessage(new BinaryMessage('/forward', true));
+    }
+
+    /** Stop fast forwarding */
+    stopFastForwarding() {
+        this.sendOscMessage(new BinaryMessage('/foward', false));
+    }
+
+    /** Toggles the metronome on or off */
+    toggleMetronome() {
+        this.sendOscMessage(new OscMessage('/click'));
+    }
+
+    /** Toggles repeat on or off */
+    toggleRepeat() {
+        this.sendOscMessage(new OscMessage('/repeaer'));
+    }
+
+    /** 
+     * Triggers the action 'Control surface: Refresh all surfaces' (Command ID: 41743) 
+     * 
+     * */
+    refreshControlSurfaces() {
+        this.sendOscMessage(new ActionMessage(41743));
+    }
+
+    /**
+     * Gets a track by its track number
+     * @param {number} trackNumber 
+     * @returns {?Track}
+     */
+    getTrack(trackNumber) {
+        return this._tracks[trackNumber];
+    }
+
+    /** @private */
     _initTracks() {
-        let tracks = [];
+        const tracks = [];
 
         for (let i = 1; i <= this._config.numberOfTracks; i++) {
-            let track = new Track(i, this._config.numberOfTrackFx, (message) => this.sendMessage(message));
-
-            tracks[i] = track;
+            tracks[i] = new Track(i, this._config.numberOfTrackFx, (message) => this.sendOscMessage(message));
         }
 
         return tracks;
     }
 
+    /** @private */
     _initOsc() {
-        let port = new UDPPort({
+        const port = new UDPPort({
             localAddress: this._config.localAddress,
             localPort: this._config.localPort,
-            remoteAddress: this._config.reaperAddress,
-            remotePort: this._config.reaperPort,
+            remoteAddress: this._config.remoteAddress,
+            remotePort: this._config.remotePort,
             broadcast: true,
             metadata: true
         });
 
         port.on('ready', () => {
-            console.debug('OSC Connected to reaper', { reaperAddress: this._config.reaperAddress, reaperPort: this._config.reaperPort });
-            this.isConnected = true;
+            console.debug('OSC READY', { localAddress: this._config.localAddress, localPort: this._config.localPort, remoteAddress: this._config.remoteAddress, remotePort: this._config.remotePort });
+            this._isReady = true;
         });
 
         port.on('error', (err) => {
-            console.error('OSC Error received from reaper', err);
+            console.error('OSC ERROR', err);
         });
 
         port.on('message', (message) => {
@@ -440,23 +660,33 @@ class Reaper {
         return port;
     }
 
+    /** @private */
     _initHandlers() {
         return [
-            new BinaryMessageHandler('/click', (messageValue) => this._setPropertyValue('isMetronomeEnabled', messageValue)),
-            new BinaryMessageHandler('/repeat', (messageValue) => this._setPropertyValue('isRepeatEnabled', messageValue)),
-            new BinaryMessageHandler('/record', (messageValue) => this._setPropertyValue('isRecording', messageValue)),
-            new BinaryMessageHandler('/stop', (messageValue) => this._setPropertyValue('isStopped', messageValue)),
-            new BinaryMessageHandler('/play', (messageValue) => this._setPropertyValue('isPlaying', messageValue)),
-            new BinaryMessageHandler('/rewind', (messageValue) => this._setPropertyValue('isRewinding', messageValue)),
-            new BinaryMessageHandler('/forward', (messageValue) => this._setPropertyValue('isForwarding', messageValue)),
-            new TrackMessageHandler((trackNumber) => this.tracks[trackNumber])
+            new BinaryMessageHandler('/click', (value) => this.isMetronomeEnabled = value),
+            new BinaryMessageHandler('/repeat', (value) => this.isRepeatEnabled = value),
+            new BinaryMessageHandler('/record', (value) => this.isRecording = value),
+            new BinaryMessageHandler('/stop', (value) => this.isStopped = value),
+            new BinaryMessageHandler('/play', (value) => this.isPlaying = value),
+            new BinaryMessageHandler('/rewind', (value) => this.isRewinding = value),
+            new BinaryMessageHandler('/forward', (value) => this.isFastForwarding = value),
+            new TrackMessageHandler((trackNumber) => this._tracks[trackNumber])
         ];
     }
 
-    _setPropertyValue(propertyName, value) {
-        if (this[propertyName] !== value) {
-            console.log('Reaper property changed', { propertyName: propertyName, oldValue: this[propertyName], newValue: value });
-            this[propertyName] = value;
+    /** 
+     * @param {string} propertyName
+     * @param {any} value
+     * @private 
+    */
+    _setFieldAndNotifyIfChanged(propertyName, value) {
+        const fieldName = '_' + propertyName;
+        const oldValue = this[fieldName];
+
+        this[fieldName] = value;
+
+        if (oldValue !== value) {
+            console.debug('Reaper state changed', { propertyName: propertyName, oldValue: oldValue, newValue: value });
         }
     }
 }

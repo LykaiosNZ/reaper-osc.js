@@ -16,7 +16,7 @@ class OscMessage {
 
 class BinaryMessage extends OscMessage {
     constructor(address, value = false) {
-        let args = [
+        const args = [
             new OscArgument('i', value === true ? 1 : 0)
         ];
 
@@ -26,7 +26,7 @@ class BinaryMessage extends OscMessage {
 
 class StringMessage extends OscMessage {
     constructor(address, value = '') {
-        let args = [
+        const args = [
             new OscArgument('s', value)
         ]
 
@@ -40,10 +40,17 @@ class ToggleMessage extends OscMessage {
     }
 }
 
+class ActionMessage extends OscMessage {
+    constructor(actionId) {
+        super('/action/' + actionId);
+    }
+}
+
 export {
     OscArgument,
     OscMessage,
     BinaryMessage,
     StringMessage,
-    ToggleMessage
+    ToggleMessage,
+    ActionMessage
 }
