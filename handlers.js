@@ -1,19 +1,19 @@
 // @ts-check
-"use strict";
+'use strict';
 
-import { OscMessage } from './messages.js';
-import { Track, TrackFx } from './reaper.js'
+import {OscMessage} from './messages.js';
+import {Track, TrackFx} from './reaper.js';
 
-/** Base class for handling {@link OscMessage} */
+/** Base class for handling {@link OscMessage}s */
 class MessageHandler {
-    /**
-     * Handle an OSC message
-     * @param {OscMessage} message 
-     * @abstract
-     */
-    handle(message) {
-        throw new Error('not implemented');
-    };
+  /**
+   * Handle an OSC message
+   * @param {OscMessage} message
+   * @abstract
+   */
+  handle(message) {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -25,44 +25,42 @@ class MessageHandler {
 
 /**
  * Routes messages for tracks to the appropriate track
- * @augments MessageHandler
  */
 class TrackMessageHandler extends MessageHandler {
-    /**
-     * @param {trackSelector} trackSelector 
-     */
-    constructor(trackSelector) {
-        super();
-
-        /**
-         * @type {trackSelector}
-         * @private
-         */
-        this._trackSelector = trackSelector;
-    }
+  /**
+   * @param {trackSelector} trackSelector
+   */
+  constructor(trackSelector) {
+    super();
 
     /**
-     * @param {OscMessage} message
-     * @override
+     * @type {trackSelector}
+     * @readonly
+     * @private
      */
-    handle(message) {
-        if (message.address.startsWith('/track')) {
-            var addressParts = message.address.split('/');
+    this._trackSelector = trackSelector;
+  }
 
-            var trackNumber = parseInt(addressParts[2]);
+  /**
+   * @param {OscMessage} message
+   * @override
+   */
+  handle(message) {
+    if (message.addressParts[1] === 'track') {
+      const trackNumber = parseInt(message.addressParts[2]);
 
-            // If NaN, probably means that it's a message for the selected track - ignore
-            if (isNaN(trackNumber)) {
-                return;
-            }
+      // If NaN, probably means that it's a message for the selected track - ignore
+      if (isNaN(trackNumber)) {
+        return;
+      }
 
-            var track = this._trackSelector(trackNumber);
+      const track = this._trackSelector(trackNumber);
 
-            if (track !== null) {
-                track.handle(message);
-            }
-        }
+      if (track !== null) {
+        track.handle(message);
+      }
     }
+  }
 }
 
 /**
@@ -73,52 +71,85 @@ class TrackMessageHandler extends MessageHandler {
  */
 
 /**
- * Handles messages related to 
+ * Routes messages for a track FX to the appropriate FX
  */
 class TrackFxMessageHandler extends MessageHandler {
+  /**
+   * @param {trackFxSelector} fxSelector
+   */
+  constructor(fxSelector) {
+    super();
+
     /**
-     * @param {trackFxSelector} fxSelector
+     * @type {trackFxSelector}
+     * @readonly
+     * @private
      */
-    constructor(fxSelector) {
-        super();
+    this._fxSelector = fxSelector;
+  }
 
-        this._fxSelector = fxSelector;
+  /**
+   * @param {OscMessage} message
+   * @override
+   */
+  handle(message) {
+    if (message.addressParts[1] === 'track' && message.addressParts[3] === 'fx') {
+      const fxNumber = parseInt(message.addressParts[4]);
+
+      if (isNaN(fxNumber)) {
+        throw new Error('Expected an integer');
+      }
+
+      const fx = this._fxSelector(fxNumber);
+
+      if (fx !== null) {
+        fx.handle(message);
+      }
     }
-
-    handle(message) {
-        let addressParts = message.address.split('/');
-
-        if (addressParts[1] === 'track' && addressParts[3] === 'fx') {
-            let fx = this._fxSelector(addressParts[4]);
-
-            if (fx !== undefined) {
-                fx.handle(message);
-            }
-        }
-    }
+  }
 }
 
-class BooleanMessageHandler extends MessageHandler {
-    constructor(address, callback = (booleanValue) => { }) {
-        super();
+/**
+ * @callback handleBool
+ * @param {boolean} value
+ * @returns {void}
+ */
 
-        this.address = address;
-        this._callback = callback;
-    }
+class BooleanMessageHandler extends MessageHandler {
+  /**
+   *
+   * @param {string} address
+   * @param {handleBool} callback
+   */
+  constructor(address, callback) {
+    super();
 
     /**
-     * @inheritdoc
-     * @param {OscMessage} message 
+     * @type {string}
+     * @readonly
+     * */
+    this.address = address;
+
+    /**
+     * @type {handleBool}
+     * @readonly
+     * @private
      */
-    handle(message) {
-        if (message.address === this.address) {
-            const arg = message.args[0];
+    this._callback = callback;
+  }
 
-            let booleanValue = message.args[0].value === 1 ? true : false;
+  /**
+   * @inheritdoc
+   * @param {OscMessage} message
+   * @todo // TODO Add a check that the argument value is exactly 1 or 0
+   */
+  handle(message) {
+    if (message.address === this.address) {
+      const booleanValue = message.args[0].value === 1 ? true : false;
 
-            this._callback(booleanValue);
-        }
+      this._callback(booleanValue);
     }
+  }
 }
 
 /**
@@ -128,70 +159,51 @@ class BooleanMessageHandler extends MessageHandler {
  */
 
 class IntegerMessageHandler extends MessageHandler {
-    /**
-     * @param {string} address 
-     * @param {handleInt} callback 
-     */
-    constructor(address, callback) {
-        super();
-
-        this.address = address;
-        this._callback = callback;
-    }
+  /**
+   * @param {string} address
+   * @param {handleInt} callback
+   */
+  constructor(address, callback) {
+    super();
 
     /**
-     * @inheritdoc
-     * @param {OscMessage} message 
-     * @override
+     * @type {string}
+     * @readonly
      */
-    handle(message) {
-        if (message.address === this.address) {
-            const messageValue = message.args[0].value;
+    this.address = address;
 
-            let intValue;
+    /**
+     * @type {handleInt}
+     * @readonly
+     * @private
+     */
+    this._callback = callback;
+  }
 
-            switch (typeof messageValue) {
-                case 'number':
-                    intValue = messageValue;
-                    break;
-                default:
-                    intValue = parseInt(messageValue);
-                    if (isNaN(intValue)) {
-                        throw new Error('Expected an integer');
-                    }
-            }
+  /**
+   * @inheritdoc
+   * @param {OscMessage} message
+   * @override
+   */
+  handle(message) {
+    if (message.address === this.address) {
+      const messageValue = message.args[0].value;
 
-            this._callback(intValue);
+      let intValue;
+
+      if (typeof messageValue === 'number') {
+        intValue = messageValue;
+      } else {
+        intValue = parseInt(messageValue);
+
+        if (isNaN(intValue)) {
+          throw new Error('Expected an integer');
         }
+      }
+
+      this._callback(intValue);
     }
-}
-
-class StringMessageHandler extends MessageHandler {
-    /**
-     * @param {string} address 
-     * @param {handleString} callback
-     */
-    constructor(address, callback) {
-        super();
-
-        this.address = address;
-        this._callback = callback;
-    }
-
-    /** 
-     * @inheritdoc
-     * @param {OscMessage} message
-     * @override
-     */
-    handle(message) {
-        if (message.address === this.address) {
-            let messageValue = message.args[0].value;
-
-            let stringValue = typeof messageValue === 'string' ? messageValue : messageValue.toString();
-
-            this._callback(stringValue);
-        }
-    }
+  }
 }
 
 /**
@@ -199,12 +211,32 @@ class StringMessageHandler extends MessageHandler {
  * @param {string} value
  * @returns {void}
  */
+class StringMessageHandler extends MessageHandler {
+  /**
+   * @param {string} address
+   * @param {handleString} callback
+   */
+  constructor(address, callback) {
+    super();
 
-export {
-    MessageHandler,
-    TrackMessageHandler,
-    TrackFxMessageHandler,
-    BooleanMessageHandler,
-    StringMessageHandler,
-    IntegerMessageHandler
+    this.address = address;
+    this._callback = callback;
+  }
+
+  /**
+   * @inheritdoc
+   * @param {OscMessage} message
+   * @override
+   */
+  handle(message) {
+    if (message.address === this.address) {
+      let messageValue = message.args[0].value;
+
+      let stringValue = typeof messageValue === 'string' ? messageValue : messageValue.toString();
+
+      this._callback(stringValue);
+    }
+  }
 }
+
+export {MessageHandler, TrackMessageHandler, TrackFxMessageHandler, BooleanMessageHandler, StringMessageHandler, IntegerMessageHandler};
