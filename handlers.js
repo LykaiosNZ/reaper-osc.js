@@ -1,12 +1,12 @@
 // @ts-check
-/** @module Handlers */
+/** @file Contains OSC message handlers */
 'use strict';
 
 import {OscMessage} from './messages.js';
 import {Track, TrackFx} from './reaper.js';
 
 /** Base class for handling {@link OscMessage}s */
-export class MessageHandler {
+class MessageHandler {
   /**
    * Handle an OSC message
    * @param {OscMessage} message
@@ -27,7 +27,7 @@ export class MessageHandler {
 /**
  * Routes messages for tracks to the appropriate track
  */
-export class TrackMessageHandler extends MessageHandler {
+class TrackMessageHandler extends MessageHandler {
   /**
    * @param {TrackSelector} trackSelector
    */
@@ -74,7 +74,7 @@ export class TrackMessageHandler extends MessageHandler {
 /**
  * Routes messages for a track FX to the appropriate FX
  */
-export class TrackFxMessageHandler extends MessageHandler {
+class TrackFxMessageHandler extends MessageHandler {
   /**
    * @param {TrackFxSelector} fxSelector
    */
@@ -116,7 +116,7 @@ export class TrackFxMessageHandler extends MessageHandler {
  * @returns {void}
  */
 
-export class BooleanMessageHandler extends MessageHandler {
+class BooleanMessageHandler extends MessageHandler {
   /**
    *
    * @param {string} address
@@ -159,7 +159,7 @@ export class BooleanMessageHandler extends MessageHandler {
  * @returns {void}
  */
 
-export class IntegerMessageHandler extends MessageHandler {
+class IntegerMessageHandler extends MessageHandler {
   /**
    * @param {string} address
    * @param {HandleInt} callback
@@ -212,14 +212,13 @@ export class IntegerMessageHandler extends MessageHandler {
  * @param {string} value
  * @returns {void}
  */
-export class StringMessageHandler extends MessageHandler {
+class StringMessageHandler extends MessageHandler {
   /**
    * @param {string} address
    * @param {HandleString} callback
    */
   constructor(address, callback) {
     super();
-
 
     this.address = address;
     this._callback = callback;
@@ -240,3 +239,5 @@ export class StringMessageHandler extends MessageHandler {
     }
   }
 }
+
+export {MessageHandler, TrackMessageHandler, TrackFxMessageHandler, BooleanMessageHandler, IntegerMessageHandler, StringMessageHandler};

@@ -1,11 +1,12 @@
 // @ts-check
-/** @module Messages */
+/** @file Contains OSC message types */
 'use strict';
 
 /**
+ * OSC argument types
  * @enum {string}
  */
-const ArgumentType = {
+const OscArgumentType = {
   INT: 'i',
   LONG: 'h',
   FLOAT: 'f',
@@ -22,19 +23,22 @@ const ArgumentType = {
 };
 
 /** An argument of an OSC message */
-export class OscArgument {
+class OscArgument {
   /**
-   * @param {ArgumentType} type - The type of message being passed
+   * @param {OscArgumentType} type - The type of message being passed
    * @param {*} value - The argument value
    */
   constructor(type, value) {
+    /**
+     * @type {OscArgumentType}
+     */
     this.type = type;
     this.value = value;
   }
 }
 
 /** An OSC message */
-export class OscMessage {
+class OscMessage {
   /**
    * @param {string} address - The OSC Address Pattern of the message
    * @param {OscArgument[]} [args] - (optional) An array containing the arguments for the message
@@ -60,43 +64,43 @@ export class OscMessage {
   }
 }
 
-export class BooleanMessage extends OscMessage {
+class BooleanMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {boolean} value
    */
   constructor(address, value = false) {
-    const args = [new OscArgument(ArgumentType.INT, value === true ? 1 : 0)];
+    const args = [new OscArgument(OscArgumentType.INT, value === true ? 1 : 0)];
 
     super(address, args);
   }
 }
 
-export class StringMessage extends OscMessage {
+class StringMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {string} value
    */
   constructor(address, value) {
-    const args = [new OscArgument(ArgumentType.STRING, value)];
+    const args = [new OscArgument(OscArgumentType.STRING, value)];
 
     super(address, args);
   }
 }
 
-export class IntegerMessage extends OscMessage {
+class IntegerMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {number} value
    */
   constructor(address, value) {
-    const args = [new OscArgument(ArgumentType.INT, value)];
+    const args = [new OscArgument(OscArgumentType.INT, value)];
 
     super(address, args);
   }
 }
 
-export class ToggleMessage extends OscMessage {
+class ToggleMessage extends OscMessage {
   /**
    * @param {string} address
    */
@@ -105,7 +109,7 @@ export class ToggleMessage extends OscMessage {
   }
 }
 
-export class ActionMessage extends StringMessage {
+class ActionMessage extends StringMessage {
   /**
    * @param {number | string} commandId
    */
@@ -117,3 +121,5 @@ export class ActionMessage extends StringMessage {
     super('/action/str', commandId);
   }
 }
+
+export {OscMessage, OscArgument, OscArgumentType, BooleanMessage, StringMessage, IntegerMessage, ToggleMessage, ActionMessage};

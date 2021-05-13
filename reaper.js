@@ -1,5 +1,5 @@
 // @ts-check
-/** @module Reaper */
+/** @file Contains classes for controlling Reaper via OSC */
 'use strict';
 import * as Messages from './messages.js';
 import * as Handlers from './handlers.js';
@@ -10,7 +10,7 @@ const {UDPPort} = osc;
  * The available Record Monitor modes for a track.
  * @enum {number}
  */
-export const RecordMonitorMode = {
+const RecordMonitorMode = {
   /** On */
   ON: 0,
   /** Off */
@@ -26,7 +26,7 @@ export const RecordMonitorMode = {
  */
 
 /** A Reaper track */
-export class Track {
+class Track {
   /**
    * @param {number} trackNumber - The track number of this track
    * @param {number} numberOfFx  - The number of FX to initialize for this track
@@ -310,7 +310,7 @@ export class Track {
 }
 
 /** A Reaper track FX */
-export class TrackFx {
+class TrackFx {
   /**
    * @param {number} trackNumber - The number of the track that this FX belongs to
    * @param {number} fxNumber - The number of this FX
@@ -468,7 +468,7 @@ export class TrackFx {
 }
 
 /** Configuration for reaper-osc */
-export class ReaperConfig {
+class ReaperConfig {
   constructor() {
     /**
      * The address to listen on
@@ -510,7 +510,7 @@ export class ReaperConfig {
 }
 
 /** An OSC controller for Reaper */
-export class Reaper {
+class Reaper {
   /**
    * @param {ReaperConfig} config - Configuration
    */
@@ -865,3 +865,5 @@ export class Reaper {
     }
   }
 }
+
+export {Reaper, ReaperConfig, Track, TrackFx, RecordMonitorMode};
