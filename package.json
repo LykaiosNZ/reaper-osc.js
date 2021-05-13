@@ -7,7 +7,18 @@
   "repository": "https://github.com/LykaiosNZ/reaper-osc.js",
   "author": "Ben Simpson",
   "license": "MIT",
+  "files": [
+    "reaper.js",
+    "handlers.js",
+    "messages.js"
+  ],
   "dependencies": {
     "osc": "^2.4.1"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^7.0.1"
+  },
+  "scripts": {
+    "docs": "jsdoc2md -c jsdoc.conf --separators *.js > docs/API.md"
   }
 }

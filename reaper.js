@@ -1,4 +1,5 @@
 // @ts-check
+/** @module Reaper */
 'use strict';
 import * as Messages from './messages.js';
 import * as Handlers from './handlers.js';
@@ -6,25 +7,30 @@ import osc from 'osc';
 const {UDPPort} = osc;
 
 /**
+ * The available Record Monitor modes for a track.
  * @enum {number}
  */
-const RecordMonitorMode = {
+export const RecordMonitorMode = {
+  /** On */
   ON: 0,
+  /** Off */
   OFF: 1,
+  /** Auto */
   AUTO: 2,
 };
 
 /**
  * A callback that can be used to send an OSC message to Reaper
- * @callback sendOscMessage
+ * @callback SendOscMessage
  * @param {Messages.OscMessage} message - The message to send.
  */
 
-class Track {
+/** A Reaper track */
+export class Track {
   /**
    * @param {number} trackNumber - The track number of this track
    * @param {number} numberOfFx  - The number of FX to initialize for this track
-   * @param {sendOscMessage} sendOscMessage
+   * @param {SendOscMessage} sendOscMessage - A callback used to send OSC messages to Reaper.
    */
   constructor(trackNumber, numberOfFx, sendOscMessage) {
     /**
@@ -77,7 +83,7 @@ class Track {
     this._fx = this._initFx(numberOfFx, sendOscMessage);
 
     /**
-     * @type {sendOscMessage}
+     * @type {SendOscMessage}
      * @private
      */
     this._sendOscMessage = sendOscMessage;
@@ -89,10 +95,12 @@ class Track {
     this._handlers = this._initHandlers();
   }
 
+  /** Gets the track number */
   get trackNumber() {
     return this._trackNumber;
   }
 
+  /** Gets the track name */
   get name() {
     return this._name;
   }
@@ -102,6 +110,7 @@ class Track {
     this._setFieldAndNotifyIfChanged('name', value);
   }
 
+  /** Gets a value indicating whether the track is muted */
   get isMuted() {
     return this._isMuted;
   }
@@ -111,6 +120,7 @@ class Track {
     this._setFieldAndNotifyIfChanged('isMuted', value);
   }
 
+  /** Gets a value indicating whether the track is soloed */
   get isSoloed() {
     return this._isSoloed;
   }
@@ -120,6 +130,7 @@ class Track {
     this._setFieldAndNotifyIfChanged('isSoloed', value);
   }
 
+  /** Gets a value indicating whether the track is armed for recording */
   get isRecordArmed() {
     return this._isRecordArmed;
   }
@@ -129,6 +140,7 @@ class Track {
     this._setFieldAndNotifyIfChanged('isRecordArmed', value);
   }
 
+  /** Gets a value indicating the record monitoring mode for the track */
   get recordMonitoring() {
     return this._recordMonitoring;
   }
@@ -138,6 +150,7 @@ class Track {
     this._setFieldAndNotifyIfChanged('recordMonitoring', value);
   }
 
+  /** Gets a value indicating whether the track is selected */
   get isSelected() {
     return this._isSelected;
   }
@@ -147,20 +160,22 @@ class Track {
     this._setFieldAndNotifyIfChanged('isSelected', value);
   }
 
-  /**
-   * Gets the base OSC address fragment for this track
-   */
+  /** Gets the base OSC address fragment for this track */
   get oscAddress() {
     return '/track/' + this._trackNumber;
   }
 
+  /** Gets a collection containing the track FX */
   get fx() {
     return this._fx;
   }
 
   /**
    * Renames the track
-   * @param {string} name
+   * @param {string} name The new name of the track
+   * @example
+   * // Change the track name to 'Guitar'
+   * track.rename('Guitar');
    */
   rename(name) {
     this._sendOscMessage(new Messages.StringMessage(this.oscAddress + '/name', name));
@@ -235,7 +250,7 @@ class Track {
   }
 
   /**
-   * Handles an OSC message
+   * Handle an OSC message
    * @param {Messages.OscMessage} message - The message to handle
    */
   handle(message) {
@@ -246,7 +261,7 @@ class Track {
 
   /**
    * @param {number} numberOfFx
-   * @param {sendOscMessage} sendOscMessage
+   * @param {SendOscMessage} sendOscMessage
    * @private
    */
   _initFx(numberOfFx, sendOscMessage) {
@@ -294,57 +309,68 @@ class Track {
   }
 }
 
-class TrackFx {
+/** A Reaper track FX */
+export class TrackFx {
   /**
    * @param {number} trackNumber - The number of the track that this FX belongs to
    * @param {number} fxNumber - The number of this FX
-   * @param {sendOscMessage} sendOscMessage
+   * @param {SendOscMessage} sendOscMessage
    */
   constructor(trackNumber, fxNumber, sendOscMessage) {
     /**
      * @type {number}
+     * @private
      */
     this._trackNumber = trackNumber;
 
     /**
      * @type {number}
+     * @private
      */
     this._fxNumber = fxNumber;
 
     /**
      * @type {string}
+     * @private
      */
     this._name = 'FX ' + fxNumber;
 
     /**
      * @type {boolean}
+     * @private
      */
     this._isBypassed = false;
 
     /**
      * @type {boolean}
+     * @private
      */
     this._isUiOpen = false;
 
     /**
-     * @type {sendOscMessage}
+     * @type {SendOscMessage}
+     * @private
      */
     this._sendOscMessage = sendOscMessage;
 
     /**
      * @type {Handlers.MessageHandler[]}
+     * @private
      */
     this._handlers = this._initHandlers();
   }
 
+  /** Gets the track number */
   get trackNumber() {
     return this._trackNumber;
   }
 
+  /** Gets the FX number */
   get fxNumber() {
     return this._fxNumber;
   }
 
+  /** Gets the name of the FX */
   get name() {
     return this._name;
   }
@@ -354,6 +380,7 @@ class TrackFx {
     this._setFieldAndNotifyIfChanged('name', value);
   }
 
+  /** Gets a value indicating whether the FX is bypassed */
   get isBypassed() {
     return this._isBypassed;
   }
@@ -363,6 +390,7 @@ class TrackFx {
     this._setFieldAndNotifyIfChanged('isBypassed', value);
   }
 
+  /** Gets a value indicating whether the FX UI window is open */
   get isUiOpen() {
     return this._isUiOpen;
   }
@@ -439,47 +467,51 @@ class TrackFx {
   }
 }
 
-/**
- * Configuration for connecting to Reaper
- */
-class ReaperConfig {
+/** Configuration for reaper-osc */
+export class ReaperConfig {
   constructor() {
     /**
+     * The address to listen on
      * @type {string}
      * @readonly
      */
     this.localAddress = '0.0.0.0';
 
     /**
+     * The port to listen on
      * @type {number}
      */
     this.localPort = 9000;
 
     /**
+     * The address that Reaper is listening on
      * @type {string}
      */
     this.remoteAddress = '127.0.0.1';
 
     /**
+     * The port that Reaper is listening on
      * @type {number}
      */
     this.remotePort = 8000;
 
     /**
+     * @package
      * @type {number}
      */
     this.numberOfTracks = 8;
 
     /**
+     * @package
      * @type {number}
      */
     this.numberOfTrackFx = 8;
   }
 }
 
-class Reaper {
+/** An OSC controller for Reaper */
+export class Reaper {
   /**
-   * An OSC client for Cockos Reaper
    * @param {ReaperConfig} config - Configuration
    */
   constructor(config = new ReaperConfig()) {
@@ -554,6 +586,7 @@ class Reaper {
     this._handlers = this._initHandlers();
   }
 
+  /** Gets a value indicating whether we are ready to send/receive OSC messages */
   get isReady() {
     return this._isReady;
   }
@@ -563,6 +596,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isReady', value);
   }
 
+  /** Gets a value indicating whether Reaper is playing */
   get isPlaying() {
     return this._isPlaying;
   }
@@ -572,6 +606,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isPlaying', value);
   }
 
+  /** Gets a value indicating whether Reaper is stopped */
   get isStopped() {
     return this._isStopped;
   }
@@ -581,6 +616,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isStopped', value);
   }
 
+  /** Gets a value indicating whether Reaper is recording */
   get isRecording() {
     return this._isRecording;
   }
@@ -590,6 +626,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isRecording', value);
   }
 
+  /** Gets a value indicating whether Reaper is rewinding */
   get isRewinding() {
     return this._isRewinding;
   }
@@ -599,6 +636,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isRewinding', value);
   }
 
+  /** Gets a value indicating whether Reaper is fast-forwarding */
   get isFastForwarding() {
     return this._isFastForwarding;
   }
@@ -608,6 +646,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isFastForwarding', value);
   }
 
+  /** Gets a value indicating whether repeat is enabled */
   get isRepeatEnabled() {
     return this._isRepeatEnabled;
   }
@@ -617,6 +656,7 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isRepeatEnabled', value);
   }
 
+  /** Gets a value indicating whether the metronome is enabled */
   get isMetronomeEnabled() {
     return this._isMetronomeEnabled;
   }
@@ -626,11 +666,14 @@ class Reaper {
     this._setFieldAndNotifyIfChanged('isMetronomeEnabled', value);
   }
 
+  /** Gets an array containing the Reaper tracks */
   get tracks() {
     return this._tracks;
   }
 
-  /** Start listening for OSC messages */
+  /**
+   * Start listening for OSC messages. {@link Reaper.isReady} will be changed to true when the connection is ready.
+   */
   startOsc() {
     this._osc.open();
   }
@@ -642,7 +685,7 @@ class Reaper {
   }
 
   /**
-   * Send a custom OSC message
+   * Send a custom OSC message to Reaper
    * @param {Messages.OscMessage} message
    */
   sendOscMessage(message) {
@@ -656,27 +699,27 @@ class Reaper {
     console.debug('OSC message sent', message);
   }
 
-  /** Toggles play */
+  /** Toggle play */
   play() {
     this.sendOscMessage(new Messages.OscMessage('/play'));
   }
 
-  /** Toggles pause */
+  /** Toggle pause */
   pause() {
     this.sendOscMessage(new Messages.OscMessage('/pause'));
   }
 
-  /** Stops playback or recording */
+  /** Stop playback or recording */
   stop() {
     this.sendOscMessage(new Messages.OscMessage('/stop'));
   }
 
-  /** Toggles recording */
+  /** Toggle recording */
   record() {
     this.sendOscMessage(new Messages.OscMessage('/record'));
   }
 
-  /** Starts rewinding. Will continue until stopped */
+  /** Start rewinding. Will continue until stopped */
   startRewinding() {
     this.sendOscMessage(new Messages.BooleanMessage('/rewind', true));
   }
@@ -686,7 +729,7 @@ class Reaper {
     this.sendOscMessage(new Messages.BooleanMessage('/rewind', false));
   }
 
-  /** Starts fast fowarding. Will continue until stopped */
+  /** Start fast fowarding. Will continue until stopped */
   startFastForwarding() {
     this.sendOscMessage(new Messages.BooleanMessage('/forward', true));
   }
@@ -696,12 +739,12 @@ class Reaper {
     this.sendOscMessage(new Messages.BooleanMessage('/foward', false));
   }
 
-  /** Toggles the metronome on or off */
+  /** Toggle the metronome on or off */
   toggleMetronome() {
     this.sendOscMessage(new Messages.OscMessage('/click'));
   }
 
-  /** Toggles repeat on or off */
+  /** Toggle repeat on or off */
   toggleRepeat() {
     this.sendOscMessage(new Messages.OscMessage('/repeaer'));
   }
@@ -711,10 +754,10 @@ class Reaper {
    * @param {number | string} commandId
    * @example
    * // Trigger action 'Track: Toggle mute for master track'
-   * Reaper.triggerAction(14);
+   * reaper.triggerAction(14);
    * @example
    * // Trigger SWS Extension action 'SWS: Set all master track outputs muted'
-   * Reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
+   * reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
    */
   triggerAction(commandId) {
     this.sendOscMessage(new Messages.ActionMessage(commandId));
@@ -730,7 +773,8 @@ class Reaper {
   /**
    * Gets a track by its track number
    * @param {number} trackNumber
-   * @returns {Track}
+   * @returns {Track} The track with the specified track number
+   * @throws {RangeError} Thrown when {@link trackNumber} is less than 1 or greater than the current number of tracks
    */
   getTrack(trackNumber) {
     if (trackNumber < 1 || trackNumber > this._tracks.length) {
@@ -821,5 +865,3 @@ class Reaper {
     }
   }
 }
-
-export {Reaper, ReaperConfig, Track, TrackFx, RecordMonitorMode};

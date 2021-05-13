@@ -1,11 +1,12 @@
 // @ts-check
+/** @module Handlers */
 'use strict';
 
 import {OscMessage} from './messages.js';
 import {Track, TrackFx} from './reaper.js';
 
 /** Base class for handling {@link OscMessage}s */
-class MessageHandler {
+export class MessageHandler {
   /**
    * Handle an OSC message
    * @param {OscMessage} message
@@ -18,7 +19,7 @@ class MessageHandler {
 
 /**
  * A callback that can be used to obtain a track using its track number
- * @callback trackSelector
+ * @callback TrackSelector
  * @param {number} trackNumber - The number of the track
  * @returns {?Track}
  */
@@ -26,15 +27,15 @@ class MessageHandler {
 /**
  * Routes messages for tracks to the appropriate track
  */
-class TrackMessageHandler extends MessageHandler {
+export class TrackMessageHandler extends MessageHandler {
   /**
-   * @param {trackSelector} trackSelector
+   * @param {TrackSelector} trackSelector
    */
   constructor(trackSelector) {
     super();
 
     /**
-     * @type {trackSelector}
+     * @type {TrackSelector}
      * @readonly
      * @private
      */
@@ -65,7 +66,7 @@ class TrackMessageHandler extends MessageHandler {
 
 /**
  * A callback that can be used to obtain a Track FX by its number on the track
- * @callback trackFxSelector
+ * @callback TrackFxSelector
  * @param {number} fxNumber - The number of the FX on the track
  * @returns {?TrackFx}
  */
@@ -73,15 +74,15 @@ class TrackMessageHandler extends MessageHandler {
 /**
  * Routes messages for a track FX to the appropriate FX
  */
-class TrackFxMessageHandler extends MessageHandler {
+export class TrackFxMessageHandler extends MessageHandler {
   /**
-   * @param {trackFxSelector} fxSelector
+   * @param {TrackFxSelector} fxSelector
    */
   constructor(fxSelector) {
     super();
 
     /**
-     * @type {trackFxSelector}
+     * @type {TrackFxSelector}
      * @readonly
      * @private
      */
@@ -110,16 +111,16 @@ class TrackFxMessageHandler extends MessageHandler {
 }
 
 /**
- * @callback handleBool
+ * @callback HandleBool
  * @param {boolean} value
  * @returns {void}
  */
 
-class BooleanMessageHandler extends MessageHandler {
+export class BooleanMessageHandler extends MessageHandler {
   /**
    *
    * @param {string} address
-   * @param {handleBool} callback
+   * @param {HandleBool} callback
    */
   constructor(address, callback) {
     super();
@@ -131,7 +132,7 @@ class BooleanMessageHandler extends MessageHandler {
     this.address = address;
 
     /**
-     * @type {handleBool}
+     * @type {HandleBool}
      * @readonly
      * @private
      */
@@ -153,15 +154,15 @@ class BooleanMessageHandler extends MessageHandler {
 }
 
 /**
- * @callback handleInt
+ * @callback HandleInt
  * @param {number} value
  * @returns {void}
  */
 
-class IntegerMessageHandler extends MessageHandler {
+export class IntegerMessageHandler extends MessageHandler {
   /**
    * @param {string} address
-   * @param {handleInt} callback
+   * @param {HandleInt} callback
    */
   constructor(address, callback) {
     super();
@@ -173,7 +174,7 @@ class IntegerMessageHandler extends MessageHandler {
     this.address = address;
 
     /**
-     * @type {handleInt}
+     * @type {HandleInt}
      * @readonly
      * @private
      */
@@ -207,17 +208,18 @@ class IntegerMessageHandler extends MessageHandler {
 }
 
 /**
- * @callback handleString
+ * @callback HandleString
  * @param {string} value
  * @returns {void}
  */
-class StringMessageHandler extends MessageHandler {
+export class StringMessageHandler extends MessageHandler {
   /**
    * @param {string} address
-   * @param {handleString} callback
+   * @param {HandleString} callback
    */
   constructor(address, callback) {
     super();
+
 
     this.address = address;
     this._callback = callback;
@@ -238,5 +240,3 @@ class StringMessageHandler extends MessageHandler {
     }
   }
 }
-
-export {MessageHandler, TrackMessageHandler, TrackFxMessageHandler, BooleanMessageHandler, StringMessageHandler, IntegerMessageHandler};

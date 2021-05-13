@@ -1,4 +1,5 @@
 // @ts-check
+/** @module Messages */
 'use strict';
 
 /**
@@ -21,7 +22,7 @@ const ArgumentType = {
 };
 
 /** An argument of an OSC message */
-class OscArgument {
+export class OscArgument {
   /**
    * @param {ArgumentType} type - The type of message being passed
    * @param {*} value - The argument value
@@ -33,10 +34,10 @@ class OscArgument {
 }
 
 /** An OSC message */
-class OscMessage {
+export class OscMessage {
   /**
    * @param {string} address - The OSC Address Pattern of the message
-   * @param {OscArgument[]=} args - (optional) An array containing the arguments for the message
+   * @param {OscArgument[]} [args] - (optional) An array containing the arguments for the message
    */
   constructor(address, args) {
     /**
@@ -46,7 +47,7 @@ class OscMessage {
     this.address = address;
 
     /**
-     * @type {OscArgument[]=}
+     * @type {OscArgument[] | undefined}
      * @readonly
      */
     this.args = args;
@@ -59,7 +60,7 @@ class OscMessage {
   }
 }
 
-class BooleanMessage extends OscMessage {
+export class BooleanMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {boolean} value
@@ -71,7 +72,7 @@ class BooleanMessage extends OscMessage {
   }
 }
 
-class StringMessage extends OscMessage {
+export class StringMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {string} value
@@ -83,7 +84,7 @@ class StringMessage extends OscMessage {
   }
 }
 
-class IntegerMessage extends OscMessage {
+export class IntegerMessage extends OscMessage {
   /**
    * @param {string} address
    * @param {number} value
@@ -95,7 +96,7 @@ class IntegerMessage extends OscMessage {
   }
 }
 
-class ToggleMessage extends OscMessage {
+export class ToggleMessage extends OscMessage {
   /**
    * @param {string} address
    */
@@ -104,7 +105,7 @@ class ToggleMessage extends OscMessage {
   }
 }
 
-class ActionMessage extends StringMessage {
+export class ActionMessage extends StringMessage {
   /**
    * @param {number | string} commandId
    */
@@ -116,5 +117,3 @@ class ActionMessage extends StringMessage {
     super('/action/str', commandId);
   }
 }
-
-export {OscArgument, OscMessage, BooleanMessage, StringMessage, ToggleMessage, ActionMessage, IntegerMessage};
