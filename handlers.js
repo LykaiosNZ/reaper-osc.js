@@ -121,7 +121,17 @@ class BooleanMessageHandler extends MessageHandler {
     }
 }
 
+/**
+ * @callback handleInt
+ * @param {number} value
+ * @returns {void}
+ */
+
 class IntegerMessageHandler extends MessageHandler {
+    /**
+     * @param {string} address 
+     * @param {handleInt} callback 
+     */
     constructor(address, callback) {
         super();
 
@@ -129,6 +139,11 @@ class IntegerMessageHandler extends MessageHandler {
         this._callback = callback;
     }
 
+    /**
+     * @inheritdoc
+     * @param {OscMessage} message 
+     * @override
+     */
     handle(message) {
         if (message.address === this.address) {
             const messageValue = message.args[0].value;
@@ -152,13 +167,22 @@ class IntegerMessageHandler extends MessageHandler {
 }
 
 class StringMessageHandler extends MessageHandler {
-    constructor(address, callback = (stringValue) => { }) {
+    /**
+     * @param {string} address 
+     * @param {handleString} callback
+     */
+    constructor(address, callback) {
         super();
 
         this.address = address;
         this._callback = callback;
     }
 
+    /** 
+     * @inheritdoc
+     * @param {OscMessage} message
+     * @override
+     */
     handle(message) {
         if (message.address === this.address) {
             let messageValue = message.args[0].value;
@@ -170,10 +194,17 @@ class StringMessageHandler extends MessageHandler {
     }
 }
 
+/**
+ * @callback handleString
+ * @param {string} value
+ * @returns {void}
+ */
+
 export {
     MessageHandler,
     TrackMessageHandler,
     TrackFxMessageHandler,
-    BooleanMessageHandler as BinaryMessageHandler,
-    StringMessageHandler
+    BooleanMessageHandler,
+    StringMessageHandler,
+    IntegerMessageHandler
 }

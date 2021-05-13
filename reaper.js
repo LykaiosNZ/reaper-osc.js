@@ -1,12 +1,11 @@
 // @ts-check
 "use strict";
-import { OscMessage, BinaryMessage, ToggleMessage, ActionMessage, StringMessage } from "./messages.js";
-import { BinaryMessageHandler, StringMessageHandler, TrackMessageHandler, TrackFxMessageHandler, MessageHandler } from "./handlers.js";
+import * as Messages from "./messages.js";
+import * as Handlers from "./handlers.js";
 import osc from 'osc';
 const { UDPPort } = osc;
 
 /**
- * @readonly
  * @enum {number}
  */
 const RecordMonitorMode = {
@@ -18,7 +17,7 @@ const RecordMonitorMode = {
 /**
  * A callback that can be used to send an OSC message to Reaper
  * @callback sendOscMessage
- * @param {OscMessage} message - The message to send.
+ * @param {Messages.OscMessage} message - The message to send.
  */
 
 class Track {
@@ -59,12 +58,11 @@ class Track {
          */
         this._isRecordArmed = false;
 
-        // TODO: This is not a boolean
         /**
-         * @type {boolean}
+         * @type {RecordMonitorMode}
          * @private
          */
-        this._isMonitoringEnabled = false;
+        this._recordMonitoring = RecordMonitorMode.OFF;
 
         /**
          * @type {boolean}
@@ -85,7 +83,7 @@ class Track {
         this._sendOscMessage = sendOscMessage;
 
         /**
-         * @type {MessageHandler[]}
+         * @type {Handlers.MessageHandler[]}
          * @private
          */
         this._handlers = this._initHandlers();
@@ -131,13 +129,13 @@ class Track {
         this._setFieldAndNotifyIfChanged('isRecordArmed', value);
     }
 
-    get isMonitoringEnabled() {
-        return this._isMonitoringEnabled;
+    get recordMonitoring() {
+        return this._recordMonitoring;
     }
 
     /** @private */
-    set isMonitoringEnabled(value) {
-        this._setFieldAndNotifyIfChanged('isMonitoringEnabled', value);
+    set recordMonitoring(value) {
+        this._setFieldAndNotifyIfChanged('recordMonitoring', value);
     }
 
     get isSelected() {
@@ -161,7 +159,7 @@ class Track {
      * @param {string} name 
      */
     rename(name) {
-        this._sendOscMessage(new StringMessage(this.oscAddress + '/name', name));
+        this._sendOscMessage(new Messages.StringMessage(this.oscAddress + '/name', name));
 
         // Haven't figured out why yet (possibly to do with track selection?)
         // but Reaper doesn't send an OSC message even though it does if you 
@@ -171,46 +169,52 @@ class Track {
 
     /** Mutes the track */
     mute() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/mute', true));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/mute', true));
     }
 
     /** Unmutes the track */
     unmute() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/mute', false));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/mute', false));
     }
 
     /** Toggles mute on/off */
     toggleMute() {
-        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/mute'));
+        this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/mute'));
     }
 
     solo() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/solo', true));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/solo', true));
     }
 
     unsolo() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/solo', false));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/solo', false));
     }
 
     toggleSolo() {
-        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/solo'));
+        this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/solo'));
     }
 
     recordArm() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/recarm', true));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/recarm', true));
     }
 
     recordDisarm() {
-        this._sendOscMessage(new BinaryMessage(this.oscAddress + '/recarm', false));
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/recarm', false));
     }
 
     toggleRecordArm() {
-        this._sendOscMessage(new ToggleMessage(this.oscAddress + '/recarm'));
+        this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/recarm'));
+    }
+
+    /** @param {RecordMonitorMode} value */
+    setRecordMonitoring(value)
+    {
+        this._sendOscMessage(new Messages.IntegerMessage(this.oscAddress + '/monitor', value));
     }
 
     /**
      * Handles an OSC message
-     * @param {OscMessage} message - The message to handle
+     * @param {Messages.OscMessage} message - The message to handle
      */
     handle(message) {
         this._handlers.forEach((handler, index) => {
@@ -232,15 +236,13 @@ class Track {
     /** @private */
     _initHandlers() {
         return [
-            new StringMessageHandler(this.oscAddress + '/name', (value) => this.name = value),
-            new BinaryMessageHandler(this.oscAddress + '/mute', (value) => this.isMuted = value),
-            new BinaryMessageHandler(this.oscAddress + '/solo', (value) => this.isSoloed = value),
-            new BinaryMessageHandler(this.oscAddress + '/recarm', (value) => this.isRecordArmed = value),
-
-            // TODO: Monitor is not a bool
-            new BinaryMessageHandler(this.oscAddress + '/monitor', (value) => this.isMonitoringEnabled = value),
-            new BinaryMessageHandler(this.oscAddress + '/select', (value) => this.isSelected = value),
-            new TrackFxMessageHandler((fxNumber) => this._fx[fxNumber])
+            new Handlers.StringMessageHandler(this.oscAddress + '/name', (value) => this.name = value),
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/mute', (value) => this.isMuted = value),
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/solo', (value) => this.isSoloed = value),
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/recarm', (value) => this.isRecordArmed = value),
+            new Handlers.IntegerMessageHandler(this.oscAddress + '/monitor', (value) => this.recordMonitoring = value),
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/select', (value) => this.isSelected = value),
+            new Handlers.TrackFxMessageHandler((fxNumber) => this._fx[fxNumber])
         ]
     }
 
@@ -299,7 +301,7 @@ class TrackFx {
         this._sendOscMessage = sendOscMessage;
 
         /**
-         * @type {MessageHandler[]}
+         * @type {Handlers.MessageHandler[]}
          */
         this._handlers = this._initHandlers();
     }
@@ -346,7 +348,7 @@ class TrackFx {
 
     /**
      * Handles an OSC message
-     * @param {OscMessage} message - The message to handle
+     * @param {Messages.OscMessage} message - The message to handle
      */
     handle(message) {
         this._handlers.forEach((handler, index) => {
@@ -357,9 +359,9 @@ class TrackFx {
     /** @private */
     _initHandlers() {
         return [
-            new StringMessageHandler(this.oscAddress + '/name', (value) => this.name = value),
-            new BinaryMessageHandler(this.oscAddress + '/bypass', (value) => this.isBypassed = !value), // Reaper sends 0/false when the track is bypassed
-            new BinaryMessageHandler(this.oscAddress + '/openui', (value) => this.isUiOpen = value)
+            new Handlers.StringMessageHandler(this.oscAddress + '/name', (value) => this.name = value),
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/bypass', (value) => this.isBypassed = !value), // Reaper sends 0/false when the track is bypassed
+            new Handlers.BooleanMessageHandler(this.oscAddress + '/openui', (value) => this.isUiOpen = value)
         ]
     }
 
@@ -489,7 +491,7 @@ class Reaper {
         this._osc = this._initOsc();
 
         /** 
-         * @type {MessageHandler[]}
+         * @type {Handlers.MessageHandler[]}
          * @private
          */
         this._handlers = this._initHandlers();
@@ -584,7 +586,7 @@ class Reaper {
 
     /**
      * Send a custom OSC message
-     * @param {OscMessage} message 
+     * @param {Messages.OscMessage} message 
      */
     sendOscMessage(message) {
         if (!this._isReady) {
@@ -599,52 +601,52 @@ class Reaper {
 
     /** Toggles play */
     play() {
-        this.sendOscMessage(new OscMessage('/play'));
+        this.sendOscMessage(new Messages.OscMessage('/play'));
     }
 
     /** Toggles pause */
     pause() {
-        this.sendOscMessage(new OscMessage('/pause'));
+        this.sendOscMessage(new Messages.OscMessage('/pause'));
     }
 
     /** Stops playback or recording */
     stop() {
-        this.sendOscMessage(new OscMessage('/stop'));
+        this.sendOscMessage(new Messages.OscMessage('/stop'));
     }
 
     /** Toggles recording */
     record() {
-        this.sendOscMessage(new OscMessage('/record'));
+        this.sendOscMessage(new Messages.OscMessage('/record'));
     }
 
     /** Starts rewinding. Will continue until stopped */
     startRewinding() {
-        this.sendOscMessage(new BinaryMessage('/rewind', true));
+        this.sendOscMessage(new Messages.BooleanMessage('/rewind', true));
     }
 
     /** Stop rewinding */
     stopRewinding() {
-        this.sendOscMessage(new BinaryMessage('/rewind', false));
+        this.sendOscMessage(new Messages.BooleanMessage('/rewind', false));
     }
 
     /** Starts fast fowarding. Will continue until stopped */
     startFastForwarding() {
-        this.sendOscMessage(new BinaryMessage('/forward', true));
+        this.sendOscMessage(new Messages.BooleanMessage('/forward', true));
     }
 
     /** Stop fast forwarding */
     stopFastForwarding() {
-        this.sendOscMessage(new BinaryMessage('/foward', false));
+        this.sendOscMessage(new Messages.BooleanMessage('/foward', false));
     }
 
     /** Toggles the metronome on or off */
     toggleMetronome() {
-        this.sendOscMessage(new OscMessage('/click'));
+        this.sendOscMessage(new Messages.OscMessage('/click'));
     }
 
     /** Toggles repeat on or off */
     toggleRepeat() {
-        this.sendOscMessage(new OscMessage('/repeaer'));
+        this.sendOscMessage(new Messages.OscMessage('/repeaer'));
     }
 
     /** 
@@ -652,7 +654,7 @@ class Reaper {
      * 
      * */
     refreshControlSurfaces() {
-        this.sendOscMessage(new ActionMessage(41743));
+        this.sendOscMessage(new Messages.ActionMessage(41743));
     }
 
     /**
@@ -709,14 +711,14 @@ class Reaper {
     /** @private */
     _initHandlers() {
         return [
-            new BinaryMessageHandler('/click', (value) => this.isMetronomeEnabled = value),
-            new BinaryMessageHandler('/repeat', (value) => this.isRepeatEnabled = value),
-            new BinaryMessageHandler('/record', (value) => this.isRecording = value),
-            new BinaryMessageHandler('/stop', (value) => this.isStopped = value),
-            new BinaryMessageHandler('/play', (value) => this.isPlaying = value),
-            new BinaryMessageHandler('/rewind', (value) => this.isRewinding = value),
-            new BinaryMessageHandler('/forward', (value) => this.isFastForwarding = value),
-            new TrackMessageHandler((trackNumber) => this._tracks[trackNumber])
+            new Handlers.BooleanMessageHandler('/click', (value) => this.isMetronomeEnabled = value),
+            new Handlers.BooleanMessageHandler('/repeat', (value) => this.isRepeatEnabled = value),
+            new Handlers.BooleanMessageHandler('/record', (value) => this.isRecording = value),
+            new Handlers.BooleanMessageHandler('/stop', (value) => this.isStopped = value),
+            new Handlers.BooleanMessageHandler('/play', (value) => this.isPlaying = value),
+            new Handlers.BooleanMessageHandler('/rewind', (value) => this.isRewinding = value),
+            new Handlers.BooleanMessageHandler('/forward', (value) => this.isFastForwarding = value),
+            new Handlers.TrackMessageHandler((trackNumber) => this._tracks[trackNumber])
         ];
     }
 
@@ -737,4 +739,4 @@ class Reaper {
     }
 }
 
-export { Reaper, ReaperConfig, Track, TrackFx };
+export { Reaper, ReaperConfig, Track, TrackFx, RecordMonitorMode };

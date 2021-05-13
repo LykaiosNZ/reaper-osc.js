@@ -5,37 +5,19 @@
  * @enum {string}
  */
 const ArgumentType = {
-    /** 
-     * Binary argument, either 0 or 1. The device sets or clears the state when 
-     * sending the message. Can be used to emulate switches or momentary controls.
-     * 
-     * @link https://github.com/Ultraschall/ultraschall-portable/blob/5977dda184593ed630aaef2b45294584c4ffe113/Plugins/Default.ReaperOSC#L127
-     * @readonly 
-     * */
-    BINARY: 'b',
-
-    /** @readonly */
+    INT: 'i',
+    LONG: 'h',
     FLOAT: 'f',
-
-    /** @readonly */
-    INTEGER: 'i',
-
-    /** 
-     * Normalized floating-point argument. 0 means the minimum value, and 1 means the 
-     * maximum value.  This can be used for continous controls like sliders and knobs.
-     * 
-     * @link https://github.com/Ultraschall/ultraschall-portable/blob/5977dda184593ed630aaef2b45294584c4ffe113/Plugins/Default.ReaperOSC#L101
-     * @readonly */
-    NORMALIZED: 'n',
-
-    /** @readonly */
-    ROTARY: 'r',
-
-    /** @readonly */
+    DOUBLE: 'd',
     STRING: 's',
-
-    /** @readonly */
-    TRIGGER: 't',
+    CHAR: 'c',
+    BLOB: 'b',
+    TRUE: 'T',
+    FALSE: 'F',
+    NULL: 'N',
+    IMPULSE: 'I',
+    COLOR: 'r',
+    MIDI: 'm'
 }
 
 /** An argument of an OSC message */
@@ -77,10 +59,14 @@ class OscMessage {
     }
 }
 
-class BinaryMessage extends OscMessage {
+class BooleanMessage extends OscMessage {
+    /**
+     * @param {string} address 
+     * @param {boolean} value 
+     */
     constructor(address, value = false) {
         const args = [
-            new OscArgument('i', value === true ? 1 : 0)
+            new OscArgument(ArgumentType.INT, value === true ? 1 : 0)
         ];
 
         super(address, args);
@@ -88,9 +74,27 @@ class BinaryMessage extends OscMessage {
 }
 
 class StringMessage extends OscMessage {
-    constructor(address, value = '') {
+    /**
+     * @param {string} address 
+     * @param {string} value 
+     */
+    constructor(address, value) {
         const args = [
-            new OscArgument('s', value)
+            new OscArgument(ArgumentType.STRING, value)
+        ]
+
+        super(address, args);
+    }
+}
+
+class IntegerMessage extends OscMessage {
+    /**
+     * @param {string} address 
+     * @param {number} value 
+     */
+    constructor(address, value) {
+        const args = [
+            new OscArgument(ArgumentType.INT, value)
         ]
 
         super(address, args);
@@ -98,12 +102,18 @@ class StringMessage extends OscMessage {
 }
 
 class ToggleMessage extends OscMessage {
+    /**
+     * @param {string} address 
+     */
     constructor(address) {
         super(address + '/toggle');
     }
 }
 
 class ActionMessage extends OscMessage {
+    /**
+     * @param {number} actionId 
+     */
     constructor(actionId) {
         super('/action/' + actionId);
     }
@@ -112,8 +122,9 @@ class ActionMessage extends OscMessage {
 export {
     OscArgument,
     OscMessage,
-    BinaryMessage,
+    BooleanMessage,
     StringMessage,
     ToggleMessage,
-    ActionMessage
+    ActionMessage,
+    IntegerMessage
 }
