@@ -3,8 +3,7 @@
   "bracketSpacing": false,
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
-  "jsxBracketSameLine": false,
-  "printWidth": 80,
+  "printWidth": 200,
   "proseWrap": "preserve",
   "requirePragma": false,
   "semi": true,
@@ -12,7 +11,6 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "useTabs": false,
-  "vueIndentScriptAndStyle": true,
   "overrides": [
     {
       "files": "*.json",
