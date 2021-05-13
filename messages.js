@@ -110,12 +110,17 @@ class ToggleMessage extends OscMessage {
     }
 }
 
-class ActionMessage extends OscMessage {
+class ActionMessage extends StringMessage {
     /**
-     * @param {number} actionId 
+     * @param {number | string} commandId 
      */
-    constructor(actionId) {
-        super('/action/' + actionId);
+    constructor(commandId) {
+        if (typeof commandId !== 'string')
+        {
+            commandId = commandId.toString();
+        }
+
+        super('/action/str', commandId);
     }
 }
 

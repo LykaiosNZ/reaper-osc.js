@@ -74,7 +74,7 @@ class Track {
          * @type {TrackFx[]}
          * @private
          */
-        this._fx = this._initFx(numberOfFx);
+        this._fx = this._initFx(numberOfFx, sendOscMessage);
 
         /**
          * @type {sendOscMessage}
@@ -154,6 +154,10 @@ class Track {
         return '/track/' + this._trackNumber;
     }
 
+    get fx() {
+        return this._fx;
+    }
+
     /**
      * Renames the track
      * @param {string} name 
@@ -167,49 +171,67 @@ class Track {
         this.name = name;
     }
 
-    /** Mutes the track */
+    /** Mute the track */
     mute() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/mute', true));
     }
 
-    /** Unmutes the track */
+    /** Unmute the track */
     unmute() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/mute', false));
     }
 
-    /** Toggles mute on/off */
+    /** Toggle mute on/off */
     toggleMute() {
         this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/mute'));
     }
 
+    /** Solo the track */
     solo() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/solo', true));
     }
 
+    /** Unsolo the track */
     unsolo() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/solo', false));
     }
 
+    /** Toggle solo on/off */
     toggleSolo() {
         this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/solo'));
     }
 
+    /** Arm the track for recording */
     recordArm() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/recarm', true));
     }
 
+    /** Disarm track recording */
     recordDisarm() {
         this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/recarm', false));
     }
 
+    /** Toggle record arm on/off */
     toggleRecordArm() {
         this._sendOscMessage(new Messages.ToggleMessage(this.oscAddress + '/recarm'));
     }
 
-    /** @param {RecordMonitorMode} value */
-    setRecordMonitoring(value)
-    {
+    /** 
+     * Set the record monitoring mode
+     * @param {RecordMonitorMode} value 
+     * */
+    recordMonitoringMode(value) {
         this._sendOscMessage(new Messages.IntegerMessage(this.oscAddress + '/monitor', value));
+    }
+
+    /** Select the track */
+    select() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/select', true));
+    }
+
+    /** Deselect the track */
+    deselect() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/select', false));
     }
 
     /**
@@ -222,12 +244,16 @@ class Track {
         });
     }
 
-    /** @private */
-    _initFx(numberOfFx) {
+    /** 
+     * @param {number} numberOfFx
+     * @param {sendOscMessage} sendOscMessage
+     * @private 
+     */
+    _initFx(numberOfFx, sendOscMessage) {
         const fx = [];
 
         for (let i = 1; i <= numberOfFx; i++) {
-            fx[i] = new TrackFx(this._trackNumber, i, this._sendOscMessage);
+            fx[i] = new TrackFx(this._trackNumber, i, sendOscMessage);
         }
 
         return fx;
@@ -341,9 +367,29 @@ class TrackFx {
         this._setFieldAndNotifyIfChanged('isUiOpen', value);
     }
 
-    /** Gets the base OSC address fragment for this track */
+    /** Gets the base OSC address fragment for this FX */
     get oscAddress() {
         return '/track/' + this._trackNumber + '/fx/' + this._fxNumber;
+    }
+
+    /** Bypass the FX */
+    bypass() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/bypass', false)); // false to bypass
+    }
+
+    /** Unbypass the FX */
+    unbypass() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/bypass', true)); // true to unbypass
+    }
+
+    /** Open the UI of the FX */
+    openUi() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/openUi', true));
+    }
+
+    /** Close the UI of the FX */
+    closeUi() {
+        this._sendOscMessage(new Messages.BooleanMessage(this.oscAddress + '/openUi', false));
     }
 
     /**
@@ -649,12 +695,26 @@ class Reaper {
         this.sendOscMessage(new Messages.OscMessage('/repeaer'));
     }
 
+    /**
+     * Trigger a Reaper action
+     * @param {number | string} commandId
+     * @example
+     * // Trigger action 'Track: Toggle mute for master track'
+     * Reaper.triggerAction(14);
+     * @example 
+     * // Trigger SWS Extension action 'SWS: Set all master track outputs muted'
+     * Reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
+     */
+    triggerAction(commandId)
+    {
+        this.sendOscMessage(new Messages.ActionMessage(commandId));
+    }
+
     /** 
      * Triggers the action 'Control surface: Refresh all surfaces' (Command ID: 41743) 
-     * 
-     * */
+     */
     refreshControlSurfaces() {
-        this.sendOscMessage(new Messages.ActionMessage(41743));
+        this.triggerAction(41743);
     }
 
     /**
@@ -663,7 +723,12 @@ class Reaper {
      * @returns {?Track}
      */
     getTrack(trackNumber) {
-        return this._tracks[trackNumber];
+        if (trackNumber < 1 || trackNumber > this._tracks.length)
+        {
+            throw new RangeError('Valid range is 1 - ' + this._tracks.length);
+        }
+
+        return this._tracks[trackNumber] ?? null;
     }
 
     /** @private */
