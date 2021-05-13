@@ -730,14 +730,14 @@ class Reaper {
   /**
    * Gets a track by its track number
    * @param {number} trackNumber
-   * @returns {?Track}
+   * @returns {Track}
    */
   getTrack(trackNumber) {
     if (trackNumber < 1 || trackNumber > this._tracks.length) {
       throw new RangeError('Valid range is 1 - ' + this._tracks.length);
     }
 
-    return this._tracks[trackNumber] ?? null;
+    return this._tracks[trackNumber];
   }
 
   /** @private */
