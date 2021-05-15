@@ -1,8 +1,23 @@
+/**
+ * Contains classes for controlling FX in Reaper
+ * @module
+ */
 import {IEvent} from 'ste-events';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
 import {BooleanMessageHandler, IMessageHandler, StringMessageHandler} from './osc/Handlers';
 import {BooleanMessage, ISendOscMessage, OscMessage} from './osc/Messages';
 
+/**
+ * A Reaper FX.
+ * 
+ * @example
+ * // Open an FX UI window
+ * fx.openUi();
+ * // Bypass the FX
+ * fx.bypass();
+ * 
+ * @decorator {@link notifyOnPropertyChanged}
+ */
 @notifyOnPropertyChanged
 export class Fx implements INotifyPropertyChanged<Fx> {
   @notify<Fx>('isBypassed')
@@ -70,6 +85,9 @@ export class Fx implements INotifyPropertyChanged<Fx> {
   }
 }
 
+/**
+ * An FX on a {@link Track}
+ */
 export class TrackFx extends Fx {
   constructor(public readonly trackNumber: number, public readonly fxNumber: number, sendOscMessage: ISendOscMessage) {
     super(`Fx ${fxNumber}`, `\\track\\${trackNumber}\\fx\\${fxNumber}`, sendOscMessage);

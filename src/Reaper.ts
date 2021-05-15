@@ -4,6 +4,10 @@
  * @packageDescription
  */
 
+/** 
+ * Contains classes for controlling Reaper via OSC
+ * @module
+ */
 import {ActionMessage, OscMessage} from './osc/Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
@@ -23,7 +27,7 @@ import {IEvent} from 'ste-events';
  * // Give the port a chance to open, then tell Reaper to start playback
  * setTimeout(() => {reaper.transport.play();}, 100);
  *
- * @decorator `notifyOnPropertyChanged`
+ * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
 export class Reaper implements INotifyPropertyChanged<Reaper> {
@@ -166,10 +170,16 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
 }
 
 export interface ReaperConfiguration {
+  /** The address to listen for Reaper OSC messages on */
   localAddress?: string;
+  /** The port to listen for Reaper OSC messages on */
   localPort?: number;
+  /** Number of FX per track */
   numberOfFx?: number;
+  /** Number of tracks per bank */
   numberOfTracks?: number;
+  /** The address to send Reaper OSC messages to */
   remoteAddress?: string;
+  /** The port to send Reaper OSC messages to */
   remotePort?: number;
 }

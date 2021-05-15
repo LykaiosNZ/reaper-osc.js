@@ -18,12 +18,12 @@
     "eslint": "^7.26.0",
     "tsc-watch": "^4.2.9",
     "typedoc": "^0.20.36",
-    "typedoc-plugin-markdown": "^3.8.1",
+    "typedoc-neo-theme": "^1.1.1",
     "typescript": "^4.2.4"
   },
   "scripts": {
     "build": "tsc",
     "run": "tsc-watch --onSuccess \"node ./ts-out/Example.js\"",
-    "docs": "typedoc --out ./docs  --exclude \"**/*.d.ts\" --exclude \"**/Example.ts\" --theme markdown ./src"
+    "docs": "typedoc --theme ./node_modules/typedoc-neo-theme/bin/default --plugin typedoc-neo-theme --out docs --exclude \"**\\Example.ts\" ./src"
   }
 }

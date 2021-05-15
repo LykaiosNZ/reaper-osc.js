@@ -1,3 +1,8 @@
+/** 
+ * Contains classes for controlling Reaper's transport
+ * @module
+ */
+
 import {IEvent} from 'ste-events';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
 import {BooleanMessageHandler, IMessageHandler} from './osc/Handlers';

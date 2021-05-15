@@ -1,3 +1,7 @@
+/** Contains classes for controlling tracks in Reaper
+ * @module
+ */
+
 import {IEvent} from 'ste-events';
 import {TrackFx} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
