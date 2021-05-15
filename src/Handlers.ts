@@ -1,7 +1,7 @@
 import {OscMessage} from './Messages';
-import {Track} from '../Tracks';
-import {Transport} from '../Transport';
-import {TrackFx} from '../Fx';
+import {Track} from './Tracks';
+import {Transport} from './Transport';
+import {TrackFx} from './Fx';
 
 export interface IMessageHandler {
   handle(message: OscMessage): void;

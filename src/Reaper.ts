@@ -1,19 +1,13 @@
-/**
- * A library for controlling Reaper via Open Sound Control (OSC)
- *
- * @packageDescription
- */
-
 /** 
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscMessage} from './osc/Messages';
+import {ActionMessage, OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import * as osc from 'osc';
-import {BooleanMessageHandler, IMessageHandler, TrackMessageHandler, TransportMessageHandler} from './osc/Handlers';
-import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
+import {BooleanMessageHandler, IMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
+import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {IEvent} from 'ste-events';
 
 /**
@@ -85,7 +79,7 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
   }
 
   /**
-   * Triggers the action 'Control surface: Refresh all surfaces' (Command ID: 41743)
+   * Triggers the action `Control surface: Refresh all surfaces` (Command ID: 41743)
    */
   public refreshControlSurfaces(): void {
     this.triggerAction(41743);

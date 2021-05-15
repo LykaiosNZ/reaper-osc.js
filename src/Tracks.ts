@@ -4,9 +4,9 @@
 
 import {IEvent} from 'ste-events';
 import {TrackFx} from './Fx';
-import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
-import {BooleanMessageHandler, StringMessageHandler, IMessageHandler, IntegerMessageHandler, TrackFxMessageHandler} from './osc/Handlers';
-import {BooleanMessage, IntegerMessage, ISendOscMessage, OscMessage, StringMessage, ToggleMessage} from './osc/Messages';
+import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
+import {BooleanMessageHandler, StringMessageHandler, IMessageHandler, IntegerMessageHandler, TrackFxMessageHandler} from './Handlers';
+import {BooleanMessage, IntegerMessage, ISendOscMessage, OscMessage, StringMessage, ToggleMessage} from './Messages';
 
 @notifyOnPropertyChanged
 export class Track implements INotifyPropertyChanged<Track> {

@@ -2,7 +2,7 @@
   "name": "reaper-osc",
   "version": "0.1.0",
   "description": "Controls Cockos Reaper using OSC",
-  "main": "reaper.js",
+  "main": "./ts-out/index.js",
   "repository": "https://github.com/LykaiosNZ/reaper-osc.js",
   "author": "Ben Simpson",
   "license": "MIT",

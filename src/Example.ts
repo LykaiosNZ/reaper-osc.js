@@ -1,4 +1,4 @@
-import {Reaper} from './Reaper';
+import {Reaper} from '.';
 
 const reaper = new Reaper({localPort: 49586, remotePort: 64234});
 

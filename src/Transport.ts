@@ -4,9 +4,9 @@
  */
 
 import {IEvent} from 'ste-events';
-import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
-import {BooleanMessageHandler, IMessageHandler} from './osc/Handlers';
-import {BooleanMessage, ISendOscMessage, OscMessage} from './osc/Messages';
+import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
+import {BooleanMessageHandler, IMessageHandler} from './Handlers';
+import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
 @notifyOnPropertyChanged
 export class Transport implements INotifyPropertyChanged<Transport> {

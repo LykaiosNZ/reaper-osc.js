@@ -3,9 +3,9 @@
  * @module
  */
 import {IEvent} from 'ste-events';
-import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './notify/Notify';
-import {BooleanMessageHandler, IMessageHandler, StringMessageHandler} from './osc/Handlers';
-import {BooleanMessage, ISendOscMessage, OscMessage} from './osc/Messages';
+import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
+import {BooleanMessageHandler, IMessageHandler, StringMessageHandler} from './Handlers';
+import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
 /**
  * A Reaper FX.
