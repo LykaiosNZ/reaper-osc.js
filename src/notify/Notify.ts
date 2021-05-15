@@ -20,7 +20,7 @@ export interface INotifyPropertyChanged<T> {
  * @param overrideName Use to specify a different property name in the event. Useful for notifying changes to a get-only property from a change to a private backing file
  */
 export function notify<T>(overrideName?: keyof T) {
-  return (target: any, propertyKey: string): void => {
+  return (target: Object, propertyKey: string): void => {
     // Create a new prop to hold the value
     const valueKey = `_${propertyKey}Notify`;
 

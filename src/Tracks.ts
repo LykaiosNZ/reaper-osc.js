@@ -108,8 +108,10 @@ export class Track implements INotifyPropertyChanged<Track> {
    * Renames the track
    * @param name The new name of the track
    * @example
+   * ```typescript
    * // Change the track name to 'Guitar'
    * track.rename('Guitar');
+   * ```
    */
   public rename(name: string): void {
     this._sendOscMessage(new StringMessage(this.oscAddress + '/name', name));

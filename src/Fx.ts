@@ -11,11 +11,12 @@ import {BooleanMessage, ISendOscMessage, OscMessage} from './osc/Messages';
  * A Reaper FX.
  * 
  * @example
+ * ```typescript
  * // Open an FX UI window
  * fx.openUi();
  * // Bypass the FX
  * fx.bypass();
- * 
+ * ```
  * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged

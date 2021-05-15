@@ -1,0 +1,19 @@
+{
+    "entryPoints": [
+        "./src"
+    ],
+    "out": "./docs",
+    "exclude": [
+        "**/*.d.ts",
+        "**/Example.ts"
+    ],
+    "plugin": "typedoc-neo-theme",
+    "theme": "./node_modules/typedoc-neo-theme/bin/default",
+    "highlightTheme": "github-light",
+    "source": [
+        {
+            "path": "https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/",
+            "line": "L"
+        }
+    ]
+}

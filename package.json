@@ -24,6 +24,6 @@
   "scripts": {
     "build": "tsc",
     "run": "tsc-watch --onSuccess \"node ./ts-out/Example.js\"",
-    "docs": "typedoc --theme ./node_modules/typedoc-neo-theme/bin/default --plugin typedoc-neo-theme --out docs --exclude \"**\\Example.ts\" ./src"
+    "docs": "typedoc --options ./typedoc.json"
   }
 }

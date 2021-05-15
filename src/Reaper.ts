@@ -20,13 +20,14 @@ import {IEvent} from 'ste-events';
  * Allows control of an instance of Reaper via OSC.
  *
  * @example
+ * ```typescript
  * // Create an instance of Reaper using default settings
  * const reaper = new Reaper();
  * // Start OSC
  * reaper.startOsc();
  * // Give the port a chance to open, then tell Reaper to start playback
  * setTimeout(() => {reaper.transport.play();}, 100);
- *
+ *```
  * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
@@ -130,11 +131,12 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
    * Trigger a Reaper action
    * @param {number | string} commandId
    * @example
+   * ```typescript
    * // Trigger action 'Track: Toggle mute for master track'
    * reaper.triggerAction(14);
-   * @example
    * // Trigger SWS Extension action 'SWS: Set all master track outputs muted'
    * reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
+   * ```
    */
   public triggerAction(commandId: number | string): void {
     this.sendOscMessage(new ActionMessage(commandId));
