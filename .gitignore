@@ -1,4 +1,4 @@
-node_modules
-ts-out
+node_modules/
+ts-out/
 
-.vscode
+.vscode/
