@@ -1,4 +1,4 @@
-package-lock.json
-node_modules/
+node_modules
+ts-out
 
-test.js
+.vscode

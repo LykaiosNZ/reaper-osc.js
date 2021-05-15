@@ -3,7 +3,7 @@
   "bracketSpacing": false,
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
-  "printWidth": 200,
+  "printWidth": 160,
   "proseWrap": "preserve",
   "requirePragma": false,
   "semi": true,
