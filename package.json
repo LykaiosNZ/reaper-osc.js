@@ -2,7 +2,7 @@
   "name": "reaper-osc",
   "version": "0.1.0",
   "description": "Controls Cockos Reaper using OSC",
-  "main": "./ts-out/index.js",
+  "main": "./dist/index.js",
   "repository": "https://github.com/LykaiosNZ/reaper-osc.js",
   "author": "Ben Simpson",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "eslint": "^7.26.0",
+    "prettier": "^2.3.0",
     "tsc-watch": "^4.2.9",
     "typedoc": "^0.20.36",
     "typedoc-neo-theme": "^1.1.1",
@@ -23,7 +24,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "run": "tsc-watch --onSuccess \"node ./ts-out/Example.js\"",
+    "watch": "tsc -w",
     "docs": "typedoc --options ./typedoc.json"
-  }
+  },
+  "files": ["./dist/**/*"]
 }

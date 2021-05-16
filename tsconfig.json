@@ -1,12 +1,11 @@
 {
-    "extends": "@tsconfig/node12/tsconfig.json",
-    "compilerOptions": {
-        "types": ["node"],
-        "outDir": "ts-out/",
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "declaration": true,
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
+  "extends": "@tsconfig/node12/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "declaration": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

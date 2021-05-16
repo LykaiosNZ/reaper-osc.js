@@ -1,4 +1,3 @@
 node_modules/
-ts-out/
-
 .vscode/
+dist/

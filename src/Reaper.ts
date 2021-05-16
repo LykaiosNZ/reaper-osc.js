@@ -41,19 +41,12 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport = new Transport(message => this.sendOscMessage(message));
 
-  constructor({
-    localAddress = '127.0.0.1',
-    localPort = 9000,
-    remoteAddress = '127.0.0.1',
-    remotePort = 8000,
-    numberOfTracks = 8,
-    numberOfFx = 8,
-  }: ReaperConfiguration) {
+  constructor(config: ReaperConfiguration = new ReaperConfiguration()) {
     this._osc = new osc.UDPPort({
-      localAddress: localAddress,
-      localPort: localPort,
-      remoteAddress: remoteAddress,
-      remotePort: remotePort,
+      localAddress: config.localAddress,
+      localPort: config.localPort,
+      remoteAddress: config.remoteAddress,
+      remotePort: config.remotePort,
       broadcast: true,
       metadata: true,
     });
@@ -61,8 +54,8 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
     this.initOsc();
     this.initHandlers();
 
-    for (let i = 1; i < numberOfTracks; i++) {
-      this._tracks[i] = new Track(i, numberOfFx, this.sendOscMessage);
+    for (let i = 1; i < config.numberOfTracks; i++) {
+      this._tracks[i] = new Track(i, config.numberOfFx, this.sendOscMessage);
     }
   }
 
@@ -165,17 +158,17 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
   }
 }
 
-export interface ReaperConfiguration {
+export class ReaperConfiguration {
   /** The address to listen for Reaper OSC messages on */
-  localAddress?: string;
+  localAddress = '127.0.0.1';
   /** The port to listen for Reaper OSC messages on */
-  localPort?: number;
+  localPort = 9000;
   /** Number of FX per track */
-  numberOfFx?: number;
+  numberOfFx = 8;
   /** Number of tracks per bank */
-  numberOfTracks?: number;
+  numberOfTracks = 8;
   /** The address to send Reaper OSC messages to */
-  remoteAddress?: string;
+  remoteAddress = '127.0.0.1';
   /** The port to send Reaper OSC messages to */
-  remotePort?: number;
+  remotePort = 8000;
 }
