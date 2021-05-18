@@ -75,7 +75,32 @@
 				<a href="#reaper-osc" id="reaper-osc" style="color: inherit; text-decoration: none;">
 					<h1>reaper-osc</h1>
 				</a>
-				<p>A JavaScript library for controlling Reaper using OSC.</p>
+				<p>A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC).</p>
+				<a href="#basic-usage" id="basic-usage" style="color: inherit; text-decoration: none;">
+					<h2>Basic usage</h2>
+				</a>
+				<pre><code class="language-javascript"><span style="color: #D73A49">import</span><span style="color: #24292E"> { Reaper } </span><span style="color: #D73A49">from</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;reaper-osc&quot;</span><span style="color: #24292E">;</span>
+
+<span style="color: #D73A49">var</span><span style="color: #24292E"> reaper </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Reaper</span><span style="color: #24292E">();</span>
+
+<span style="color: #6A737D">// Start listening for messages</span>
+<span style="color: #24292E">reaper.</span><span style="color: #6F42C1">startOsc</span><span style="color: #24292E">();</span>
+
+<span style="color: #6A737D">// Subscribe to state changes</span>
+<span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">onPropertyChanged</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;isMuted&quot;</span><span style="color: #24292E">, () </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
+<span style="color: #24292E">  console.</span><span style="color: #6F42C1">log</span><span style="color: #24292E">(</span>
+<span style="color: #24292E">    </span><span style="color: #032F62">`Track 1 was ${</span><span style="color: #24292E">reaper</span><span style="color: #032F62">.</span><span style="color: #24292E">tracks</span><span style="color: #032F62">[</span><span style="color: #005CC5">1</span><span style="color: #032F62">].</span><span style="color: #24292E">isMuted</span><span style="color: #032F62"> </span><span style="color: #D73A49">?</span><span style="color: #032F62"> </span><span style="color: #032F62">&quot;muted&quot;</span><span style="color: #032F62"> </span><span style="color: #D73A49">:</span><span style="color: #032F62"> </span><span style="color: #032F62">&quot;unmuted&quot;}`</span>
+<span style="color: #24292E">  );</span>
+<span style="color: #24292E">});</span>
+
+<span style="color: #6A737D">// Wait for the port to open, then start sending commands</span>
+<span style="color: #24292E">reaper.</span><span style="color: #6F42C1">onReady</span><span style="color: #24292E">(() </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
+<span style="color: #24292E">  reaper.transport.</span><span style="color: #6F42C1">play</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">  </span>
+<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">mute</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">unmute</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">});</span>
+</code></pre>
 			</div>
 			<!--{&quot;options&quot;:&quot;./typedoc.json&quot;,&quot;tsconfig&quot;:&quot;C:\\repos\\reaper-osc.js&quot;,&quot;entryPoints&quot;:[&quot;./src/index.ts&quot;],&quot;exclude&quot;:[&quot;**/*.d.ts&quot;,&quot;**/Example.ts&quot;],&quot;externalPattern&quot;:[&quot;**/node_modules/**&quot;],&quot;excludeExternals&quot;:true,&quot;excludeNotDocumented&quot;:false,&quot;excludeInternal&quot;:false,&quot;excludePrivate&quot;:true,&quot;excludeProtected&quot;:false,&quot;disableSources&quot;:false,&quot;includes&quot;:&quot;&quot;,&quot;media&quot;:&quot;&quot;,&quot;watch&quot;:false,&quot;preserveWatchOutput&quot;:false,&quot;emit&quot;:false,&quot;out&quot;:&quot;./docs&quot;,&quot;json&quot;:&quot;&quot;,&quot;pretty&quot;:true,&quot;theme&quot;:&quot;./node_modules/typedoc-neo-theme/bin/default&quot;,&quot;highlightTheme&quot;:&quot;github-light&quot;,&quot;name&quot;:&quot;&quot;,&quot;includeVersion&quot;:false,&quot;excludeTags&quot;:[],&quot;readme&quot;:&quot;&quot;,&quot;defaultCategory&quot;:&quot;Other&quot;,&quot;categoryOrder&quot;:[],&quot;categorizeByGroup&quot;:true,&quot;gitRevision&quot;:&quot;&quot;,&quot;gitRemote&quot;:&quot;origin&quot;,&quot;gaID&quot;:&quot;&quot;,&quot;gaSite&quot;:&quot;auto&quot;,&quot;hideGenerator&quot;:false,&quot;toc&quot;:[],&quot;disableOutputCheck&quot;:false,&quot;help&quot;:false,&quot;version&quot;:false,&quot;showConfig&quot;:false,&quot;plugin&quot;:[&quot;typedoc-neo-theme&quot;],&quot;logger&quot;:&quot;console&quot;,&quot;logLevel&quot;:1,&quot;listInvalidSymbolLinks&quot;:false,&quot;links&quot;:[{&quot;label&quot;:&quot;Source&quot;,&quot;url&quot;:&quot;https://github.com/LykaiosNZ/reaper-osc.js/&quot;}],&quot;source&quot;:[{&quot;path&quot;:&quot;https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/&quot;,&quot;line&quot;:&quot;L&quot;}]}-->
 		</div>
