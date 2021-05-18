@@ -2,7 +2,6 @@
  * Contains classes for controlling FX in Reaper
  * @module
  */
-import {IEvent} from 'ste-events';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {BooleanMessageHandler, IMessageHandler, StringMessageHandler} from './Handlers';
 import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
@@ -20,7 +19,7 @@ import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
  * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
-export class Fx implements INotifyPropertyChanged<Fx> {
+export class Fx implements INotifyPropertyChanged {
   @notify<Fx>('isBypassed')
   private _isBypassed = false;
 
@@ -65,6 +64,11 @@ export class Fx implements INotifyPropertyChanged<Fx> {
     return this._name;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onPropertyChanged(property: string, callback: () => void): void {
+    throw new Error('not implemented');
+  }
+
   /** Open the UI of the FX */
   openUi(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', true));
@@ -79,10 +83,6 @@ export class Fx implements INotifyPropertyChanged<Fx> {
   /** Unbypass the FX */
   unbypass(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/bypass', true)); // true to unbypass
-  }
-
-  public get onPropertyChanged(): IEvent<Fx, string> {
-    throw new Error('not implemented');
   }
 }
 

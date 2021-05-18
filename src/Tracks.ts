@@ -1,15 +1,13 @@
 /** Contains classes for controlling tracks in Reaper
  * @module
  */
-
-import {IEvent} from 'ste-events';
 import {TrackFx} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {BooleanMessageHandler, StringMessageHandler, IMessageHandler, IntegerMessageHandler, TrackFxMessageHandler} from './Handlers';
 import {BooleanMessage, IntegerMessage, ISendOscMessage, OscMessage, StringMessage, ToggleMessage} from './Messages';
 
 @notifyOnPropertyChanged
-export class Track implements INotifyPropertyChanged<Track> {
+export class Track implements INotifyPropertyChanged {
   @notify<Track>('isMuted')
   private _isMuted = false;
 
@@ -76,7 +74,8 @@ export class Track implements INotifyPropertyChanged<Track> {
     return this._name;
   }
 
-  public get onPropertyChanged(): IEvent<Track, string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onPropertyChanged(property: string, callback: () => void): void {
     throw new Error('not implemented');
   }
 

@@ -1,4 +1,4 @@
-/** 
+/**
  * Contains classes for controlling Reaper via OSC
  * @module
  */
@@ -8,7 +8,7 @@ import {Transport} from './Transport';
 import * as osc from 'osc';
 import {BooleanMessageHandler, IMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {IEvent} from 'ste-events';
+import {SignalDispatcher} from 'ste-signals';
 
 /**
  * Allows control of an instance of Reaper via OSC.
@@ -25,19 +25,18 @@ import {IEvent} from 'ste-events';
  * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
-export class Reaper implements INotifyPropertyChanged<Reaper> {
+export class Reaper implements INotifyPropertyChanged {
   @notify<Reaper>('isMetronomeEnabled')
   private _isMetronomeEnabled = false;
 
-  @notify<Reaper>('isReady')
-  private _isReady = false;
-
   private readonly _handlers: IMessageHandler[] = [];
+  private _isReady = false;
 
   // No type defs for osc libary so don't have much choice here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _osc: any;
 
+  private readonly _readyDispatcher = new SignalDispatcher();
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport = new Transport(message => this.sendOscMessage(message));
 
@@ -55,7 +54,7 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
     this.initHandlers();
 
     for (let i = 1; i < config.numberOfTracks; i++) {
-      this._tracks[i] = new Track(i, config.numberOfFx, this.sendOscMessage);
+      this._tracks[i] = new Track(i, config.numberOfFx, (message) => this.sendOscMessage(message));
     }
   }
 
@@ -67,8 +66,14 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
     return this._isReady;
   }
 
-  public get onPropertyChanged(): IEvent<Reaper, string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onPropertyChanged(property: string, callback: () => void): void {
     throw new Error('not implemented');
+  }
+
+  public onReady(callback: () => void): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this._readyDispatcher.sub(() => callback());
   }
 
   /**
@@ -98,7 +103,6 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
   /** Stop listening for OSC messages */
   public stopOsc(): void {
     this._osc.close();
-    this._isReady = false;
   }
 
   /** Toggle the metronome on or off */
@@ -139,8 +143,9 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
 
   private initOsc() {
     this._osc.on('ready', () => {
-      console.debug('OSC ready');
       this._isReady = true;
+      console.debug('OSC ready');
+      this._readyDispatcher.dispatch();
     });
 
     this._osc.on('error', (err: Error) => {
@@ -148,12 +153,19 @@ export class Reaper implements INotifyPropertyChanged<Reaper> {
     });
 
     this._osc.on('message', (message: OscMessage) => {
+
+      //console.log('osc', message);
+
       // TODO: Figure out a better way to handle this
       message = new OscMessage(message.address, message.args);
 
       this._handlers.forEach(handler => {
         handler.handle(message);
       });
+    });
+
+    this._osc.on('close', () => {
+      console.debug('OSC stopped');
     });
   }
 }

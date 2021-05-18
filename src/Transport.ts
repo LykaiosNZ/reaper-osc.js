@@ -1,15 +1,13 @@
-/** 
+/**
  * Contains classes for controlling Reaper's transport
  * @module
  */
-
-import {IEvent} from 'ste-events';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {BooleanMessageHandler, IMessageHandler} from './Handlers';
 import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
 @notifyOnPropertyChanged
-export class Transport implements INotifyPropertyChanged<Transport> {
+export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isFastForwarding')
   private _isFastForwarding = false;
 
@@ -67,6 +65,11 @@ export class Transport implements INotifyPropertyChanged<Transport> {
     return this._isRepeatEnabled;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onPropertyChanged(property: string, callback: () => void): void {
+    throw new Error('not implemented');
+  }
+
   /** Toggle pause */
   public pause(): void {
     this._sendOscMessage(new OscMessage('/pause'));
@@ -117,9 +120,5 @@ export class Transport implements INotifyPropertyChanged<Transport> {
   /** Toggle repeat on or off */
   public toggleRepeat(): void {
     this._sendOscMessage(new OscMessage('/repeaer'));
-  }
-
-  public get onPropertyChanged(): IEvent<Transport, string> {
-    throw new Error('not implemented');
   }
 }
