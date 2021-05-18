@@ -3,9 +3,9 @@ A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC).
 
 ## Basic usage
 ```javascript
-import { Reaper, ReaperConfiguration } from "reaper-osc";
+import { Reaper } from "reaper-osc";
 
-var config = new ReaperConfiguration();
+var reaper = new Reaper();
 
 // Start listening for messages
 reaper.startOsc();
