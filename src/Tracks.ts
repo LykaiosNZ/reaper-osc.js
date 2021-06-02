@@ -6,6 +6,7 @@ import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify'
 import {BooleanMessageHandler, StringMessageHandler, IMessageHandler, IntegerMessageHandler, TrackFxMessageHandler} from './Handlers';
 import {BooleanMessage, IntegerMessage, ISendOscMessage, OscMessage, StringMessage, ToggleMessage} from './Messages';
 
+/** A Reaper track */
 @notifyOnPropertyChanged
 export class Track implements INotifyPropertyChanged {
   @notify<Track>('isMuted')
@@ -30,6 +31,11 @@ export class Track implements INotifyPropertyChanged {
   private readonly _handlers: IMessageHandler[] = [];
   private readonly _sendOscMessage: ISendOscMessage;
 
+  /**
+   * @param trackNumber The track's number in the current bank
+   * @param numberOfFx The number of FX per FX bank
+   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   */
   constructor(public readonly trackNumber: number, numberOfFx: number, sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
 
@@ -45,22 +51,27 @@ export class Track implements INotifyPropertyChanged {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/select', false));
   }
 
+  /** The track's current FX back */
   public get fx(): TrackFx[] {
     return this._fx;
   }
 
+  /** Indicates whether the track is muted */
   public get isMuted(): boolean {
     return this._isMuted;
   }
 
+  /** Indicates whether the track is armed for recording */
   public get isRecordArmed(): boolean {
     return this._isRecordArmed;
   }
 
+  /** Indicates whether the track is selected*/
   public get isSelected(): boolean {
     return this._isSelected;
   }
 
+  /** Indicates whether the track is soloed */
   public get isSoloed(): boolean {
     return this._isSoloed;
   }
@@ -70,6 +81,7 @@ export class Track implements INotifyPropertyChanged {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/mute', true));
   }
 
+  /** The track name */
   public get name(): string {
     return this._name;
   }
@@ -79,10 +91,10 @@ export class Track implements INotifyPropertyChanged {
     throw new Error('not implemented');
   }
 
-  public get oscAddress(): string {
-    return `/track/${this.trackNumber}`;
-  }
-
+  /**
+   *  Receive and handle an OSC message
+   * @param message The message to be handled
+   */
   public receive(message: OscMessage): void {
     this._handlers.forEach(handler => {
       handler.handle(message);
@@ -94,6 +106,7 @@ export class Track implements INotifyPropertyChanged {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/recarm', true));
   }
 
+  /** Indicates the record monitoring mode */
   public get recordMonitoring(): RecordMonitoringMode {
     return this._recordMonitoring;
   }
@@ -175,10 +188,18 @@ export class Track implements INotifyPropertyChanged {
       new TrackFxMessageHandler(fxNumber => this._fx[fxNumber]),
     );
   }
+
+  /** The OSC address of the track */
+  private get oscAddress(): string {
+    return `/track/${this.trackNumber}`;
+  }
 }
 
 export enum RecordMonitoringMode {
+  /** Record monitoring disabled */
   OFF = 0,
+  /** Record monitoring enabled */
   ON = 1,
+  /** Tape auto style */
   AUTO = 2,
 }

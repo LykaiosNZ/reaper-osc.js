@@ -6,7 +6,11 @@ import {SimpleEventDispatcher} from 'ste-simple-events';
 
 /** Allows a subscriber to be notified of changes to the object's properties */
 export interface INotifyPropertyChanged {
-  /** An event that can be subscribed to for property change notifications */
+  /**
+   * An event that can be subscribed to for property change notifications
+   * @param property The name of the property to subscribe to
+   * @param callback A callback to be called when the state of the specified property changes
+   */
   onPropertyChanged(property: string, callback: () => void): void;
 }
 
@@ -35,8 +39,7 @@ export function notify<T>(overrideName?: keyof T) {
 
         this[valueKey] = value;
 
-        if (this._propertyChanged === undefined)
-        {
+        if (this._propertyChanged === undefined) {
           return;
         }
 

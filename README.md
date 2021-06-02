@@ -1,5 +1,8 @@
 # reaper-osc
-A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC).
+A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC). 
+
+## API Reference
+You can find the API documentation [here](https://lykaiosnz.github.io/reaper-osc.js/)
 
 ## Basic usage
 ```javascript

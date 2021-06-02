@@ -3,11 +3,19 @@ import {Track} from './Tracks';
 import {Transport} from './Transport';
 import {TrackFx} from './Fx';
 
+/** An OSC message handler */
 export interface IMessageHandler {
+  /**
+   *  Handle an OSC message
+   * @param message The message to handle
+   */
   handle(message: OscMessage): void;
 }
 
-/** Routes messages to the appropriate track */
+/** 
+ * Routes messages to the appropriate track 
+ * @param trackSelector A function that can be used to get a track
+ * */
 export class TrackMessageHandler implements IMessageHandler {
   constructor(private readonly trackSelector: (trackNumber: number) => Track | null) {}
 
@@ -59,6 +67,11 @@ export class TrackFxMessageHandler implements IMessageHandler {
   }
 }
 
+/**
+ * Handles an OSC message containing a single boolean value (0 or 1)
+ * @param address The address of the message to handle
+ * @param callback The callback to be called when a message with the specified OSC address is received
+ */
 export class BooleanMessageHandler implements IMessageHandler {
   private readonly _callback: (value: boolean) => void;
 

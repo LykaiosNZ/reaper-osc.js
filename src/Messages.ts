@@ -3,16 +3,27 @@ export interface ISendOscMessage {
 }
 
 export enum OscArgumentType {
+  /** 32-bit Integer */
   INT = 'i',
+  /** 64-bit Integer */
   LONG = 'h',
+  /** 32-bit Floating Point */
   FLOAT = 'f',
+  /** 64-bit Floating Point */
   DOUBLE = 'd',
+  /** String */
   STRING = 's',
+  /** Single Character */
   CHAR = 'c',
+  /** Binary blob */
   BLOB = 'b',
+  /** True. No bytes are allocated in the argument data */
   TRUE = 'T',
+  /** False. No bytes are allocated in the argument data */
   FALSE = 'F',
+  /** Null. No bytes are allocated in the argument data */
   NULL = 'N',
+  /** Impulse aka bang. Used for event triggers. No bytes are allocated in the argument data */
   IMPULSE = 'I',
   COLOR = 'r',
   MIDI = 'm',

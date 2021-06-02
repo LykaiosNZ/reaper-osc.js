@@ -6,6 +6,7 @@ import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify'
 import {BooleanMessageHandler, IMessageHandler} from './Handlers';
 import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
+/** The Reaper transport */
 @notifyOnPropertyChanged
 export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isFastForwarding')
@@ -37,30 +38,39 @@ export class Transport implements INotifyPropertyChanged {
 
   private readonly _sendOscMessage: ISendOscMessage;
 
+  /**
+   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   */
   constructor(sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
   }
 
+  /** Indicates whether playback is active  */
   public get isPlaying(): boolean {
     return this._isPlaying;
   }
 
+  /** Indicates whether playback is stopped */
   public get isStopped(): boolean {
     return this._isStopped;
   }
 
+  /** Indicates whether recording is active */
   public get isRecording(): boolean {
     return this._isRecording;
   }
 
+  /** Indicates whether rewind is active */
   public get isRewinding(): boolean {
     return this._isRewinding;
   }
 
+  /** Indicates whether fast-foward is active */
   public get isFastForwarding(): boolean {
     return this._isFastForwarding;
   }
 
+  /** Indicates whether repeat is enabled */
   public get isRepeatEnabled(): boolean {
     return this._isRepeatEnabled;
   }
@@ -80,7 +90,10 @@ export class Transport implements INotifyPropertyChanged {
     this._sendOscMessage(new OscMessage('/play'));
   }
 
-  // Receive an OSC message
+  /**
+   *  Receive and handle an OSC message
+   * @param message The message to be handled
+   */
   public receive(message: OscMessage): void {
     this._handlers.forEach(handler => {
       handler.handle(message);
