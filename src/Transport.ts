@@ -119,6 +119,6 @@ export class Transport implements INotifyPropertyChanged {
 
   /** Toggle repeat on or off */
   public toggleRepeat(): void {
-    this._sendOscMessage(new OscMessage('/repeaer'));
+    this._sendOscMessage(new OscMessage('/repeat'));
   }
 }
