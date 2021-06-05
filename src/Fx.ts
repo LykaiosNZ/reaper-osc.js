@@ -29,10 +29,14 @@ export class Fx implements INotifyPropertyChanged {
   @notify<Fx>('name')
   private _name: string;
 
+  @notify<Fx>('preset')
+  private _preset = 'No preset';
+
   protected readonly _handlers: IMessageHandler[] = [
     new StringMessageHandler(this.oscAddress + '/name', value => (this._name = value)),
     new BooleanMessageHandler(this.oscAddress + '/bypass', value => (this._isBypassed = !value)), // Reaper sends 0/false when the track is bypassed
     new BooleanMessageHandler(this.oscAddress + '/openui', value => (this._isUiOpen = value)),
+    new StringMessageHandler(this.oscAddress + '/preset', value => (this._preset = value))
   ];
 
   protected readonly _sendOscMessage: ISendOscMessage;
@@ -52,16 +56,24 @@ export class Fx implements INotifyPropertyChanged {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', false));
   }
 
+  /** Indicates whether the FX is bypassed */
   public get isBypassed(): boolean {
     return this._isBypassed;
   }
 
+  /** Indicates whether the FX UI is open */
   public get isUiOpen(): boolean {
     return this._isUiOpen;
   }
 
+  /** The name of the FX */
   public get name(): string {
     return this._name;
+  }
+
+  /** Load the next FX preset */
+  public nextPreset(): void {
+    this._sendOscMessage(new OscMessage(this.oscAddress + '/preset+'));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,8 +82,18 @@ export class Fx implements INotifyPropertyChanged {
   }
 
   /** Open the UI of the FX */
-  openUi(): void {
+  public openUi(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', true));
+  }
+
+  /** The name of the current preset, if any */
+  public get preset(): string {
+    return this._preset;
+  }
+
+  /** Load the previous FX preset */
+  public previousPreset(): void {
+    this._sendOscMessage(new OscMessage(this.oscAddress + '/preset-'));
   }
 
   public receive(message: OscMessage): void {
@@ -81,7 +103,7 @@ export class Fx implements INotifyPropertyChanged {
   }
 
   /** Unbypass the FX */
-  unbypass(): void {
+  public unbypass(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/bypass', true)); // true to unbypass
   }
 }
