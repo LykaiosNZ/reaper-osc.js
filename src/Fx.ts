@@ -113,6 +113,6 @@ export class Fx implements INotifyPropertyChanged {
  */
 export class TrackFx extends Fx {
   constructor(public readonly trackNumber: number, public readonly fxNumber: number, sendOscMessage: ISendOscMessage) {
-    super(`Fx ${fxNumber}`, `\\track\\${trackNumber}\\fx\\${fxNumber}`, sendOscMessage);
+    super(`Fx ${fxNumber}`, `/track/${trackNumber}/fx/${fxNumber}`, sendOscMessage);
   }
 }
