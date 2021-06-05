@@ -57,7 +57,7 @@ export class Track implements INotifyPropertyChanged {
   constructor(public readonly trackNumber: number, numberOfFx: number, sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
 
-    for (let i = 1; i < numberOfFx; i++) {
+    for (let i = 1; i <= numberOfFx; i++) {
       this._fx[i] = new TrackFx(trackNumber, i, sendOscMessage);
     }
 

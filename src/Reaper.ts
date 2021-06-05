@@ -53,7 +53,7 @@ export class Reaper implements INotifyPropertyChanged {
     this.initOsc();
     this.initHandlers();
 
-    for (let i = 1; i < config.numberOfTracks; i++) {
+    for (let i = 1; i <= config.numberOfTracks; i++) {
       this._tracks[i] = new Track(i, config.numberOfFx, (message) => this.sendOscMessage(message));
     }
   }
