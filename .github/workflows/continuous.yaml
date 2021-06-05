@@ -25,4 +25,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
       - run: yarn build
-      - run: yarn test
+      - run: yarn test --ci
