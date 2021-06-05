@@ -34,7 +34,9 @@
     "watch": "tsc -w",
     "docs": "typedoc --options ./typedoc.json",
     "run": "tsc && node .",
-    "test": "tsc && jest"
+    "test": "tsc && jest",
+    "checkFormatting": "prettier --check ./src",
+    "format": "prettier --write ./src"
   },
   "files": [
     "./dist/**/*"
