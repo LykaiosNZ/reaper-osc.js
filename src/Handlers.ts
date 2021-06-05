@@ -128,3 +128,37 @@ export class StringMessageHandler implements IMessageHandler {
     }
   }
 }
+
+export class FloatMessageHandler implements IMessageHandler {
+  private readonly _callback: (value: number) => void;
+
+  constructor(public readonly address: string, callback: (value: number) => void) {
+    this.address = address;
+    this._callback = callback;
+  }
+
+  public handle(message: OscMessage): void {
+    if (message.address === this.address) {
+      const messageValue = message.args[0].value;
+
+      let floatValue: number;
+
+      switch (typeof messageValue) {
+        case 'number':
+          floatValue = messageValue;
+          break;
+        case 'string':
+          floatValue = parseFloat(messageValue);
+
+          if (isNaN(floatValue)) {
+            throw new Error('Expected an integer');
+          }
+          break;
+        default:
+          throw new Error('Expected an integer');
+      }
+
+      this._callback(floatValue);
+    }
+  }
+}
