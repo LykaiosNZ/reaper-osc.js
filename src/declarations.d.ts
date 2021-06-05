@@ -1,1 +1,1 @@
-declare module "osc";
+declare module 'osc';

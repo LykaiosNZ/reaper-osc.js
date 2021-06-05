@@ -57,7 +57,7 @@ export class Reaper implements INotifyPropertyChanged {
     this.initHandlers();
 
     for (let i = 0; i < config.numberOfTracks; i++) {
-      this._tracks[i] = new Track(i+1, config.numberOfFx, message => this.sendOscMessage(message));
+      this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
     }
   }
 
@@ -138,7 +138,7 @@ export class Reaper implements INotifyPropertyChanged {
 
   private initHandlers() {
     this._handlers.push(
-      new TrackMessageHandler(trackNumber => (this._tracks[trackNumber-1] !== undefined ? this._tracks[trackNumber-1] : null)),
+      new TrackMessageHandler(trackNumber => (this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null)),
       new TransportMessageHandler(this._transport),
       new BooleanMessageHandler('/click', value => (this._isMetronomeEnabled = value)),
     );

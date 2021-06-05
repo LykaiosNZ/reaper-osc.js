@@ -35,8 +35,7 @@ export function notify<T>(overrideName?: keyof T) {
 
         this[valueKey] = value;
 
-        if (this._propertyChanged === undefined)
-        {
+        if (this._propertyChanged === undefined) {
           return;
         }
 
