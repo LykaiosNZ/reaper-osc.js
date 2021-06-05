@@ -81,10 +81,14 @@ export class Transport implements INotifyPropertyChanged {
   }
 
   // Receive an OSC message
-  public receive(message: OscMessage): void {
-    this._handlers.forEach(handler => {
-      handler.handle(message);
-    });
+  public receive(message: OscMessage): boolean {
+    for (const handler of this._handlers) {
+      if (handler.handle(message)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** Toggle recording */

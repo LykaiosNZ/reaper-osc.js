@@ -8,7 +8,7 @@ import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
 /**
  * A Reaper FX.
- * 
+ *
  * @example
  * ```typescript
  * // Open an FX UI window
@@ -36,7 +36,7 @@ export class Fx implements INotifyPropertyChanged {
     new StringMessageHandler(this.oscAddress + '/name', value => (this._name = value)),
     new BooleanMessageHandler(this.oscAddress + '/bypass', value => (this._isBypassed = !value)), // Reaper sends 0/false when the track is bypassed
     new BooleanMessageHandler(this.oscAddress + '/openui', value => (this._isUiOpen = value)),
-    new StringMessageHandler(this.oscAddress + '/preset', value => (this._preset = value))
+    new StringMessageHandler(this.oscAddress + '/preset', value => (this._preset = value)),
   ];
 
   protected readonly _sendOscMessage: ISendOscMessage;
@@ -96,10 +96,14 @@ export class Fx implements INotifyPropertyChanged {
     this._sendOscMessage(new OscMessage(this.oscAddress + '/preset-'));
   }
 
-  public receive(message: OscMessage): void {
-    this._handlers.forEach(handler => {
-      handler.handle(message);
-    });
+  public receive(message: OscMessage): boolean {
+    for (const handler of this._handlers) {
+      if (handler.handle(message)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** Unbypass the FX */

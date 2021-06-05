@@ -98,7 +98,7 @@ export class IntegerMessage extends OscMessage {
 
 export class FloatMessage extends OscMessage {
   constructor(address: string, value: number) {
-    const args = [new OscArgument(OscArgumentType.FLOAT, value)]
+    const args = [new OscArgument(OscArgumentType.FLOAT, value)];
 
     super(address, args);
   }

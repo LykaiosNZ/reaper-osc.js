@@ -122,10 +122,14 @@ export class Track implements INotifyPropertyChanged {
     return this._panMode;
   }
 
-  public receive(message: OscMessage): void {
-    this._handlers.forEach(handler => {
-      handler.handle(message);
-    });
+  public receive(message: OscMessage): boolean {
+    for (const handler of this._handlers) {
+      if (handler.handle(message)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** Arm the track for recording */
@@ -279,7 +283,7 @@ export class Track implements INotifyPropertyChanged {
       new BooleanMessageHandler(this.oscAddress + '/recarm', value => (this._isRecordArmed = value)),
       new IntegerMessageHandler(this.oscAddress + '/monitor', value => (this._recordMonitoring = value)),
       new BooleanMessageHandler(this.oscAddress + '/select', value => (this._isSelected = value)),
-      new TrackFxMessageHandler(fxNumber => this._fx[fxNumber]),
+      new TrackFxMessageHandler(fxNumber => (this._fx[fxNumber] !== undefined ? this._fx[fxNumber] : null)),
       new FloatMessageHandler(this.oscAddress + '/pan', value => (this._pan = value)),
       new FloatMessageHandler(this.oscAddress + '/pan2', value => (this._pan2 = value)),
       new StringMessageHandler(this.oscAddress + '/panmode', value => (this._panMode = value)),
@@ -287,7 +291,7 @@ export class Track implements INotifyPropertyChanged {
       new FloatMessageHandler(this.oscAddress + '/volume/db', value => (this._volumeDb = value)),
       new FloatMessageHandler(this.oscAddress + '/vu', value => (this._vu = value)),
       new FloatMessageHandler(this.oscAddress + '/vu/L', value => (this._vuLeft = value)),
-      new FloatMessageHandler(this.oscAddress + '/vu/R', value => (this._vuRight = value))
+      new FloatMessageHandler(this.oscAddress + '/vu/R', value => (this._vuRight = value)),
     );
   }
 }
