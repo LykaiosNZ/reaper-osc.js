@@ -1,11 +1,14 @@
 import {BoolArgument, BooleanMessage, OscMessage} from '../dist/Messages';
 import {Transport} from '../dist/Transport';
 
-describe('message handling', () => {
+describe('properties set by messages', () => {
+  let transport : Transport;
+
+  beforeEach(() => {
+    transport =  new Transport(() => null);
+  });
+
   test.each([true, false])('forward message sets isFastForwarding: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/forward', value);
 
     transport.receive(message);
@@ -14,9 +17,6 @@ describe('message handling', () => {
   });
 
   test.each([true, false])('play message sets isPlaying: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/play', value);
 
     transport.receive(message);
@@ -25,9 +25,6 @@ describe('message handling', () => {
   });
 
   test.each([true, false])('record message sets isRecording: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/record', value);
 
     transport.receive(message);
@@ -36,9 +33,6 @@ describe('message handling', () => {
   });
 
   test.each([true, false])('repeat message sets isRepeatEnabled: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/repeat', value);
 
     transport.receive(message);
@@ -47,9 +41,6 @@ describe('message handling', () => {
   });
 
   test.each([true, false])('rewind message sets isRewinding: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/rewind', value);
 
     transport.receive(message);
@@ -58,9 +49,6 @@ describe('message handling', () => {
   });
 
   test.each([true, false])('stop message sets isStopped: %p', value => {
-    const transport = new Transport(() => {
-      return;
-    });
     const message = new BooleanMessage('/stop', value);
 
     transport.receive(message);
@@ -69,7 +57,7 @@ describe('message handling', () => {
   });
 });
 
-describe('methods', () => {
+describe('methods send expected messages', () => {
   test('pause sends expected message', done => {
     const transport = new Transport((message: OscMessage) => {
       try {

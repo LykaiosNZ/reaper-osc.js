@@ -29,6 +29,7 @@ export class Track implements INotifyPropertyChanged {
   @notify<Track>('pan2')
   private _pan2 = 0;
 
+  // TODO: Find out what the modes are - should this be an enum value?
   @notify<Track>('panMode')
   private _panMode = '';
 
@@ -57,8 +58,8 @@ export class Track implements INotifyPropertyChanged {
   constructor(public readonly trackNumber: number, numberOfFx: number, sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
 
-    for (let i = 1; i <= numberOfFx; i++) {
-      this._fx[i] = new TrackFx(trackNumber, i, sendOscMessage);
+    for (let i = 0; i < numberOfFx; i++) {
+      this._fx[i] = new TrackFx(i + 1, i, sendOscMessage);
     }
 
     this.initHandlers();
@@ -198,14 +199,18 @@ export class Track implements INotifyPropertyChanged {
       throw new RangeError('Must be between -1 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan', value));
+    this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan2', value));
   }
 
   /**
    * Sets the volume to a specific dB value.
-   * @param value Value (in dB) to set the volume to. Valid range is -100 to 12
+   * @param value Value (in dB) to set the volume to. Valid range is -100 to 12.
    */
   public setVolumeDb(value: number): void {
+    if (value < -100 || value > 12) {
+      throw new RangeError('Must be between -100 and 12');
+    }
+
     this._sendOscMessage(new FloatMessage(this.oscAddress + '/volume/db', value));
   }
 
@@ -283,7 +288,7 @@ export class Track implements INotifyPropertyChanged {
       new BooleanMessageHandler(this.oscAddress + '/recarm', value => (this._isRecordArmed = value)),
       new IntegerMessageHandler(this.oscAddress + '/monitor', value => (this._recordMonitoring = value)),
       new BooleanMessageHandler(this.oscAddress + '/select', value => (this._isSelected = value)),
-      new TrackFxMessageHandler(fxNumber => (this._fx[fxNumber] !== undefined ? this._fx[fxNumber] : null)),
+      new TrackFxMessageHandler(fxNumber => (this._fx[fxNumber - 1] !== undefined ? this._fx[fxNumber - 1] : null)),
       new FloatMessageHandler(this.oscAddress + '/pan', value => (this._pan = value)),
       new FloatMessageHandler(this.oscAddress + '/pan2', value => (this._pan2 = value)),
       new StringMessageHandler(this.oscAddress + '/panmode', value => (this._panMode = value)),
