@@ -113,7 +113,7 @@ export class Transport implements INotifyPropertyChanged {
 
   /** Stop fast forwarding */
   public stopFastForwarding(): void {
-    this._sendOscMessage(new BooleanMessage('/foward', false));
+    this._sendOscMessage(new BooleanMessage('/forward', false));
   }
 
   /** Stop rewinding */
