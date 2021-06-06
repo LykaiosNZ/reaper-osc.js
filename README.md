@@ -14,7 +14,7 @@ var reaper = new Reaper();
 reaper.startOsc();
 
 // Subscribe to state changes
-reaper.tracks[1].onPropertyChanged("isMuted", () => {
+reaper.tracks[0].onPropertyChanged("isMuted", () => {
   console.log(
     `Track 1 was ${reaper.tracks[1].isMuted ? "muted" : "unmuted"}`
   );
@@ -24,7 +24,7 @@ reaper.tracks[1].onPropertyChanged("isMuted", () => {
 reaper.onReady(() => {
   reaper.transport.play();
   
-  reaper.tracks[1].mute();
-  reaper.tracks[1].unmute();
+  reaper.tracks[0].mute();
+  reaper.tracks[0].unmute();
 });
 ```
