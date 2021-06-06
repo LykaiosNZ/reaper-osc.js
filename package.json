@@ -12,14 +12,20 @@
     "ste-simple-events": "^2.1.7"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-typescript": "^7.13.0",
     "@tsconfig/node12": "^1.0.7",
+    "@types/jest": "^26.0.23",
     "@types/node": "^15.0.3",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
+    "babel-jest": "^27.0.2",
     "eslint": "^7.26.0",
+    "jest": "^27.0.4",
     "prettier": "^2.3.0",
     "tsc-watch": "^4.2.9",
-    "typedoc": "^0.20.36", 
+    "typedoc": "^0.20.36",
     "typedoc-neo-theme": "^1.1.1",
     "typescript": "^4.2.4"
   },
@@ -27,7 +33,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "docs": "typedoc --options ./typedoc.json",
-    "run": "tsc && node ."
+    "run": "tsc && node .",
+    "test": "tsc && jest",
+    "checkFormatting": "prettier --check ./src",
+    "format": "prettier --write ./src"
   },
   "files": [
     "./dist/**/*"

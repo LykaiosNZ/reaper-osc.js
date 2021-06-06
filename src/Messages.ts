@@ -57,6 +57,12 @@ export class BoolArgument extends IntArgument {
   }
 }
 
+export class FloatArgument extends OscArgument<number> {
+  constructor(value: number) {
+    super(OscArgumentType.FLOAT, value);
+  }
+}
+
 export class OscMessage {
   public readonly address: string;
   public readonly addressParts: string[];
@@ -101,7 +107,15 @@ export class ToggleMessage extends OscMessage {
 
 export class IntegerMessage extends OscMessage {
   constructor(address: string, value: number) {
-    const args = [new OscArgument(OscArgumentType.INT, value)];
+    const args = [new IntArgument(value)];
+
+    super(address, args);
+  }
+}
+
+export class FloatMessage extends OscMessage {
+  constructor(address: string, value: number) {
+    const args = [new FloatArgument(value)];
 
     super(address, args);
   }

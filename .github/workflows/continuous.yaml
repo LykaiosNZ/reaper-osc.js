@@ -2,9 +2,11 @@ name: Continuous
 
 on:
   push:
-    branches: [main]
+    branches-ignore:
+      - 'main'
   pull_request:
-    branches: [main]
+    branches:
+      - 'main'
 
 jobs:
   build:
@@ -22,4 +24,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
-      - run: tsc -b --verbose
+      - run: yarn build
+      - run: yarn test --ci

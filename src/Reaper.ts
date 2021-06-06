@@ -28,6 +28,7 @@ export class Reaper implements INotifyPropertyChanged {
   @notify<Reaper>('isMetronomeEnabled')
   private _isMetronomeEnabled = false;
 
+  private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
   private readonly _handlers: IMessageHandler[] = [];
   private _isReady = false;
 
@@ -49,11 +50,13 @@ export class Reaper implements INotifyPropertyChanged {
       metadata: true,
     });
 
+    this._afterMessageReceived = config.afterMessageReceived;
+
     this.initOsc();
     this.initHandlers();
 
-    for (let i = 1; i < config.numberOfTracks; i++) {
-      this._tracks[i] = new Track(i, config.numberOfFx, message => this.sendOscMessage(message));
+    for (let i = 0; i < config.numberOfTracks; i++) {
+      this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
     }
   }
 
@@ -91,8 +94,7 @@ export class Reaper implements INotifyPropertyChanged {
    */
   public sendOscMessage(message: OscMessage): void {
     if (!this._isReady) {
-      console.error("Can't send while OSC is not ready");
-      return;
+      throw new Error("Can't send while OSC is not ready");
     }
 
     this._osc.send(message);
@@ -142,7 +144,7 @@ export class Reaper implements INotifyPropertyChanged {
 
   private initHandlers() {
     this._handlers.push(
-      new TrackMessageHandler(trackNumber => this._tracks[trackNumber]),
+      new TrackMessageHandler(trackNumber => (this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null)),
       new TransportMessageHandler(this._transport),
       new BooleanMessageHandler('/click', value => (this._isMetronomeEnabled = value)),
     );
@@ -165,9 +167,18 @@ export class Reaper implements INotifyPropertyChanged {
       // TODO: Figure out a better way to handle this
       message = new OscMessage(message.address, message.args);
 
-      this._handlers.forEach(handler => {
-        handler.handle(message);
-      });
+      let handled = false;
+
+      for (const handler of this._handlers) {
+        if (handler.handle(message)) {
+          handled = true;
+          break;
+        }
+      }
+
+      if (this._afterMessageReceived !== null) {
+        this._afterMessageReceived(message, handled);
+      }
     });
 
     this._osc.on('close', () => {
@@ -177,6 +188,7 @@ export class Reaper implements INotifyPropertyChanged {
 }
 
 export class ReaperConfiguration {
+  afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null = null;
   /** The address to listen for Reaper OSC messages on */
   localAddress = '127.0.0.1';
   /** The port to listen for Reaper OSC messages on */

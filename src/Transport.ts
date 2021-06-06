@@ -91,13 +91,17 @@ export class Transport implements INotifyPropertyChanged {
   }
 
   /**
-   *  Receive and handle an OSC message
+   * Receive and handle an OSC message
    * @param message The message to be handled
    */
-  public receive(message: OscMessage): void {
-    this._handlers.forEach(handler => {
-      handler.handle(message);
-    });
+  public receive(message: OscMessage): boolean {
+    for (const handler of this._handlers) {
+      if (handler.handle(message)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** Toggle recording */
@@ -122,7 +126,7 @@ export class Transport implements INotifyPropertyChanged {
 
   /** Stop fast forwarding */
   public stopFastForwarding(): void {
-    this._sendOscMessage(new BooleanMessage('/foward', false));
+    this._sendOscMessage(new BooleanMessage('/forward', false));
   }
 
   /** Stop rewinding */
@@ -132,6 +136,6 @@ export class Transport implements INotifyPropertyChanged {
 
   /** Toggle repeat on or off */
   public toggleRepeat(): void {
-    this._sendOscMessage(new OscMessage('/repeaer'));
+    this._sendOscMessage(new OscMessage('/repeat'));
   }
 }

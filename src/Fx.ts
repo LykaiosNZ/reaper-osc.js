@@ -28,10 +28,14 @@ export class Fx implements INotifyPropertyChanged {
   @notify<Fx>('name')
   private _name: string;
 
+  @notify<Fx>('preset')
+  private _preset = 'No preset';
+
   protected readonly _handlers: IMessageHandler[] = [
     new StringMessageHandler(this.oscAddress + '/name', value => (this._name = value)),
     new BooleanMessageHandler(this.oscAddress + '/bypass', value => (this._isBypassed = !value)), // Reaper sends 0/false when the track is bypassed
     new BooleanMessageHandler(this.oscAddress + '/openui', value => (this._isUiOpen = value)),
+    new StringMessageHandler(this.oscAddress + '/preset', value => (this._preset = value)),
   ];
 
   protected readonly _sendOscMessage: ISendOscMessage;
@@ -53,7 +57,7 @@ export class Fx implements INotifyPropertyChanged {
 
   /** Close the UI of the FX */
   closeUi(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', false));
+    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openui', false));
   }
 
   /** Indicates whether the FX is bypassed */
@@ -66,9 +70,14 @@ export class Fx implements INotifyPropertyChanged {
     return this._isUiOpen;
   }
 
-  /** The name of the track */
+  /** The name of the FX */
   public get name(): string {
     return this._name;
+  }
+
+  /** Load the next FX preset */
+  public nextPreset(): void {
+    this._sendOscMessage(new OscMessage(this.oscAddress + '/preset+'));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,22 +86,36 @@ export class Fx implements INotifyPropertyChanged {
   }
 
   /** Open the UI of the FX */
-  openUi(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', true));
+  public openUi(): void {
+    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openui', true));
+  }
+
+  /** The name of the current preset, if any */
+  public get preset(): string {
+    return this._preset;
+  }
+
+  /** Load the previous FX preset */
+  public previousPreset(): void {
+    this._sendOscMessage(new OscMessage(this.oscAddress + '/preset-'));
   }
 
   /**
    *  Receive and handle an OSC message
    * @param message The message to be handled
    */
-  public receive(message: OscMessage): void {
-    this._handlers.forEach(handler => {
-      handler.handle(message);
-    });
+  public receive(message: OscMessage): boolean {
+    for (const handler of this._handlers) {
+      if (handler.handle(message)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** Unbypass the FX */
-  unbypass(): void {
+  public unbypass(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/bypass', true)); // true to unbypass
   }
 }
@@ -107,6 +130,6 @@ export class TrackFx extends Fx {
    * @param sendOscMessage A callback used to send OSC messages to Reaper
    */
   constructor(public readonly trackNumber: number, public readonly fxNumber: number, sendOscMessage: ISendOscMessage) {
-    super(`Fx ${fxNumber}`, `\\track\\${trackNumber}\\fx\\${fxNumber}`, sendOscMessage);
+    super(`Fx ${fxNumber}`, `/track/${trackNumber}/fx/${fxNumber}`, sendOscMessage);
   }
 }
