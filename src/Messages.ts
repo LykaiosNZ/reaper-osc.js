@@ -89,13 +89,19 @@ export class BooleanMessage extends OscMessage {
   }
 }
 
-export class ActionMessage extends StringMessage {
-  constructor(commandId: string | number) {
+export class ActionMessage extends OscMessage {
+  constructor(commandId: string | number, cc: number | null = null) {
     if (typeof commandId === 'number') {
       commandId = commandId.toString();
     }
 
-    super('/action/str', commandId);
+    const args: OscArgument<unknown>[] = [new StringArgument(commandId)];
+
+    if (cc !== null) {
+      args.push(new FloatArgument(cc));
+    }
+
+    super('/action/str', args);
   }
 }
 

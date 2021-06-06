@@ -2,7 +2,7 @@
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscMessage} from './Messages';
+import {ActionMessage, OscArgument, OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import * as osc from 'osc';
@@ -129,17 +129,23 @@ export class Reaper implements INotifyPropertyChanged {
 
   /**
    * Trigger a Reaper action
-   * @param {number | string} commandId
+   * @param commandId The Command ID of the action to be triggered.
+   * @param cc The CC value to send for the
    * @example
    * ```typescript
    * // Trigger action 'Track: Toggle mute for master track'
    * reaper.triggerAction(14);
    * // Trigger SWS Extension action 'SWS: Set all master track outputs muted'
    * reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
+   * //
    * ```
    */
-  public triggerAction(commandId: number | string): void {
-    this.sendOscMessage(new ActionMessage(commandId));
+  public triggerAction(commandId: number | string, cc: number | null = null): void {
+    if (cc !== null && (cc < 0 || cc > 127)) {
+      throw new RangeError('CC values must be between 0 and 127 inclusive');
+    }
+
+    this.sendOscMessage(new ActionMessage(commandId, cc));
   }
 
   private initHandlers() {

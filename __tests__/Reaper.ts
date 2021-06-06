@@ -1,5 +1,5 @@
 import * as osc from 'osc';
-import {BooleanMessage, IntegerMessage, OscArgument, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
+import {BooleanMessage, FloatArgument, IntegerMessage, OscArgument, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {Reaper, ReaperConfiguration} from '../dist/Reaper';
 
 let testOsc: any;
@@ -34,6 +34,10 @@ test('sendOscMessage should throw when not ready', () => {
   expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
 });
 
+test.each([-1, 128])('triggerAction should throw when CC is less than 0 or greater than 127', value => {
+  expect(() => reaper.triggerAction(1, value)).toThrow(RangeError);
+});
+
 describe('properties set by messages', () => {
   test.each([true, false])('click message sets isMetronomeEnabled: %p', (value, done: any) => {
     reaper.startOsc();
@@ -61,6 +65,13 @@ describe('methods send expected messages', () => {
 
   test.each(['foo', 1234])('triggerAction sends expected message: %p', (commandId, done: any) => {
     expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]}, done);
+  });
+
+  test('triggerAction sends expected additional args', done => {
+    const commandId = 'foo';
+    const cc = 127;
+    const expectedArgs = [new StringArgument(commandId.toString()), new FloatArgument(cc)];
+    expectOscMessage(() => reaper.triggerAction(commandId, cc), {address: '/action/str', args: expectedArgs}, done);
   });
 
   test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
