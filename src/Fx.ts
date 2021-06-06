@@ -53,7 +53,7 @@ export class Fx implements INotifyPropertyChanged {
 
   /** Close the UI of the FX */
   closeUi(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', false));
+    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openui', false));
   }
 
   /** Indicates whether the FX is bypassed */
@@ -83,7 +83,7 @@ export class Fx implements INotifyPropertyChanged {
 
   /** Open the UI of the FX */
   public openUi(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openUi', true));
+    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/openui', true));
   }
 
   /** The name of the current preset, if any */
