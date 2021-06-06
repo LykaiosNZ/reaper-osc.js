@@ -1,5 +1,5 @@
 import * as osc from 'osc';
-import {BooleanMessage, OscArgument, OscMessage, StringArgument} from '../dist/Messages';
+import {BooleanMessage, IntegerMessage, OscArgument, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {Reaper, ReaperConfiguration} from '../dist/Reaper';
 
 let testOsc: any;
@@ -27,7 +27,7 @@ test('should be ready after onReady fires', done => {
 });
 
 describe('metronome', () => {
-  test.each([true, false])('handle %p metronome message', (value, done: any) => {
+  test.each([true, false])('click message sets isMetronomeEnabled: %p', (value, done: any) => {
     reaper.startOsc();
     testOsc.open();
 
@@ -54,8 +54,16 @@ test('refreshControlSurfaces sends expected message', done => {
   expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]}, done);
 });
 
-test.each(['foo', 1234])('triggerAction sends expected message', (commandId, done: any) => {
+test.each(['foo', 1234])('triggerAction sends expected message: %p', (commandId, done: any) => {
   expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]}, done);
+});
+
+test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
+  expectOscMessage(() => reaper.sendOscMessage(message), {address: message.address, args: message.args}, done);
+});
+
+test('sendOscMessage should throw when not ready', () => {
+  expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
 });
 
 function expectOscMessage(fn: () => void, expected: {address: string; args: OscArgument<unknown>[]}, done: jest.DoneCallback) {
