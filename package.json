@@ -39,6 +39,6 @@
     "format": "prettier --write ./src"
   },
   "files": [
-    "./dist/**/*"
+    "./dist"
   ]
 }
