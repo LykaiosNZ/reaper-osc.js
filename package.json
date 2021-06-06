@@ -6,6 +6,15 @@
   "repository": "https://github.com/LykaiosNZ/reaper-osc.js",
   "author": "Ben Simpson",
   "license": "MIT",
+  "keywords": [
+    "reaper",
+    "osc",
+    "daw",
+    "sound",
+    "control",
+    "surface",
+    "logic"
+  ],
   "dependencies": {
     "osc": "^2.4.1",
     "ste-signals": "^2.1.7",
