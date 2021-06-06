@@ -26,7 +26,15 @@ test('should be ready after onReady fires', done => {
   reaper.startOsc();
 });
 
-describe('metronome', () => {
+test('has expected number of tracks', () => {
+  expect(reaper.tracks.length).toBe(8);
+});
+
+test('sendOscMessage should throw when not ready', () => {
+  expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
+});
+
+describe('properties set by messages', () => {
   test.each([true, false])('click message sets isMetronomeEnabled: %p', (value, done: any) => {
     reaper.startOsc();
     testOsc.open();
@@ -40,30 +48,24 @@ describe('metronome', () => {
       done();
     }, 10);
   });
+});
 
+describe('methods send expected messages', () => {
   test('toggleMetronome sends expected message', done => {
     expectOscMessage(() => reaper.toggleMetronome(), {address: '/click', args: []}, done);
   });
-});
 
-test('has expected number of tracks', () => {
-  expect(reaper.tracks.length).toBe(8);
-});
+  test('refreshControlSurfaces sends expected message', done => {
+    expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]}, done);
+  });
 
-test('refreshControlSurfaces sends expected message', done => {
-  expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]}, done);
-});
+  test.each(['foo', 1234])('triggerAction sends expected message: %p', (commandId, done: any) => {
+    expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]}, done);
+  });
 
-test.each(['foo', 1234])('triggerAction sends expected message: %p', (commandId, done: any) => {
-  expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]}, done);
-});
-
-test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
-  expectOscMessage(() => reaper.sendOscMessage(message), {address: message.address, args: message.args}, done);
-});
-
-test('sendOscMessage should throw when not ready', () => {
-  expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
+  test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
+    expectOscMessage(() => reaper.sendOscMessage(message), {address: message.address, args: message.args}, done);
+  });
 });
 
 function expectOscMessage(fn: () => void, expected: {address: string; args: OscArgument<unknown>[]}, done: jest.DoneCallback) {
