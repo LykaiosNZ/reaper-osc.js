@@ -89,8 +89,7 @@ export class Reaper implements INotifyPropertyChanged {
   /** Send a message to Reaper via OSC */
   public sendOscMessage(message: OscMessage): void {
     if (!this._isReady) {
-      console.error("Can't send while OSC is not ready");
-      return;
+      throw new Error("Can't send while OSC is not ready");
     }
 
     this._osc.send(message);
