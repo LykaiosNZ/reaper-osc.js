@@ -78,6 +78,10 @@
 					<div class="lead">
 						<p>Routes messages to the appropriate track</p>
 					</div>
+					</div><div class="tsd-comment tsd-typography tsd-comment-tags">
+					<dl class="tsd-comment-tags"><dt>param</dt>
+						<dd><p>A function that can be used to get a track</p>
+					</dd></dl>
 			</div></section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
@@ -124,8 +128,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L11">
-											Handlers.ts:11
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L19">
+											Handlers.ts:19
 										</a>
 									</li>
 								</ul>
@@ -168,7 +172,7 @@
 					<a name="handle" class="tsd-anchor"></a>
 					<h3>handle</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -176,19 +180,24 @@
 								<p>Implementation of <a href="../interfaces/imessagehandler.html">IMessageHandler</a>.<a href="../interfaces/imessagehandler.html#handle">handle</a></p>
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L14">
-											Handlers.ts:14
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L22">
+											Handlers.ts:22
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p> Handle an OSC message</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>message: <a href="oscmessage.html" class="tsd-signature-type">OscMessage</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -215,6 +224,15 @@
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="booleanmessagehandler.html" class="tsd-kind-icon">Boolean<wbr>Message<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatmessagehandler.html" class="tsd-kind-icon">Float<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="fx.html" class="tsd-kind-icon">Fx</a>

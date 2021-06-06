@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IntArgument | reaper-osc</title>
+	<title>FloatMessage | reaper-osc</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,7 +55,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="intargument.html">IntArgument</a>
+					<a href="floatmessage.html">FloatMessage</a>
 				</li>
 			</ul>
 		</div>
@@ -73,20 +73,15 @@
 			</nav>
 		</div>
 		<div class="col-7 offset-3 col-content">
-			<h1>Class IntArgument</h1>
+			<h1>Class FloatMessage</h1>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="oscargument.html" class="tsd-signature-type">OscArgument</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span>
+						<a href="oscmessage.html" class="tsd-signature-type">OscMessage</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">IntArgument</span>
-								<ul class="tsd-hierarchy">
-									<li>
-										<a href="boolargument.html" class="tsd-signature-type">BoolArgument</a>
-									</li>
-								</ul>
+								<span class="target">FloatMessage</span>
 							</li>
 						</ul>
 					</li>
@@ -98,14 +93,15 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="intargument.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="floatmessage.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="intargument.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="intargument.html#value" class="tsd-kind-icon">value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="floatmessage.html#address" class="tsd-kind-icon">address</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="floatmessage.html#addressparts" class="tsd-kind-icon">address<wbr>Parts</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="floatmessage.html#args" class="tsd-kind-icon">args</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,16 +113,16 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Int<wbr>Argument<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="intargument.html" class="tsd-signature-type">IntArgument</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Float<wbr>Message<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="floatmessage.html" class="tsd-signature-type">FloatMessage</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="oscargument.html">OscArgument</a>.<a href="oscargument.html#constructor">constructor</a></p>
+								<p>Overrides <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#constructor">constructor</a></p>
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L48">
-											Messages.ts:48
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L116">
+											Messages.ts:116
 										</a>
 									</li>
 								</ul>
@@ -134,10 +130,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
 									<h5>value: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="intargument.html" class="tsd-signature-type">IntArgument</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="floatmessage.html" class="tsd-signature-type">FloatMessage</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -145,30 +144,45 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/oscargumenttype.html" class="tsd-signature-type">OscArgumentType</a></div>
+					<a name="address" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> address</h3>
+					<div class="tsd-signature tsd-kind-icon">address<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="oscargument.html">OscArgument</a>.<a href="oscargument.html#type">type</a></p>
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#address">address</a></p>
 						<ul>
 							<li>Defined in
-								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L33">
-									Messages.ts:33
+								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L67">
+									Messages.ts:67
 								</a>
 							</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="value" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> value</h3>
-					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="addressparts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> address<wbr>Parts</h3>
+					<div class="tsd-signature tsd-kind-icon">address<wbr>Parts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="oscargument.html">OscArgument</a>.<a href="oscargument.html#value">value</a></p>
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#addressparts">addressParts</a></p>
 						<ul>
 							<li>Defined in
-								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L34">
-									Messages.ts:34
+								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L68">
+									Messages.ts:68
+								</a>
+							</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="args" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> args</h3>
+					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <a href="oscargument.html" class="tsd-signature-type">OscArgument</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#args">args</a></p>
+						<ul>
+							<li>Defined in
+								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L69">
+									Messages.ts:69
 								</a>
 							</li>
 						</ul>
@@ -201,33 +215,36 @@
 					<li class=" tsd-kind-class root">
 						<a href="floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
 					</li>
-					<li class=" tsd-kind-class root">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class root">
 						<a href="floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="floatmessage.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="floatmessage.html#address" class="tsd-kind-icon">address</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="floatmessage.html#addressparts" class="tsd-kind-icon">address<wbr>Parts</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="floatmessage.html#args" class="tsd-kind-icon">args</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class root">
 						<a href="floatmessagehandler.html" class="tsd-kind-icon">Float<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="fx.html" class="tsd-kind-icon">Fx</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class root">
+					<li class=" tsd-kind-class root">
 						<a href="intargument.html" class="tsd-kind-icon">Int<wbr>Argument</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="intargument.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="intargument.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="intargument.html#value" class="tsd-kind-icon">value</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class root">
 						<a href="integermessage.html" class="tsd-kind-icon">Integer<wbr>Message</a>
 					</li>
