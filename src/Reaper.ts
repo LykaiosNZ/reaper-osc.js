@@ -22,7 +22,6 @@ import {SignalDispatcher} from 'ste-signals';
  * // Give the port a chance to open, then tell Reaper to start playback
  * setTimeout(() => {reaper.transport.play();}, 100);
  *```
- * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
 export class Reaper implements INotifyPropertyChanged {
@@ -61,10 +60,12 @@ export class Reaper implements INotifyPropertyChanged {
     }
   }
 
+  /** Indicates whether the metronome is enabled */
   public get isMetronomeEnabled(): boolean {
     return this._isMetronomeEnabled;
   }
 
+  /** Indicates whether OSC is ready to send and receive messages */
   public get isReady(): boolean {
     return this._isReady;
   }
@@ -74,6 +75,7 @@ export class Reaper implements INotifyPropertyChanged {
     throw new Error('not implemented');
   }
 
+  /** An event that can be subscribed to for notification when OSC is ready */
   public onReady(callback: () => void): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this._readyDispatcher.sub(() => callback());
@@ -86,7 +88,10 @@ export class Reaper implements INotifyPropertyChanged {
     this.triggerAction(41743);
   }
 
-  /** Send a message to Reaper via OSC */
+  /**
+   * Send a message to Reaper via OSC. Messages may not be sent while {@link Reaper.isReady} is false.
+   * @param message The OSC message to be sent
+   */
   public sendOscMessage(message: OscMessage): void {
     if (!this._isReady) {
       throw new Error("Can't send while OSC is not ready");
@@ -97,7 +102,7 @@ export class Reaper implements INotifyPropertyChanged {
     console.debug('OSC message sent', message);
   }
 
-  /** Start listening for OSC messages */
+  /** Open the OSC port and start listening for messages */
   public startOsc(): void {
     this._osc.open();
   }
@@ -112,10 +117,12 @@ export class Reaper implements INotifyPropertyChanged {
     this.sendOscMessage(new OscMessage('/click'));
   }
 
+  /** The current bank of tracks */
   public get tracks(): ReadonlyArray<Track> {
     return this._tracks;
   }
 
+  /** Transport controls */
   public get transport(): Transport {
     return this._transport;
   }

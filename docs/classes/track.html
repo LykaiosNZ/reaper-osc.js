@@ -74,6 +74,11 @@
 		</div>
 		<div class="col-7 offset-3 col-content">
 			<h1>Class Track</h1>
+			<section class="tsd-panel tsd-comment"><div class="tsd-comment tsd-typography tsd-comment-shorttext">
+					<div class="lead">
+						<p>A Reaper track</p>
+					</div>
+			</div></section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -112,8 +117,15 @@
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#isselected" class="tsd-kind-icon">is<wbr>Selected</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#issoloed" class="tsd-kind-icon">is<wbr>Soloed</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#oscaddress" class="tsd-kind-icon">osc<wbr>Address</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#pan" class="tsd-kind-icon">pan</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#pan2" class="tsd-kind-icon">pan2</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#panmode" class="tsd-kind-icon">pan<wbr>Mode</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#recordmonitoring" class="tsd-kind-icon">record<wbr>Monitoring</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#volumedb" class="tsd-kind-icon">volume<wbr>Db</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#volumefaderposition" class="tsd-kind-icon">volume<wbr>Fader<wbr>Position</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#vu" class="tsd-kind-icon">vu</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#vuleft" class="tsd-kind-icon">vu<wbr>Left</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="track.html#vuright" class="tsd-kind-icon">vu<wbr>Right</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -128,6 +140,10 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#rename" class="tsd-kind-icon">rename</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#setmonitoringmode" class="tsd-kind-icon">set<wbr>Monitoring<wbr>Mode</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#setpan" class="tsd-kind-icon">set<wbr>Pan</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#setpan2" class="tsd-kind-icon">set<wbr>Pan2</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#setvolumedb" class="tsd-kind-icon">set<wbr>Volume<wbr>Db</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#setvolumefaderposition" class="tsd-kind-icon">set<wbr>Volume<wbr>Fader<wbr>Position</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#solo" class="tsd-kind-icon">solo</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#togglemute" class="tsd-kind-icon">toggle<wbr>Mute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="track.html#togglerecordarm" class="tsd-kind-icon">toggle<wbr>Record<wbr>Arm</a></li>
@@ -152,8 +168,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L31">
-											Tracks.ts:31
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L57">
+											Tracks.ts:57
 										</a>
 									</li>
 								</ul>
@@ -162,12 +178,21 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>trackNumber: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The track&#39;s number in the current bank</p>
+									</div>
 								</li>
 								<li>
 									<h5>numberOfFx: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The number of FX per FX bank</p>
+									</div>
 								</li>
 								<li>
 									<h5>sendOscMessage: <a href="../interfaces/isendoscmessage.html" class="tsd-signature-type">ISendOscMessage</a></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>A callback used to send OSC messages to Reaper</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="track.html" class="tsd-signature-type">Track</a></h4>
@@ -198,12 +223,17 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L48">
-											Tracks.ts:48
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L80">
+											Tracks.ts:80
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>The track&#39;s current FX back</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <a href="trackfx.html" class="tsd-signature-type">TrackFx</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
@@ -219,12 +249,17 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L52">
-											Tracks.ts:52
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L85">
+											Tracks.ts:85
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates whether the track is muted</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -240,12 +275,17 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L56">
-											Tracks.ts:56
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L90">
+											Tracks.ts:90
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates whether the track is armed for recording</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -261,12 +301,17 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L60">
-											Tracks.ts:60
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L95">
+											Tracks.ts:95
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates whether the track is selected</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -282,12 +327,17 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L64">
-											Tracks.ts:64
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L100">
+											Tracks.ts:100
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates whether the track is soloed</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -303,33 +353,95 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L73">
-											Tracks.ts:73
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L110">
+											Tracks.ts:110
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>The track name</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="oscaddress" class="tsd-anchor"></a>
-					<h3>osc<wbr>Address</h3>
+					<a name="pan" class="tsd-anchor"></a>
+					<h3>pan</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> oscAddress<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> pan<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L82">
-											Tracks.ts:82
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L120">
+											Tracks.ts:120
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between -1 and 1 that indicates the pan position, with -1 being 100% left and 1 being 100% right</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="pan2" class="tsd-anchor"></a>
+					<h3>pan2</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> pan2<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L125">
+											Tracks.ts:125
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between -1 and 1 that indicates the pan 2 position, with -1 being 100% left and 1 being 100% right</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="panmode" class="tsd-anchor"></a>
+					<h3>pan<wbr>Mode</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> panMode<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L130">
+											Tracks.ts:130
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>The current pan mode</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
@@ -345,13 +457,148 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L97">
-											Tracks.ts:97
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L154">
+											Tracks.ts:154
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates the record monitoring mode</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../enums/recordmonitoringmode.html" class="tsd-signature-type">RecordMonitoringMode</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="volumedb" class="tsd-anchor"></a>
+					<h3>volume<wbr>Db</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> volumeDb<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L272">
+											Tracks.ts:272
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>The track volume in dB</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="volumefaderposition" class="tsd-anchor"></a>
+					<h3>volume<wbr>Fader<wbr>Position</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> volumeFaderPosition<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L277">
+											Tracks.ts:277
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between 0 and 1 that indicates the fader position, with 0 being all the way down and 1 being all the way up</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="vu" class="tsd-anchor"></a>
+					<h3>vu</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> vu<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L282">
+											Tracks.ts:282
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between 0 and 1 that indicates the VU level</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="vuleft" class="tsd-anchor"></a>
+					<h3>vu<wbr>Left</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> vuLeft<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L287">
+											Tracks.ts:287
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between 0 and 1 that indicates the Left VU level</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="vuright" class="tsd-anchor"></a>
+					<h3>vu<wbr>Right</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> vuRight<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L292">
+											Tracks.ts:292
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>A floating-point value between 0 and 1 that indicates the Right VU level</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -369,8 +616,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L44">
-											Tracks.ts:44
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L75">
+											Tracks.ts:75
 										</a>
 									</li>
 								</ul>
@@ -395,8 +642,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L69">
-											Tracks.ts:69
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L105">
+											Tracks.ts:105
 										</a>
 									</li>
 								</ul>
@@ -422,8 +669,8 @@
 								<p>Implementation of INotifyPropertyChanged.onPropertyChanged</p>
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L78">
-											Tracks.ts:78
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L115">
+											Tracks.ts:115
 										</a>
 									</li>
 								</ul>
@@ -457,26 +704,34 @@
 					<a name="receive" class="tsd-anchor"></a>
 					<h3>receive</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">receive<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">receive<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L86">
-											Tracks.ts:86
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L138">
+											Tracks.ts:138
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Receive and handle an OSC message</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>message: <a href="oscmessage.html" class="tsd-signature-type">OscMessage</a></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The message to be handled</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -491,8 +746,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L93">
-											Tracks.ts:93
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L149">
+											Tracks.ts:149
 										</a>
 									</li>
 								</ul>
@@ -517,8 +772,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L102">
-											Tracks.ts:102
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L159">
+											Tracks.ts:159
 										</a>
 									</li>
 								</ul>
@@ -543,8 +798,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L115">
-											Tracks.ts:115
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L172">
+											Tracks.ts:172
 										</a>
 									</li>
 								</ul>
@@ -584,8 +839,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L125">
-											Tracks.ts:125
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L182">
+											Tracks.ts:182
 										</a>
 									</li>
 								</ul>
@@ -610,8 +865,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L133">
-											Tracks.ts:133
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L190">
+											Tracks.ts:190
 										</a>
 									</li>
 								</ul>
@@ -634,6 +889,146 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setpan" class="tsd-anchor"></a>
+					<h3>set<wbr>Pan</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Pan<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L198">
+											Tracks.ts:198
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Sets the pan</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>A floating-point value between -1 and 1, where -1 is 100% left and 1 is 100% right</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setpan2" class="tsd-anchor"></a>
+					<h3>set<wbr>Pan2</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Pan2<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L210">
+											Tracks.ts:210
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Sets the pan 2</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>A floating-point value between -1 and 1, where -1 is 100% left and 1 is 100% right</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setvolumedb" class="tsd-anchor"></a>
+					<h3>set<wbr>Volume<wbr>Db</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Volume<wbr>Db<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L222">
+											Tracks.ts:222
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Sets the volume to a specific dB value.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>Value (in dB) to set the volume to. Valid range is -100 to 12.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setvolumefaderposition" class="tsd-anchor"></a>
+					<h3>set<wbr>Volume<wbr>Fader<wbr>Position</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Volume<wbr>Fader<wbr>Position<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L233">
+											Tracks.ts:233
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Sets the volume by moving the fader to a specific position</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>position: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>A value for the fader position between 0 and 1, where 0 is all the way down and 1 is all the way up</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="solo" class="tsd-anchor"></a>
 					<h3>solo</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -644,8 +1039,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L138">
-											Tracks.ts:138
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L242">
+											Tracks.ts:242
 										</a>
 									</li>
 								</ul>
@@ -670,8 +1065,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L143">
-											Tracks.ts:143
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L247">
+											Tracks.ts:247
 										</a>
 									</li>
 								</ul>
@@ -696,8 +1091,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L148">
-											Tracks.ts:148
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L252">
+											Tracks.ts:252
 										</a>
 									</li>
 								</ul>
@@ -722,8 +1117,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L153">
-											Tracks.ts:153
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L257">
+											Tracks.ts:257
 										</a>
 									</li>
 								</ul>
@@ -748,8 +1143,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L158">
-											Tracks.ts:158
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L262">
+											Tracks.ts:262
 										</a>
 									</li>
 								</ul>
@@ -774,8 +1169,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L163">
-											Tracks.ts:163
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Tracks.ts#L267">
+											Tracks.ts:267
 										</a>
 									</li>
 								</ul>
@@ -812,6 +1207,15 @@
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="booleanmessagehandler.html" class="tsd-kind-icon">Boolean<wbr>Message<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="floatmessagehandler.html" class="tsd-kind-icon">Float<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="fx.html" class="tsd-kind-icon">Fx</a>
@@ -879,10 +1283,31 @@
 								<a href="track.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="track.html#oscaddress" class="tsd-kind-icon">osc<wbr>Address</a>
+								<a href="track.html#pan" class="tsd-kind-icon">pan</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#pan2" class="tsd-kind-icon">pan2</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#panmode" class="tsd-kind-icon">pan<wbr>Mode</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="track.html#recordmonitoring" class="tsd-kind-icon">record<wbr>Monitoring</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#volumedb" class="tsd-kind-icon">volume<wbr>Db</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#volumefaderposition" class="tsd-kind-icon">volume<wbr>Fader<wbr>Position</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#vu" class="tsd-kind-icon">vu</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#vuleft" class="tsd-kind-icon">vu<wbr>Left</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="track.html#vuright" class="tsd-kind-icon">vu<wbr>Right</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="track.html#deselect" class="tsd-kind-icon">deselect</a>
@@ -910,6 +1335,18 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="track.html#setmonitoringmode" class="tsd-kind-icon">set<wbr>Monitoring<wbr>Mode</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="track.html#setpan" class="tsd-kind-icon">set<wbr>Pan</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="track.html#setpan2" class="tsd-kind-icon">set<wbr>Pan2</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="track.html#setvolumedb" class="tsd-kind-icon">set<wbr>Volume<wbr>Db</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="track.html#setvolumefaderposition" class="tsd-kind-icon">set<wbr>Volume<wbr>Fader<wbr>Position</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="track.html#solo" class="tsd-kind-icon">solo</a>

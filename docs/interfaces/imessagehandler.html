@@ -74,6 +74,11 @@
 		</div>
 		<div class="col-7 offset-3 col-content">
 			<h1>Interface IMessageHandler</h1>
+			<section class="tsd-panel tsd-comment"><div class="tsd-comment tsd-typography tsd-comment-shorttext">
+					<div class="lead">
+						<p>An OSC message handler</p>
+					</div>
+			</div></section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -86,6 +91,7 @@
 				<h3>Implemented by</h3>
 				<ul class="tsd-hierarchy">
 					<li><a href="../classes/booleanmessagehandler.html" class="tsd-signature-type">BooleanMessageHandler</a></li>
+					<li><a href="../classes/floatmessagehandler.html" class="tsd-signature-type">FloatMessageHandler</a></li>
 					<li><a href="../classes/integermessagehandler.html" class="tsd-signature-type">IntegerMessageHandler</a></li>
 					<li><a href="../classes/stringmessagehandler.html" class="tsd-signature-type">StringMessageHandler</a></li>
 					<li><a href="../classes/trackfxmessagehandler.html" class="tsd-signature-type">TrackFxMessageHandler</a></li>
@@ -111,26 +117,34 @@
 					<a name="handle" class="tsd-anchor"></a>
 					<h3>handle</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="../classes/oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="../classes/oscmessage.html" class="tsd-signature-type">OscMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L7">
-											Handlers.ts:7
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Handlers.ts#L12">
+											Handlers.ts:12
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p> Handle an OSC message</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>message: <a href="../classes/oscmessage.html" class="tsd-signature-type">OscMessage</a></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The message to handle</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -157,6 +171,15 @@
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="../classes/booleanmessagehandler.html" class="tsd-kind-icon">Boolean<wbr>Message<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="../classes/floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="../classes/floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-class root">
+						<a href="../classes/floatmessagehandler.html" class="tsd-kind-icon">Float<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="../classes/fx.html" class="tsd-kind-icon">Fx</a>

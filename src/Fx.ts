@@ -16,7 +16,6 @@ import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
  * // Bypass the FX
  * fx.bypass();
  * ```
- * @decorator {@link notifyOnPropertyChanged}
  */
 @notifyOnPropertyChanged
 export class Fx implements INotifyPropertyChanged {
@@ -41,6 +40,11 @@ export class Fx implements INotifyPropertyChanged {
 
   protected readonly _sendOscMessage: ISendOscMessage;
 
+  /**
+   * @param name The FX name
+   * @param oscAddress The OSC address of the FX
+   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   */
   constructor(name: string, public readonly oscAddress: string, sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
     this._name = name;
@@ -61,7 +65,7 @@ export class Fx implements INotifyPropertyChanged {
     return this._isBypassed;
   }
 
-  /** Indicates whether the FX UI is open */
+  /** Indicates whether the FX's UI is open */
   public get isUiOpen(): boolean {
     return this._isUiOpen;
   }
@@ -96,6 +100,10 @@ export class Fx implements INotifyPropertyChanged {
     this._sendOscMessage(new OscMessage(this.oscAddress + '/preset-'));
   }
 
+  /**
+   *  Receive and handle an OSC message
+   * @param message The message to be handled
+   */
   public receive(message: OscMessage): boolean {
     for (const handler of this._handlers) {
       if (handler.handle(message)) {
@@ -116,6 +124,11 @@ export class Fx implements INotifyPropertyChanged {
  * An FX on a {@link Track}
  */
 export class TrackFx extends Fx {
+  /**
+   * @param trackNumber The number of the track the FX is on
+   * @param fxNumber The FX number in the current bank
+   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   */
   constructor(public readonly trackNumber: number, public readonly fxNumber: number, sendOscMessage: ISendOscMessage) {
     super(`Fx ${fxNumber}`, `/track/${trackNumber}/fx/${fxNumber}`, sendOscMessage);
   }

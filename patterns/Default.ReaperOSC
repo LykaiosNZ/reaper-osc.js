@@ -311,7 +311,6 @@ TRACK_REC_ARM b/track/recarm b/track/@/recarm t/track/recarm/toggle t/track/@/re
 TRACK_MONITOR b/track/monitor b/track/@/monitor i/track/monitor i/track/@/monitor
 TRACK_SELECT b/track/select b/track/@/select
 
-# TODO Track
 TRACK_VU n/track/vu n/track/@/vu
 TRACK_VU_L n/track/vu/L n/track/@/vu/L
 TRACK_VU_R n/track/vu/R n/track/@/vu/R
@@ -353,7 +352,6 @@ FX_NUMBER s/fx/number/str s/fx/@/number/str s/track/@/fx/@/number/str
 FX_BYPASS b/fx/bypass b/fx/@/bypass b/track/@/fx/@/bypass 
 FX_OPEN_UI b/fx/openui b/fx/@/openui b/track/@/fx/@/openui
 
-# TODO FX Presets
 FX_PRESET s/fx/preset s/fx/@/preset s/track/@/fx/@/preset
 FX_PREV_PRESET t/fx/preset- t/fx/@/preset- t/track/@/fx/@/preset-
 FX_NEXT_PRESET t/fx/preset+ t/fx/@/preset+ t/track/@/fx/@/preset+
