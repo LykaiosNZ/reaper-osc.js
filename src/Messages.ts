@@ -90,15 +90,15 @@ export class BooleanMessage extends OscMessage {
 }
 
 export class ActionMessage extends OscMessage {
-  constructor(commandId: string | number, cc: number | null = null) {
+  constructor(commandId: string | number, value: number | null = null) {
     if (typeof commandId === 'number') {
       commandId = commandId.toString();
     }
 
     const args: OscArgument<unknown>[] = [new StringArgument(commandId)];
 
-    if (cc !== null) {
-      args.push(new FloatArgument(cc));
+    if (value !== null) {
+      args.push(new FloatArgument(value));
     }
 
     super('/action/str', args);
