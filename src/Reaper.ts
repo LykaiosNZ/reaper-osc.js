@@ -2,7 +2,7 @@
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscMessage} from './Messages';
+import {ActionMessage, OscArgument, OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import * as osc from 'osc';
@@ -129,17 +129,24 @@ export class Reaper implements INotifyPropertyChanged {
 
   /**
    * Trigger a Reaper action
-   * @param {number | string} commandId
+   * @param commandId The Command ID of the action to be triggered.
+   * @param value The value to send for the action. Note that some actions expect the CC value (0-127) while others expect a decimal value between 0 and 1.
    * @example
    * ```typescript
    * // Trigger action 'Track: Toggle mute for master track'
    * reaper.triggerAction(14);
-   * // Trigger SWS Extension action 'SWS: Set all master track outputs muted'
-   * reaper.triggerAction('_XEN_SET_MAS_SENDALLMUTE');
+   * // Trigger SWS Extension action 'SWS/S&M: Live Config #1 - Apply config (MIDI/OSC only)' with a CC value of 3, selects config #3
+   * reaper.triggerAction('_S&M_LIVECFG_APPLY1', 3);
+   * // Trigger action 'Track: Set volume for track 01 (MIDI CC/OSC only)' with a value of 0.75, sets volume of track 1 to +0.0dB
+   * reaper.triggerAction(20, 0.7156)
    * ```
    */
-  public triggerAction(commandId: number | string): void {
-    this.sendOscMessage(new ActionMessage(commandId));
+  public triggerAction(commandId: number | string, value: number | null = null): void {
+    if (value !== null && (value < 0 || value > 127)) {
+      throw new RangeError('Values must be between 0 and 127 inclusive');
+    }
+
+    this.sendOscMessage(new ActionMessage(commandId, value));
   }
 
   private initHandlers() {
