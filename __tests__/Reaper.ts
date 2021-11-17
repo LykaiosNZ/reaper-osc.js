@@ -34,7 +34,7 @@ test('sendOscMessage should throw when not ready', () => {
   expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
 });
 
-test.each([-1, 128])('triggerAction should throw when CC is less than 0 or greater than 127', value => {
+test.each([-1, 128])('triggerAction should throw when value is less than 0 or greater than 127', value => {
   expect(() => reaper.triggerAction(1, value)).toThrow(RangeError);
 });
 
@@ -69,9 +69,9 @@ describe('methods send expected messages', () => {
 
   test('triggerAction sends expected additional args', done => {
     const commandId = 'foo';
-    const cc = 127;
-    const expectedArgs = [new StringArgument(commandId.toString()), new FloatArgument(cc)];
-    expectOscMessage(() => reaper.triggerAction(commandId, cc), {address: '/action/str', args: expectedArgs}, done);
+    const value = 127;
+    const expectedArgs = [new StringArgument(commandId.toString()), new FloatArgument(value)];
+    expectOscMessage(() => reaper.triggerAction(commandId, value), {address: '/action/str', args: expectedArgs}, done);
   });
 
   test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
