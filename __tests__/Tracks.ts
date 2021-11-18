@@ -9,6 +9,15 @@ test('has correct number of fx', () => {
   expect(track.fx.length).toBe(expected);
 });
 
+test('fx are initialized with correct track and fx number', () => {
+  const track = new Track(9, 4, () => null);
+
+  track.fx.forEach((fx, index) => {
+    expect(fx.trackNumber).toBe(track.trackNumber);
+    expect(fx.fxNumber).toBe(index + 1);
+  });
+});
+
 test('has correct track number', () => {
   const expected = 9874;
 
