@@ -31,6 +31,7 @@ export class Reaper implements INotifyPropertyChanged {
   private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
   private readonly _handlers: IMessageHandler[] = [];
   private _isReady = false;
+  private readonly _masterTrack: Track;
 
   // No type defs for osc libary so don't have much choice here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,6 +56,8 @@ export class Reaper implements INotifyPropertyChanged {
     this.initOsc();
     this.initHandlers();
 
+    this._masterTrack = new Track(0, config.numberOfFx, message => this.sendOscMessage(message));
+
     for (let i = 0; i < config.numberOfTracks; i++) {
       this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
     }
@@ -68,6 +71,11 @@ export class Reaper implements INotifyPropertyChanged {
   /** Indicates whether OSC is ready to send and receive messages */
   public get isReady(): boolean {
     return this._isReady;
+  }
+
+  /** The master track */
+  public get master(): Track {
+    return this._masterTrack;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -151,7 +159,13 @@ export class Reaper implements INotifyPropertyChanged {
 
   private initHandlers() {
     this._handlers.push(
-      new TrackMessageHandler(trackNumber => (this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null)),
+      new TrackMessageHandler(trackNumber => {
+        if (trackNumber == 0) {
+          return this._masterTrack;
+        }
+
+        return this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null;
+      }),
       new TransportMessageHandler(this._transport),
       new BooleanMessageHandler('/click', value => (this._isMetronomeEnabled = value)),
     );

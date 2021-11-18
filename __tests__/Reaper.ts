@@ -30,6 +30,16 @@ test('has expected number of tracks', () => {
   expect(reaper.tracks.length).toBe(8);
 });
 
+test('tracks are numbered correctly', () => {
+  reaper.tracks.forEach((track, index) => {
+    expect(track.trackNumber).toBe(index + 1);
+  });
+});
+
+test('has master track with track number 0', () => {
+  expect(reaper.master.trackNumber).toBe(0);
+});
+
 test('sendOscMessage should throw when not ready', () => {
   expect(() => reaper.sendOscMessage(new StringMessage('/test', 'foo'))).toThrow(Error);
 });
