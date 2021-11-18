@@ -2,7 +2,7 @@
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscArgument, OscMessage} from './Messages';
+import {ActionMessage, OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import * as osc from 'osc';
