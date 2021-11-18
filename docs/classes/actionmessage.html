@@ -78,7 +78,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="stringmessage.html" class="tsd-signature-type">StringMessage</a>
+						<a href="oscmessage.html" class="tsd-signature-type">OscMessage</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">ActionMessage</span>
@@ -113,12 +113,12 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Action<wbr>Message<span class="tsd-signature-symbol">(</span>commandId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="actionmessage.html" class="tsd-signature-type">ActionMessage</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Action<wbr>Message<span class="tsd-signature-symbol">(</span>commandId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="actionmessage.html" class="tsd-signature-type">ActionMessage</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="stringmessage.html">StringMessage</a>.<a href="stringmessage.html#constructor">constructor</a></p>
+								<p>Overrides <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#constructor">constructor</a></p>
 								<ul>
 									<li>Defined in
 										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L92">
@@ -131,6 +131,9 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>commandId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = null</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="actionmessage.html" class="tsd-signature-type">ActionMessage</a></h4>
@@ -145,7 +148,7 @@
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> address</h3>
 					<div class="tsd-signature tsd-kind-icon">address<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="stringmessage.html">StringMessage</a>.<a href="stringmessage.html#address">address</a></p>
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#address">address</a></p>
 						<ul>
 							<li>Defined in
 								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L67">
@@ -160,7 +163,7 @@
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> address<wbr>Parts</h3>
 					<div class="tsd-signature tsd-kind-icon">address<wbr>Parts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="stringmessage.html">StringMessage</a>.<a href="stringmessage.html#addressparts">addressParts</a></p>
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#addressparts">addressParts</a></p>
 						<ul>
 							<li>Defined in
 								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L68">
@@ -175,7 +178,7 @@
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> args</h3>
 					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <a href="oscargument.html" class="tsd-signature-type">OscArgument</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="stringmessage.html">StringMessage</a>.<a href="stringmessage.html#args">args</a></p>
+						<p>Inherited from <a href="oscmessage.html">OscMessage</a>.<a href="oscmessage.html#args">args</a></p>
 						<ul>
 							<li>Defined in
 								<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Messages.ts#L69">

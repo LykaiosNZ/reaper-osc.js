@@ -75,15 +75,20 @@
 				<a href="#reaper-osc" id="reaper-osc" style="color: inherit; text-decoration: none;">
 					<h1>reaper-osc</h1>
 				</a>
-				<p>A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC). </p>
+				<p>A Node.js library for controlling Cockos Reaper using Open Sound Control (OSC).</p>
 				<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
 					<h2>API Reference</h2>
 				</a>
 				<p>You can find the API documentation <a href="https://lykaiosnz.github.io/reaper-osc.js/">here</a></p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p>Yarn: <code>yarn add reaper-osc</code>
+				npm: <code>npm i reaper-osc</code></p>
 				<a href="#basic-usage" id="basic-usage" style="color: inherit; text-decoration: none;">
 					<h2>Basic usage</h2>
 				</a>
-				<pre><code class="language-javascript"><span style="color: #D73A49">import</span><span style="color: #24292E"> { Reaper } </span><span style="color: #D73A49">from</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;reaper-osc&quot;</span><span style="color: #24292E">;</span>
+				<pre><code class="language-javascript"><span style="color: #D73A49">import</span><span style="color: #24292E"> {Reaper} </span><span style="color: #D73A49">from</span><span style="color: #24292E"> </span><span style="color: #032F62">&#039;reaper-osc&#039;</span><span style="color: #24292E">;</span>
 
 <span style="color: #D73A49">var</span><span style="color: #24292E"> reaper </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Reaper</span><span style="color: #24292E">();</span>
 
@@ -91,18 +96,16 @@
 <span style="color: #24292E">reaper.</span><span style="color: #6F42C1">startOsc</span><span style="color: #24292E">();</span>
 
 <span style="color: #6A737D">// Subscribe to state changes</span>
-<span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">onPropertyChanged</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;isMuted&quot;</span><span style="color: #24292E">, () </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
-<span style="color: #24292E">  console.</span><span style="color: #6F42C1">log</span><span style="color: #24292E">(</span>
-<span style="color: #24292E">    </span><span style="color: #032F62">`Track 1 was ${</span><span style="color: #24292E">reaper</span><span style="color: #032F62">.</span><span style="color: #24292E">tracks</span><span style="color: #032F62">[</span><span style="color: #005CC5">1</span><span style="color: #032F62">].</span><span style="color: #24292E">isMuted</span><span style="color: #032F62"> </span><span style="color: #D73A49">?</span><span style="color: #032F62"> </span><span style="color: #032F62">&quot;muted&quot;</span><span style="color: #032F62"> </span><span style="color: #D73A49">:</span><span style="color: #032F62"> </span><span style="color: #032F62">&quot;unmuted&quot;}`</span>
-<span style="color: #24292E">  );</span>
+<span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">onPropertyChanged</span><span style="color: #24292E">(</span><span style="color: #032F62">&#039;isMuted&#039;</span><span style="color: #24292E">, () </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
+<span style="color: #24292E">  console.</span><span style="color: #6F42C1">log</span><span style="color: #24292E">(</span><span style="color: #032F62">`Track 1 was ${</span><span style="color: #24292E">reaper</span><span style="color: #032F62">.</span><span style="color: #24292E">tracks</span><span style="color: #032F62">[</span><span style="color: #005CC5">0</span><span style="color: #032F62">].</span><span style="color: #24292E">isMuted</span><span style="color: #032F62"> </span><span style="color: #D73A49">?</span><span style="color: #032F62"> </span><span style="color: #032F62">&#039;muted&#039;</span><span style="color: #032F62"> </span><span style="color: #D73A49">:</span><span style="color: #032F62"> </span><span style="color: #032F62">&#039;unmuted&#039;}`</span><span style="color: #24292E">);</span>
 <span style="color: #24292E">});</span>
 
 <span style="color: #6A737D">// Wait for the port to open, then start sending commands</span>
 <span style="color: #24292E">reaper.</span><span style="color: #6F42C1">onReady</span><span style="color: #24292E">(() </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
 <span style="color: #24292E">  reaper.transport.</span><span style="color: #6F42C1">play</span><span style="color: #24292E">();</span>
-<span style="color: #24292E">  </span>
-<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">mute</span><span style="color: #24292E">();</span>
-<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">1</span><span style="color: #24292E">].</span><span style="color: #6F42C1">unmute</span><span style="color: #24292E">();</span>
+
+<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">mute</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">unmute</span><span style="color: #24292E">();</span>
 <span style="color: #24292E">});</span>
 </code></pre>
 			</div>
