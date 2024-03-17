@@ -19,18 +19,14 @@ import {Reaper} from 'reaper-osc';
 var reaper = new Reaper();
 
 // Start listening for messages
-reaper.startOsc();
+await reaper.start()
 
 // Subscribe to state changes
 reaper.tracks[0].onPropertyChanged('isMuted', () => {
   console.log(`Track 1 was ${reaper.tracks[0].isMuted ? 'muted' : 'unmuted'}`);
 });
 
-// Wait for the port to open, then start sending commands
-reaper.onReady(() => {
-  reaper.transport.play();
-
-  reaper.tracks[0].mute();
-  reaper.tracks[0].unmute();
-});
+reaper.transport.play();
+reaper.tracks[0].mute();
+reaper.tracks[0].unmute();
 ```
