@@ -12,8 +12,8 @@ export interface IMessageHandler {
   handle(message: OscMessage): boolean;
 }
 
-/** 
- * Routes messages to the appropriate track 
+/**
+ * Routes messages to the appropriate track
  * @param trackSelector A function that can be used to get a track
  * */
 export class TrackMessageHandler implements IMessageHandler {
