@@ -10,20 +10,22 @@ beforeEach(() => {
   reaper = setUpReaper();
 });
 
-afterEach(done => {
+afterEach(async () => {
   testOsc.close();
-  reaper.stopOsc();
-
-  setTimeout(() => done(), 10);
+  await reaper.stop();
 });
 
-test('should be ready after onReady fires', done => {
-  reaper.onReady(() => {
-    expect(reaper.isReady).toBeTruthy();
-    done();
-  });
+test('should be ready after starting', async () => {
+  await reaper.start();
 
-  reaper.startOsc();
+  expect(reaper.isReady).toBeTruthy()
+});
+
+test('should not be ready after stopping', async () => {
+  await reaper.start();
+  await reaper.stop();
+
+  expect(reaper.isReady).toBeFalsy()
 });
 
 test('has expected number of tracks', () => {
@@ -49,62 +51,65 @@ test.each([-1, 128])('triggerAction should throw when value is less than 0 or gr
 });
 
 describe('properties set by messages', () => {
-  test.each([true, false])('click message sets isMetronomeEnabled: %p', (value, done: any) => {
-    reaper.startOsc();
+  test.each([true, false])('click message sets isMetronomeEnabled: %p', async (value) => {
+    await reaper.start()
     testOsc.open();
 
     const message = new BooleanMessage('/click', value);
 
     testOsc.send(message);
 
-    setTimeout(() => {
+    return new Promise<void>((res) => setTimeout(() => {
       expect(reaper.isMetronomeEnabled).toBe(value);
-      done();
-    }, 10);
+      res()
+    }, 10));
   });
 });
 
 describe('methods send expected messages', () => {
-  test('toggleMetronome sends expected message', done => {
-    expectOscMessage(() => reaper.toggleMetronome(), {address: '/click', args: []}, done);
+  test('toggleMetronome sends expected message', async () => {
+    await expectOscMessage(() => reaper.toggleMetronome(), {address: '/click', args: []});
   });
 
-  test('refreshControlSurfaces sends expected message', done => {
-    expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]}, done);
+  test('refreshControlSurfaces sends expected message', async () => {
+   await expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]});
   });
 
-  test.each(['foo', 1234])('triggerAction sends expected message: %p', (commandId, done: any) => {
-    expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]}, done);
+  test.each(['foo', 1234])('triggerAction sends expected message: %p', async (commandId, ) => {
+    await expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]});
   });
 
-  test('triggerAction sends expected additional args', done => {
+  test('triggerAction sends expected additional args', async () => {
     const commandId = 'foo';
     const value = 127;
     const expectedArgs = [new StringArgument(commandId.toString()), new FloatArgument(value)];
-    expectOscMessage(() => reaper.triggerAction(commandId, value), {address: '/action/str', args: expectedArgs}, done);
+   await expectOscMessage(() => reaper.triggerAction(commandId, value), {address: '/action/str', args: expectedArgs});
   });
 
-  test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', (message, done: any) => {
-    expectOscMessage(() => reaper.sendOscMessage(message), {address: message.address, args: message.args}, done);
+  test.each([new StringMessage('/string', 'foo'), new IntegerMessage('/int', 1234)])('sendOscMessage sends expected message: %p', async (message) => {
+    await expectOscMessage(() => reaper.sendOscMessage(message), {address: message.address, args: message.args});
   });
 });
 
-function expectOscMessage(fn: () => void, expected: {address: string; args: OscArgument<unknown>[]}, done: jest.DoneCallback) {
-  testOsc.on('message', (message: OscMessage) => {
-    try {
-      expect(message).toMatchObject(expected);
-      done();
-    } catch (error) {
-      done(error);
-    }
-  });
+async function expectOscMessage(fn: () => void, expected: {address: string; args: OscArgument<unknown>[]}) {
+  
+  const promise = new Promise<void>((res, rej) => {
+    testOsc.on('message', (message: OscMessage) => {
+      try {
+        expect(message).toMatchObject(expected);
+        res()
+      } catch (error) {
+        rej(error);
+      }
+    });
+  })
 
-  reaper.onReady(() => {
-    fn();
-  });
-
-  reaper.startOsc();
   testOsc.open();
+  await reaper.start()
+
+  fn()
+
+  return promise;
 }
 
 function setUpOsc() {
