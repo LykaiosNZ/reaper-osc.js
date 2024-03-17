@@ -8,7 +8,6 @@ import {Transport} from './Transport';
 import * as osc from 'osc';
 import {BooleanMessageHandler, IMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {SignalDispatcher} from 'ste-signals';
 
 /**
  * Allows control of an instance of Reaper via OSC.
@@ -31,6 +30,7 @@ export class Reaper implements INotifyPropertyChanged {
   private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
   private readonly _handlers: IMessageHandler[] = [];
   private _isReady = false;
+  private readonly _log: Logger;
   private readonly _masterTrack: Track;
 
   // No type defs for osc libary so don't have much choice here
@@ -51,6 +51,7 @@ export class Reaper implements INotifyPropertyChanged {
     });
 
     this._afterMessageReceived = config.afterMessageReceived;
+    this._log = config.log;
 
     this.initOsc();
     this.initHandlers();
@@ -100,18 +101,18 @@ export class Reaper implements INotifyPropertyChanged {
 
     this._osc.send(message);
 
-    console.debug('OSC message sent', message);
+    this._log('debug', 'OSC Message sent', message);
   }
 
   /** Open the OSC port and start listening for messages */
   public async start(): Promise<void> {
-    if (this.isReady)
-    {
+    if (this.isReady) {
       return;
     }
 
-    const promise = new Promise<void>((resolve) => {
+    const promise = new Promise<void>(resolve => {
       this._osc.once('ready', () => {
+        this._log('debug', 'OSC listener ready');
         this._isReady = true;
         resolve();
       });
@@ -124,13 +125,13 @@ export class Reaper implements INotifyPropertyChanged {
 
   /** Stop listening for OSC messages */
   public async stop(): Promise<void> {
-    if (!this._isReady)
-    {
+    if (!this._isReady) {
       return;
     }
 
-    const promise = new Promise<void>((resolve) => {
+    const promise = new Promise<void>(resolve => {
       this._osc.once('close', () => {
+        this._log('debug', 'OSC listener stopped');
         resolve();
       });
     });
@@ -194,7 +195,7 @@ export class Reaper implements INotifyPropertyChanged {
 
   private initOsc() {
     this._osc.on('error', (err: Error) => {
-      console.error('OSC error received', err);
+      this._log('error', 'OSC error received', err);
     });
 
     this._osc.on('message', (message: OscMessage) => {
@@ -223,6 +224,8 @@ export class ReaperConfiguration {
   localAddress = '127.0.0.1';
   /** The port to listen for Reaper OSC messages on */
   localPort = 9000;
+  /** Function for logging messages. Defaults to logging to console */
+  log: Logger = ConsoleLogger;
   /** Number of FX per track */
   numberOfFx = 8;
   /** Number of tracks per bank */
@@ -231,4 +234,31 @@ export class ReaperConfiguration {
   remoteAddress = '127.0.0.1';
   /** The port to send Reaper OSC messages to */
   remotePort = 8000;
+}
+
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Logger = (level: LogLevel, message: string, ...optionalParams: any[]) => void;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ConsoleLogger(level: LogLevel, message: string, ...optionalParams: any[]): void {
+  switch (level) {
+    case 'debug': {
+      console.debug(message, optionalParams);
+      break;
+    }
+    case 'info': {
+      console.log(message, optionalParams);
+      break;
+    }
+    case 'warn': {
+      console.warn(message, optionalParams);
+      break;
+    }
+    case 'error': {
+      console.error(message, optionalParams);
+      break;
+    }
+  }
 }
