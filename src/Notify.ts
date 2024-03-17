@@ -10,8 +10,9 @@ export interface INotifyPropertyChanged {
    * An event that can be subscribed to for property change notifications
    * @param property The name of the property to subscribe to
    * @param callback A callback to be called when the state of the specified property changes
+   * @returns A function that unsubscribes the event handler
    */
-  onPropertyChanged(property: string, callback: () => void): void;
+  onPropertyChanged(property: string, callback: () => void): () => void;
 }
 
 /**
@@ -64,8 +65,8 @@ export function notifyOnPropertyChanged<T extends {new (...args: any[]): {}}>(co
   return class extends constructor {
     private readonly _propertyChanged = new SimpleEventDispatcher<string>();
 
-    public onPropertyChanged(property: string, callback: () => void): void {
-      this._propertyChanged.sub(prop => {
+    public onPropertyChanged(property: string, callback: () => void): () => void {
+      return this._propertyChanged.sub(prop => {
         if (property === prop) {
           callback();
         }

@@ -112,7 +112,7 @@ export class Track implements INotifyPropertyChanged {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onPropertyChanged(property: string, callback: () => void): void {
+  public onPropertyChanged(property: string, callback: () => void): () => void {
     throw new Error('not implemented');
   }
 

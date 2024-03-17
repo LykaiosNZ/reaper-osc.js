@@ -30,14 +30,13 @@ export class Reaper implements INotifyPropertyChanged {
 
   private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
   private readonly _handlers: IMessageHandler[] = [];
-  private _isReady = false;
+  private _isRunning = false;
   private readonly _masterTrack: Track;
 
   // No type defs for osc libary so don't have much choice here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _osc: any;
 
-  private readonly _readyDispatcher = new SignalDispatcher();
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport = new Transport(message => this.sendOscMessage(message));
 
@@ -69,8 +68,8 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   /** Indicates whether OSC is ready to send and receive messages */
-  public get isReady(): boolean {
-    return this._isReady;
+  public get isRunning(): boolean {
+    return this._isRunning;
   }
 
   /** The master track */
@@ -79,14 +78,8 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onPropertyChanged(property: string, callback: () => void): void {
+  public onPropertyChanged(property: string, callback: () => void): () => void {
     throw new Error('not implemented');
-  }
-
-  /** An event that can be subscribed to for notification when OSC is ready */
-  public onReady(callback: () => void): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this._readyDispatcher.sub(() => callback());
   }
 
   /**
@@ -97,11 +90,11 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   /**
-   * Send a message to Reaper via OSC. Messages may not be sent while {@link Reaper.isReady} is false.
+   * Send a message to Reaper via OSC. Messages may not be sent while {@link Reaper.isRunning} is false.
    * @param message The OSC message to be sent
    */
   public sendOscMessage(message: OscMessage): void {
-    if (!this._isReady) {
+    if (!this._isRunning) {
       throw new Error("Can't send while OSC is not ready");
     }
 
@@ -111,13 +104,31 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   /** Open the OSC port and start listening for messages */
-  public startOsc(): void {
+  public async start(): Promise<void> {
+    const promise = new Promise<void>(resolve => {
+      this._osc.once('ready', () => {
+        this._isRunning = true;
+        resolve();
+      });
+    });
+
     this._osc.open();
+
+    return promise;
   }
 
   /** Stop listening for OSC messages */
-  public stopOsc(): void {
+  public async stop(): Promise<void> {
+    const promise = new Promise<void>(resolve => {
+      this._osc.once('close', () => {
+        resolve();
+      });
+    });
+
+    this._isRunning = false;
     this._osc.close();
+
+    return promise;
   }
 
   /** Toggle the metronome on or off */
@@ -172,19 +183,11 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   private initOsc() {
-    this._osc.on('ready', () => {
-      this._isReady = true;
-      console.debug('OSC ready');
-      this._readyDispatcher.dispatch();
-    });
-
     this._osc.on('error', (err: Error) => {
       console.error('OSC error received', err);
     });
 
     this._osc.on('message', (message: OscMessage) => {
-      //console.log('osc', message);
-
       // TODO: Figure out a better way to handle this
       message = new OscMessage(message.address, message.args);
 
@@ -200,10 +203,6 @@ export class Reaper implements INotifyPropertyChanged {
       if (this._afterMessageReceived !== null) {
         this._afterMessageReceived(message, handled);
       }
-    });
-
-    this._osc.on('close', () => {
-      console.debug('OSC stopped');
     });
   }
 }
