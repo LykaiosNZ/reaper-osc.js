@@ -30,7 +30,7 @@ export class Reaper implements INotifyPropertyChanged {
 
   private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
   private readonly _handlers: IMessageHandler[] = [];
-  private _isRunning = false;
+  private _isReady = false;
   private readonly _masterTrack: Track;
 
   // No type defs for osc libary so don't have much choice here
@@ -68,8 +68,8 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   /** Indicates whether OSC is ready to send and receive messages */
-  public get isRunning(): boolean {
-    return this._isRunning;
+  public get isReady(): boolean {
+    return this._isReady;
   }
 
   /** The master track */
@@ -90,11 +90,11 @@ export class Reaper implements INotifyPropertyChanged {
   }
 
   /**
-   * Send a message to Reaper via OSC. Messages may not be sent while {@link Reaper.isRunning} is false.
+   * Send a message to Reaper via OSC. Messages may not be sent while {@link Reaper.isReady} is false.
    * @param message The OSC message to be sent
    */
   public sendOscMessage(message: OscMessage): void {
-    if (!this._isRunning) {
+    if (!this._isReady) {
       throw new Error("Can't send while OSC is not ready");
     }
 
@@ -105,9 +105,14 @@ export class Reaper implements INotifyPropertyChanged {
 
   /** Open the OSC port and start listening for messages */
   public async start(): Promise<void> {
-    const promise = new Promise<void>(resolve => {
+    if (this.isReady)
+    {
+      return;
+    }
+
+    const promise = new Promise<void>((resolve) => {
       this._osc.once('ready', () => {
-        this._isRunning = true;
+        this._isReady = true;
         resolve();
       });
     });
@@ -119,13 +124,18 @@ export class Reaper implements INotifyPropertyChanged {
 
   /** Stop listening for OSC messages */
   public async stop(): Promise<void> {
-    const promise = new Promise<void>(resolve => {
+    if (!this._isReady)
+    {
+      return;
+    }
+
+    const promise = new Promise<void>((resolve) => {
       this._osc.once('close', () => {
         resolve();
       });
     });
 
-    this._isRunning = false;
+    this._isReady = false;
     this._osc.close();
 
     return promise;
