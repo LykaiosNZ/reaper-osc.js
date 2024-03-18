@@ -222,10 +222,9 @@ ZOOM_X+ b/zoom/x/+ r/zoom/x
 ZOOM_Y- b/zoom/y/- r/zoom/y
 ZOOM_Y+ b/zoom/y/+ r/zoom/y
 
-# TODO TRANSPORT TIME
-TIME f/time s/time/str
+TIME s/time/str
 BEAT s/beat/str
-SAMPLES f/samples s/samples/str
+# SAMPLES f/samples s/samples/str
 FRAMES s/frames/str
 
 METRONOME t/click
