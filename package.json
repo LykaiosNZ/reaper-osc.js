@@ -33,6 +33,7 @@
     "eslint": "^7.26.0",
     "jest": "^27.0.4",
     "prettier": "^2.3.0",
+    "semantic-release": "22.0.12",
     "tsc-watch": "^4.2.9",
     "typedoc": "^0.20.36",
     "typedoc-neo-theme": "^1.1.1",
