@@ -3,12 +3,18 @@
  * @module
  */
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {BooleanMessageHandler, IMessageHandler} from './Handlers';
+import {BooleanMessageHandler, IMessageHandler, StringMessageHandler} from './Handlers';
 import {BooleanMessage, ISendOscMessage, OscMessage} from './Messages';
 
 /** The Reaper transport */
 @notifyOnPropertyChanged
 export class Transport implements INotifyPropertyChanged {
+  @notify<Transport>('beat')
+  private _beat = '1.1.00'
+
+  @notify<Transport>('frames')
+  private _frames = '00:00:00:00'
+
   @notify<Transport>('isFastForwarding')
   private _isFastForwarding = false;
 
@@ -27,6 +33,9 @@ export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isStopped')
   private _isStopped = false;
 
+  @notify<Transport>('time')
+  private _time = '0:00.0000';
+
   private readonly _handlers: IMessageHandler[] = [
     new BooleanMessageHandler('/repeat', value => (this._isRepeatEnabled = value)),
     new BooleanMessageHandler('/record', value => (this._isRecording = value)),
@@ -34,6 +43,10 @@ export class Transport implements INotifyPropertyChanged {
     new BooleanMessageHandler('/play', value => (this._isPlaying = value)),
     new BooleanMessageHandler('/rewind', value => (this._isRewinding = value)),
     new BooleanMessageHandler('/forward', value => (this._isFastForwarding = value)),
+
+    new StringMessageHandler('/time/str', value => (this._time = value)),
+    new StringMessageHandler('/beat/str', value => (this._beat = value)),
+    new StringMessageHandler('/frames/str', value => (this._frames = value))
   ];
 
   private readonly _sendOscMessage: ISendOscMessage;
@@ -43,6 +56,14 @@ export class Transport implements INotifyPropertyChanged {
    */
   constructor(sendOscMessage: ISendOscMessage) {
     this._sendOscMessage = sendOscMessage;
+  }
+
+  public get beat(): string {
+    return this._beat;
+  }
+
+  public get frames(): string {
+    return this._frames;
   }
 
   /** Indicates whether playback is active  */
@@ -73,6 +94,11 @@ export class Transport implements INotifyPropertyChanged {
   /** Indicates whether repeat is enabled */
   public get isRepeatEnabled(): boolean {
     return this._isRepeatEnabled;
+  }
+
+  /** Indicates the current transport time in string format */
+  public get time(): string {
+    return this._time;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
