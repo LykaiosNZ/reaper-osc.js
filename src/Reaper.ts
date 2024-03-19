@@ -2,7 +2,7 @@
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscMessage} from './Messages';
+import {ActionMessage, OscMessage, RawOscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import * as osc from 'osc';
@@ -198,9 +198,8 @@ export class Reaper implements INotifyPropertyChanged {
       this._log('error', 'OSC error received', err);
     });
 
-    this._osc.on('message', (message: OscMessage) => {
-      // TODO: Figure out a better way to handle this
-      message = new OscMessage(message.address, message.args);
+    this._osc.on('message', (rawMessage: RawOscMessage) => {
+     const message = new OscMessage(rawMessage.address, rawMessage.args);
 
       let handled = false;
 

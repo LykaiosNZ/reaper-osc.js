@@ -29,61 +29,59 @@ export enum OscArgumentType {
   MIDI = 'm',
 }
 
-export class OscArgument<T> {
-  public readonly type: OscArgumentType;
-  public readonly value: T;
-
-  constructor(type: OscArgumentType, value: T) {
-    this.type = type;
-    this.value = value;
-  }
+export interface OscArgument<T> {
+  readonly type: OscArgumentType;
+  value: T;
 }
 
-export class StringArgument extends OscArgument<string> {
-  constructor(value: string) {
-    super(OscArgumentType.STRING, value);
-  }
+export type SomeOscArgument = StringArgument | IntArgument | FloatArgument
+
+export interface StringArgument extends OscArgument<string> {
+  type: OscArgumentType.STRING
+  readonly value: string
 }
 
-export class IntArgument extends OscArgument<number> {
-  constructor(value: number) {
-    super(OscArgumentType.INT, value);
-  }
+export interface IntArgument extends OscArgument<number> {
+  type: OscArgumentType.INT
+  readonly value: number
 }
 
-export class BoolArgument extends IntArgument {
-  constructor(value: boolean) {
-    super(value ? 1 : 0);
-  }
+export interface FloatArgument extends OscArgument<number> {
+  type: OscArgumentType.FLOAT
+  readonly value: number
 }
 
-export class FloatArgument extends OscArgument<number> {
-  constructor(value: number) {
-    super(OscArgumentType.FLOAT, value);
-  }
+export const StringArgument = (value: string) : StringArgument => ({type: OscArgumentType.STRING, value: value})
+export const IntArgument = (value: number) : IntArgument => ({type: OscArgumentType.INT, value: value})
+export const FloatArgument = (value: number) : FloatArgument => ({type: OscArgumentType.FLOAT, value: value})
+export const BoolArgument = (value: boolean) : IntArgument => ({type: OscArgumentType.INT, value: value ? 1 : 0})
+
+export type RawOscMessage = {
+  readonly address: string
+  readonly args?: SomeOscArgument[]
 }
 
 export class OscMessage {
   public readonly address: string;
   public readonly addressParts: string[];
-  public readonly args: OscArgument<unknown>[];
+  public readonly args: SomeOscArgument[];
 
-  constructor(address: string, args?: OscArgument<unknown>[]) {
+  constructor(address: string, args?: SomeOscArgument[]) {
     this.address = address;
     this.args = args ?? [];
-    this.addressParts = address.split('/');
+    this.addressParts = address.split('/').slice(1);
   }
 }
 
 export class StringMessage extends OscMessage {
   constructor(address: string, value: string) {
-    super(address, [new StringArgument(value)]);
+    super(address, [StringArgument(value)]);
   }
 }
 
 export class BooleanMessage extends OscMessage {
   constructor(address: string, value: boolean) {
-    const args = [new BoolArgument(value)];
+    const args: SomeOscArgument[] = [BoolArgument(value)];
 
     super(address, args);
   }
@@ -95,10 +93,10 @@ export class ActionMessage extends OscMessage {
       commandId = commandId.toString();
     }
 
-    const args: OscArgument<unknown>[] = [new StringArgument(commandId)];
+    const args: SomeOscArgument[] = [StringArgument(commandId)];
 
     if (value !== null) {
-      args.push(new FloatArgument(value));
+      args.push(FloatArgument(value));
     }
 
     super('/action/str', args);
@@ -113,7 +111,7 @@ export class ToggleMessage extends OscMessage {
 
 export class IntegerMessage extends OscMessage {
   constructor(address: string, value: number) {
-    const args = [new IntArgument(value)];
+    const args: SomeOscArgument[] = [IntArgument(value)];
 
     super(address, args);
   }
@@ -121,7 +119,7 @@ export class IntegerMessage extends OscMessage {
 
 export class FloatMessage extends OscMessage {
   constructor(address: string, value: number) {
-    const args = [new FloatArgument(value)];
+    const args: SomeOscArgument[] = [FloatArgument(value)];
 
     super(address, args);
   }

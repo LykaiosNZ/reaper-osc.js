@@ -20,8 +20,8 @@ export class TrackMessageHandler implements IMessageHandler {
   constructor(private readonly trackSelector: (trackNumber: number) => Track | null) {}
 
   public handle(message: OscMessage): boolean {
-    if (message.addressParts[1] === 'track') {
-      const trackNumber = parseInt(message.addressParts[2]);
+    if (message.addressParts[0] === 'track') {
+      const trackNumber = parseInt(message.addressParts[1]);
 
       // If NaN, probably means that it's a message for the selected track - ignore
       if (isNaN(trackNumber)) {
@@ -53,8 +53,8 @@ export class TrackFxMessageHandler implements IMessageHandler {
   constructor(private readonly fxSelector: (fxNumber: number) => TrackFx | null) {}
 
   public handle(message: OscMessage): boolean {
-    if (message.addressParts[1] === 'track' && message.addressParts[3] === 'fx') {
-      const fxNumber = parseInt(message.addressParts[4]);
+    if (message.addressParts[0] === 'track' && message.addressParts[2] === 'fx') {
+      const fxNumber = parseInt(message.addressParts[3]);
 
       if (isNaN(fxNumber)) {
         throw new Error('Expected an integer');

@@ -58,7 +58,7 @@ describe('methods send expected messages', () => {
   test('bypass sends expected message', done => {
     const trackFx = new TrackFx(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -71,7 +71,7 @@ describe('methods send expected messages', () => {
   test('closeUi sends expected message', done => {
     const trackFx = new TrackFx(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -97,7 +97,7 @@ describe('methods send expected messages', () => {
   test('openUi sends expected message', done => {
     const trackFx = new TrackFx(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -123,7 +123,7 @@ describe('methods send expected messages', () => {
   test('unbypass sends expected message', done => {
     const trackFx = new TrackFx(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
