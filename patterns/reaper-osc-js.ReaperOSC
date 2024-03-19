@@ -222,9 +222,9 @@ ZOOM_X+ b/zoom/x/+ r/zoom/x
 ZOOM_Y- b/zoom/y/- r/zoom/y
 ZOOM_Y+ b/zoom/y/+ r/zoom/y
 
-TIME s/time/str
+TIME f/time s/time/str
 BEAT s/beat/str
-# SAMPLES f/samples s/samples/str
+SAMPLES f/samples s/samples/str
 FRAMES s/frames/str
 
 METRONOME t/click
