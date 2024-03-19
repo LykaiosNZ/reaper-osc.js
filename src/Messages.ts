@@ -34,32 +34,32 @@ export interface OscArgument<T> {
   value: T;
 }
 
-export type SomeOscArgument = StringArgument | IntArgument | FloatArgument
+export type SomeOscArgument = StringArgument | IntArgument | FloatArgument;
 
 export interface StringArgument extends OscArgument<string> {
-  type: OscArgumentType.STRING
-  readonly value: string
+  type: OscArgumentType.STRING;
+  readonly value: string;
 }
 
 export interface IntArgument extends OscArgument<number> {
-  type: OscArgumentType.INT
-  readonly value: number
+  type: OscArgumentType.INT;
+  readonly value: number;
 }
 
 export interface FloatArgument extends OscArgument<number> {
-  type: OscArgumentType.FLOAT
-  readonly value: number
+  type: OscArgumentType.FLOAT;
+  readonly value: number;
 }
 
-export const StringArgument = (value: string) : StringArgument => ({type: OscArgumentType.STRING, value: value})
-export const IntArgument = (value: number) : IntArgument => ({type: OscArgumentType.INT, value: value})
-export const FloatArgument = (value: number) : FloatArgument => ({type: OscArgumentType.FLOAT, value: value})
-export const BoolArgument = (value: boolean) : IntArgument => ({type: OscArgumentType.INT, value: value ? 1 : 0})
+export const StringArgument = (value: string): StringArgument => ({type: OscArgumentType.STRING, value: value});
+export const IntArgument = (value: number): IntArgument => ({type: OscArgumentType.INT, value: value});
+export const FloatArgument = (value: number): FloatArgument => ({type: OscArgumentType.FLOAT, value: value});
+export const BoolArgument = (value: boolean): IntArgument => ({type: OscArgumentType.INT, value: value ? 1 : 0});
 
 export type RawOscMessage = {
-  readonly address: string
-  readonly args?: SomeOscArgument[]
-}
+  readonly address: string;
+  readonly args?: SomeOscArgument[];
+};
 
 export class OscMessage {
   public readonly address: string;

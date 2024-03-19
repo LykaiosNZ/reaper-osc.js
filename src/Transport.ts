@@ -10,10 +10,10 @@ import {BooleanMessage, FloatMessage, ISendOscMessage, OscMessage, StringMessage
 @notifyOnPropertyChanged
 export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('beat')
-  private _beat = '1.1.00'
+  private _beat = '1.1.00';
 
   @notify<Transport>('frames')
-  private _frames = '00:00:00:00'
+  private _frames = '00:00:00:00';
 
   @notify<Transport>('isFastForwarding')
   private _isFastForwarding = false;
@@ -46,7 +46,7 @@ export class Transport implements INotifyPropertyChanged {
 
     new FloatMessageHandler('/time', value => (this._time = value)),
     new StringMessageHandler('/beat/str', value => (this._beat = value)),
-    new StringMessageHandler('/frames/str', value => (this._frames = value))
+    new StringMessageHandler('/frames/str', value => (this._frames = value)),
   ];
 
   private readonly _sendOscMessage: ISendOscMessage;
@@ -107,25 +107,25 @@ export class Transport implements INotifyPropertyChanged {
    * @param beat The beat to jump to
    */
   public jumpToBeat(beat: Beat): void {
-    this._sendOscMessage(new StringMessage('/beat/str', beat.toString()))
+    this._sendOscMessage(new StringMessage('/beat/str', beat.toString()));
   }
 
-  /** Jumps to the specified frame (absolute) 
+  /** Jumps to the specified frame (absolute)
    * @param frame Frame to jump to (in format h:m:s:f). Values in an invalid format will be ignored by Reaper
-  */
+   */
   public jumpToFrame(frame: string): void {
-    this._sendOscMessage(new StringMessage('/frames/str', frame))
+    this._sendOscMessage(new StringMessage('/frames/str', frame));
   }
 
   /** Jumps to the specified time in seconds (absolute)
    * @param time The time to jump to (in seconds). If this value is negative, Reaper will jump to 0
    */
   public jumpToTime(time: number): void {
-    this._sendOscMessage(new FloatMessage('/time', time))
+    this._sendOscMessage(new FloatMessage('/time', time));
   }
 
   /**
-   * Jumps to a relative time in seconds. 
+   * Jumps to a relative time in seconds.
    * Note that the absolute value to jump to is calculated by the library based on the currently known time,
    * as Reaper does not appear to support jumping to a relative time via OSC
    * @param time The relative time jump (in seconds)
@@ -133,7 +133,7 @@ export class Transport implements INotifyPropertyChanged {
   public jumpToTimeRelative(time: number): void {
     const newTime = Math.max(this._time + time, 0);
 
-    this._sendOscMessage(new FloatMessage('/time', newTime))
+    this._sendOscMessage(new FloatMessage('/time', newTime));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -203,37 +203,37 @@ export class Transport implements INotifyPropertyChanged {
 
 /** Represents a beat value in Reaper */
 export class Beat {
-	private readonly _beat: number
-	private readonly _fraction: number
-	private readonly _measure: number
+  private readonly _beat: number;
+  private readonly _fraction: number;
+  private readonly _measure: number;
 
   /**
    * @param measure The measure of the beat
    * @param beat The beat in the measure
    * @param fraction The beat fraction (must be >= 0 and < 100)
    */
-	constructor(measure: number, beat: number, fraction: number) {
-		if (fraction < 0 || fraction >= 100) {
-			throw new Error(`Invalid fraction ${fraction}, must be >= 0 and < 100`)
-		}
+  constructor(measure: number, beat: number, fraction: number) {
+    if (fraction < 0 || fraction >= 100) {
+      throw new Error(`Invalid fraction ${fraction}, must be >= 0 and < 100`);
+    }
 
     this._beat = beat;
     this._fraction = fraction;
     this._measure = measure;
-	}
+  }
 
   /** Indicates the beat portion of the beat (mm) */
-	public get beat() : number {
+  public get beat(): number {
     return this._beat;
   }
 
   /** Indicates the fraction portion of the beat (bb) */
-  public get fraction() : number {
+  public get fraction(): number {
     return this._fraction;
   }
 
   /** Indicates the measure of the beat (xx) */
-  public get measure() : number {
+  public get measure(): number {
     return this._measure;
   }
 
@@ -243,12 +243,11 @@ export class Beat {
    * @returns The parsed beat
    * @throws Throws an error when the format is invalid
    */
-  public static parse(value: string) : Beat {
+  public static parse(value: string): Beat {
     const parts = value.split('.');
 
-    if (parts.length != 3)
-    {
-      throw new Error('Must be in the format mm.bb.xx')
+    if (parts.length != 3) {
+      throw new Error('Must be in the format mm.bb.xx');
     }
 
     const numberParts: number[] = [];
@@ -258,13 +257,13 @@ export class Beat {
       numberParts.push(intValue);
     });
 
-    return new Beat(numberParts[0], numberParts[1], numberParts[2])
+    return new Beat(numberParts[0], numberParts[1], numberParts[2]);
   }
 
   /**
    * Converts the beat into its string representation in the format mm.bb.xx
    */
-  public toString() : string {
-    return `${this.measure}.${this.beat}.${this.fraction}`
+  public toString(): string {
+    return `${this.measure}.${this.beat}.${this.fraction}`;
   }
 }

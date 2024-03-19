@@ -199,7 +199,7 @@ export class Reaper implements INotifyPropertyChanged {
     });
 
     this._osc.on('message', (rawMessage: RawOscMessage) => {
-     const message = new OscMessage(rawMessage.address, rawMessage.args);
+      const message = new OscMessage(rawMessage.address, rawMessage.args);
 
       let handled = false;
 

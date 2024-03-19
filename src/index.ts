@@ -15,4 +15,4 @@ export * from './Fx';
 export * from './Handlers';
 export * from './Messages';
 
-export { INotifyPropertyChanged } from './Notify'
+export {INotifyPropertyChanged} from './Notify';
