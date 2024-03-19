@@ -93,20 +93,16 @@
 <span style="color: #D73A49">var</span><span style="color: #24292E"> reaper </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Reaper</span><span style="color: #24292E">();</span>
 
 <span style="color: #6A737D">// Start listening for messages</span>
-<span style="color: #24292E">reaper.</span><span style="color: #6F42C1">startOsc</span><span style="color: #24292E">();</span>
+<span style="color: #D73A49">await</span><span style="color: #24292E"> reaper.</span><span style="color: #6F42C1">start</span><span style="color: #24292E">()</span>
 
 <span style="color: #6A737D">// Subscribe to state changes</span>
 <span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">onPropertyChanged</span><span style="color: #24292E">(</span><span style="color: #032F62">&#039;isMuted&#039;</span><span style="color: #24292E">, () </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
 <span style="color: #24292E">  console.</span><span style="color: #6F42C1">log</span><span style="color: #24292E">(</span><span style="color: #032F62">`Track 1 was ${</span><span style="color: #24292E">reaper</span><span style="color: #032F62">.</span><span style="color: #24292E">tracks</span><span style="color: #032F62">[</span><span style="color: #005CC5">0</span><span style="color: #032F62">].</span><span style="color: #24292E">isMuted</span><span style="color: #032F62"> </span><span style="color: #D73A49">?</span><span style="color: #032F62"> </span><span style="color: #032F62">&#039;muted&#039;</span><span style="color: #032F62"> </span><span style="color: #D73A49">:</span><span style="color: #032F62"> </span><span style="color: #032F62">&#039;unmuted&#039;}`</span><span style="color: #24292E">);</span>
 <span style="color: #24292E">});</span>
 
-<span style="color: #6A737D">// Wait for the port to open, then start sending commands</span>
-<span style="color: #24292E">reaper.</span><span style="color: #6F42C1">onReady</span><span style="color: #24292E">(() </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> {</span>
-<span style="color: #24292E">  reaper.transport.</span><span style="color: #6F42C1">play</span><span style="color: #24292E">();</span>
-
-<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">mute</span><span style="color: #24292E">();</span>
-<span style="color: #24292E">  reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">unmute</span><span style="color: #24292E">();</span>
-<span style="color: #24292E">});</span>
+<span style="color: #24292E">reaper.transport.</span><span style="color: #6F42C1">play</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">mute</span><span style="color: #24292E">();</span>
+<span style="color: #24292E">reaper.tracks[</span><span style="color: #005CC5">0</span><span style="color: #24292E">].</span><span style="color: #6F42C1">unmute</span><span style="color: #24292E">();</span>
 </code></pre>
 			</div>
 			<!--{&quot;options&quot;:&quot;./typedoc.json&quot;,&quot;tsconfig&quot;:&quot;C:\\repos\\reaper-osc.js&quot;,&quot;entryPoints&quot;:[&quot;./src/index.ts&quot;],&quot;exclude&quot;:[&quot;**/*.d.ts&quot;,&quot;**/Example.ts&quot;],&quot;externalPattern&quot;:[&quot;**/node_modules/**&quot;],&quot;excludeExternals&quot;:true,&quot;excludeNotDocumented&quot;:false,&quot;excludeInternal&quot;:false,&quot;excludePrivate&quot;:true,&quot;excludeProtected&quot;:false,&quot;disableSources&quot;:false,&quot;includes&quot;:&quot;&quot;,&quot;media&quot;:&quot;&quot;,&quot;watch&quot;:false,&quot;preserveWatchOutput&quot;:false,&quot;emit&quot;:false,&quot;out&quot;:&quot;./docs&quot;,&quot;json&quot;:&quot;&quot;,&quot;pretty&quot;:true,&quot;theme&quot;:&quot;./node_modules/typedoc-neo-theme/bin/default&quot;,&quot;highlightTheme&quot;:&quot;github-light&quot;,&quot;name&quot;:&quot;&quot;,&quot;includeVersion&quot;:false,&quot;excludeTags&quot;:[],&quot;readme&quot;:&quot;&quot;,&quot;defaultCategory&quot;:&quot;Other&quot;,&quot;categoryOrder&quot;:[],&quot;categorizeByGroup&quot;:true,&quot;gitRevision&quot;:&quot;&quot;,&quot;gitRemote&quot;:&quot;origin&quot;,&quot;gaID&quot;:&quot;&quot;,&quot;gaSite&quot;:&quot;auto&quot;,&quot;hideGenerator&quot;:false,&quot;toc&quot;:[],&quot;disableOutputCheck&quot;:false,&quot;help&quot;:false,&quot;version&quot;:false,&quot;showConfig&quot;:false,&quot;plugin&quot;:[&quot;typedoc-neo-theme&quot;],&quot;logger&quot;:&quot;console&quot;,&quot;logLevel&quot;:1,&quot;listInvalidSymbolLinks&quot;:false,&quot;links&quot;:[{&quot;label&quot;:&quot;Source&quot;,&quot;url&quot;:&quot;https://github.com/LykaiosNZ/reaper-osc.js/&quot;}],&quot;source&quot;:[{&quot;path&quot;:&quot;https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/&quot;,&quot;line&quot;:&quot;L&quot;}]}-->
@@ -124,16 +120,13 @@
 						<a href="classes/actionmessage.html" class="tsd-kind-icon">Action<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
-						<a href="classes/boolargument.html" class="tsd-kind-icon">Bool<wbr>Argument</a>
+						<a href="classes/beat.html" class="tsd-kind-icon">Beat</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/booleanmessage.html" class="tsd-kind-icon">Boolean<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/booleanmessagehandler.html" class="tsd-kind-icon">Boolean<wbr>Message<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-class root">
-						<a href="classes/floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
@@ -145,16 +138,10 @@
 						<a href="classes/fx.html" class="tsd-kind-icon">Fx</a>
 					</li>
 					<li class=" tsd-kind-class root">
-						<a href="classes/intargument.html" class="tsd-kind-icon">Int<wbr>Argument</a>
-					</li>
-					<li class=" tsd-kind-class root">
 						<a href="classes/integermessage.html" class="tsd-kind-icon">Integer<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/integermessagehandler.html" class="tsd-kind-icon">Integer<wbr>Message<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter root">
-						<a href="classes/oscargument.html" class="tsd-kind-icon">Osc<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/oscmessage.html" class="tsd-kind-icon">Osc<wbr>Message</a>
@@ -164,9 +151,6 @@
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/reaperconfiguration.html" class="tsd-kind-icon">Reaper<wbr>Configuration</a>
-					</li>
-					<li class=" tsd-kind-class root">
-						<a href="classes/stringargument.html" class="tsd-kind-icon">String<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="classes/stringmessage.html" class="tsd-kind-icon">String<wbr>Message</a>
@@ -196,10 +180,49 @@
 						<a href="classes/transportmessagehandler.html" class="tsd-kind-icon">Transport<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-interface root">
+						<a href="interfaces/floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface root">
 						<a href="interfaces/imessagehandler.html" class="tsd-kind-icon">IMessage<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-interface root">
+						<a href="interfaces/inotifypropertychanged.html" class="tsd-kind-icon">INotify<wbr>Property<wbr>Changed</a>
+					</li>
+					<li class=" tsd-kind-interface root">
 						<a href="interfaces/isendoscmessage.html" class="tsd-kind-icon">ISend<wbr>Osc<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-interface root">
+						<a href="interfaces/intargument.html" class="tsd-kind-icon">Int<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter root">
+						<a href="interfaces/oscargument.html" class="tsd-kind-icon">Osc<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface root">
+						<a href="interfaces/stringargument.html" class="tsd-kind-icon">String<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="modules.html#loglevel" class="tsd-kind-icon">Log<wbr>Level</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="modules.html#logger" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="modules.html#rawoscmessage" class="tsd-kind-icon">Raw<wbr>Osc<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="modules.html#someoscargument" class="tsd-kind-icon">Some<wbr>Osc<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="modules.html#boolargument" class="tsd-kind-icon">Bool<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="modules.html#floatargument" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="modules.html#intargument" class="tsd-kind-icon">Int<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="modules.html#stringargument" class="tsd-kind-icon">String<wbr>Argument</a>
 					</li>
 				</ul>
 			</nav>

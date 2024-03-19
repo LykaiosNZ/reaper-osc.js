@@ -90,7 +90,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><span class="tsd-signature-type">INotifyPropertyChanged</span></li>
+					<li><a href="../interfaces/inotifypropertychanged.html" class="tsd-signature-type">INotifyPropertyChanged</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -105,17 +105,24 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#beat" class="tsd-kind-icon">beat</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#frames" class="tsd-kind-icon">frames</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isfastforwarding" class="tsd-kind-icon">is<wbr>Fast<wbr>Forwarding</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isplaying" class="tsd-kind-icon">is<wbr>Playing</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isrecording" class="tsd-kind-icon">is<wbr>Recording</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isrepeatenabled" class="tsd-kind-icon">is<wbr>Repeat<wbr>Enabled</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isrewinding" class="tsd-kind-icon">is<wbr>Rewinding</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#isstopped" class="tsd-kind-icon">is<wbr>Stopped</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="transport.html#time" class="tsd-kind-icon">time</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#jumptobeat" class="tsd-kind-icon">jump<wbr>ToBeat</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#jumptoframe" class="tsd-kind-icon">jump<wbr>ToFrame</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#jumptotime" class="tsd-kind-icon">jump<wbr>ToTime</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#jumptotimerelative" class="tsd-kind-icon">jump<wbr>ToTime<wbr>Relative</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#onpropertychanged" class="tsd-kind-icon">on<wbr>Property<wbr>Changed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#pause" class="tsd-kind-icon">pause</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="transport.html#play" class="tsd-kind-icon">play</a></li>
@@ -145,8 +152,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L39">
-											Transport.ts:39
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L52">
+											Transport.ts:52
 										</a>
 									</li>
 								</ul>
@@ -168,6 +175,58 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="beat" class="tsd-anchor"></a>
+					<h3>beat</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> beat<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L62">
+											Transport.ts:62
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates the current transport beat in format mm.bb.xx</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="frames" class="tsd-anchor"></a>
+					<h3>frames</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> frames<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L67">
+											Transport.ts:67
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates the current transport from in format h:m:s:f</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="isfastforwarding" class="tsd-anchor"></a>
 					<h3>is<wbr>Fast<wbr>Forwarding</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
@@ -178,8 +237,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L69">
-											Transport.ts:69
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L92">
+											Transport.ts:92
 										</a>
 									</li>
 								</ul>
@@ -204,8 +263,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L49">
-											Transport.ts:49
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L72">
+											Transport.ts:72
 										</a>
 									</li>
 								</ul>
@@ -230,8 +289,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L59">
-											Transport.ts:59
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L82">
+											Transport.ts:82
 										</a>
 									</li>
 								</ul>
@@ -256,8 +315,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L74">
-											Transport.ts:74
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L97">
+											Transport.ts:97
 										</a>
 									</li>
 								</ul>
@@ -282,8 +341,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L64">
-											Transport.ts:64
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L87">
+											Transport.ts:87
 										</a>
 									</li>
 								</ul>
@@ -308,8 +367,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L54">
-											Transport.ts:54
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L77">
+											Transport.ts:77
 										</a>
 									</li>
 								</ul>
@@ -323,27 +382,200 @@
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="onpropertychanged" class="tsd-anchor"></a>
-					<h3>on<wbr>Property<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Property<wbr>Changed<span class="tsd-signature-symbol">(</span>property<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="time" class="tsd-anchor"></a>
+					<h3>time</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> time<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of INotifyPropertyChanged.onPropertyChanged</p>
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L79">
-											Transport.ts:79
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L102">
+											Transport.ts:102
 										</a>
 									</li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Indicates the current transport time in seconds</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="jumptobeat" class="tsd-anchor"></a>
+					<h3>jump<wbr>ToBeat</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">jump<wbr>ToBeat<span class="tsd-signature-symbol">(</span>beat<span class="tsd-signature-symbol">: </span><a href="beat.html" class="tsd-signature-type">Beat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L109">
+											Transport.ts:109
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Jumps to the specified beat (absolute)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>beat: <a href="beat.html" class="tsd-signature-type">Beat</a></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The beat to jump to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="jumptoframe" class="tsd-anchor"></a>
+					<h3>jump<wbr>ToFrame</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">jump<wbr>ToFrame<span class="tsd-signature-symbol">(</span>frame<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L116">
+											Transport.ts:116
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Jumps to the specified frame (absolute)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>frame: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>Frame to jump to (in format h:m:s:f). Values in an invalid format will be ignored by Reaper</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="jumptotime" class="tsd-anchor"></a>
+					<h3>jump<wbr>ToTime</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">jump<wbr>ToTime<span class="tsd-signature-symbol">(</span>time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L123">
+											Transport.ts:123
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Jumps to the specified time in seconds (absolute)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>time: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The time to jump to (in seconds). If this value is negative, Reaper will jump to 0</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="jumptotimerelative" class="tsd-anchor"></a>
+					<h3>jump<wbr>ToTime<wbr>Relative</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">jump<wbr>ToTime<wbr>Relative<span class="tsd-signature-symbol">(</span>time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L133">
+											Transport.ts:133
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>Jumps to a relative time in seconds.
+										Note that the absolute value to jump to is calculated by the library based on the currently known time,
+									as Reaper does not appear to support jumping to a relative time via OSC</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>time: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography tsd-comment-text">
+										<p>The relative time jump (in seconds)</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onpropertychanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Property<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Property<wbr>Changed<span class="tsd-signature-symbol">(</span>property<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/inotifypropertychanged.html">INotifyPropertyChanged</a>.<a href="../interfaces/inotifypropertychanged.html#onpropertychanged">onPropertyChanged</a></p>
+								<ul>
+									<li>Defined in
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L140">
+											Transport.ts:140
+										</a>
+									</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography tsd-comment-shorttext">
+								<div class="lead">
+									<p>An event that can be subscribed to for property change notifications</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -365,7 +597,20 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
+							<p>A function that unsubscribes the event handler</p>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -380,8 +625,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L84">
-											Transport.ts:84
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L145">
+											Transport.ts:145
 										</a>
 									</li>
 								</ul>
@@ -406,8 +651,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L89">
-											Transport.ts:89
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L150">
+											Transport.ts:150
 										</a>
 									</li>
 								</ul>
@@ -432,8 +677,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L97">
-											Transport.ts:97
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L158">
+											Transport.ts:158
 										</a>
 									</li>
 								</ul>
@@ -467,8 +712,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L108">
-											Transport.ts:108
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L169">
+											Transport.ts:169
 										</a>
 									</li>
 								</ul>
@@ -493,8 +738,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L113">
-											Transport.ts:113
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L174">
+											Transport.ts:174
 										</a>
 									</li>
 								</ul>
@@ -519,8 +764,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L118">
-											Transport.ts:118
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L179">
+											Transport.ts:179
 										</a>
 									</li>
 								</ul>
@@ -545,8 +790,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L123">
-											Transport.ts:123
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L184">
+											Transport.ts:184
 										</a>
 									</li>
 								</ul>
@@ -571,8 +816,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L128">
-											Transport.ts:128
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L189">
+											Transport.ts:189
 										</a>
 									</li>
 								</ul>
@@ -597,8 +842,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L133">
-											Transport.ts:133
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L194">
+											Transport.ts:194
 										</a>
 									</li>
 								</ul>
@@ -623,8 +868,8 @@
 							<aside class="tsd-sources">
 								<ul>
 									<li>Defined in
-										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L138">
-											Transport.ts:138
+										<a href="https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/Transport.ts#L199">
+											Transport.ts:199
 										</a>
 									</li>
 								</ul>
@@ -654,16 +899,13 @@
 						<a href="actionmessage.html" class="tsd-kind-icon">Action<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
-						<a href="boolargument.html" class="tsd-kind-icon">Bool<wbr>Argument</a>
+						<a href="beat.html" class="tsd-kind-icon">Beat</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="booleanmessage.html" class="tsd-kind-icon">Boolean<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="booleanmessagehandler.html" class="tsd-kind-icon">Boolean<wbr>Message<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-class root">
-						<a href="floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="floatmessage.html" class="tsd-kind-icon">Float<wbr>Message</a>
@@ -675,16 +917,10 @@
 						<a href="fx.html" class="tsd-kind-icon">Fx</a>
 					</li>
 					<li class=" tsd-kind-class root">
-						<a href="intargument.html" class="tsd-kind-icon">Int<wbr>Argument</a>
-					</li>
-					<li class=" tsd-kind-class root">
 						<a href="integermessage.html" class="tsd-kind-icon">Integer<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="integermessagehandler.html" class="tsd-kind-icon">Integer<wbr>Message<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter root">
-						<a href="oscargument.html" class="tsd-kind-icon">Osc<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="oscmessage.html" class="tsd-kind-icon">Osc<wbr>Message</a>
@@ -694,9 +930,6 @@
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="reaperconfiguration.html" class="tsd-kind-icon">Reaper<wbr>Configuration</a>
-					</li>
-					<li class=" tsd-kind-class root">
-						<a href="stringargument.html" class="tsd-kind-icon">String<wbr>Argument</a>
 					</li>
 					<li class=" tsd-kind-class root">
 						<a href="stringmessage.html" class="tsd-kind-icon">String<wbr>Message</a>
@@ -728,6 +961,12 @@
 								<a href="transport.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="transport.html#beat" class="tsd-kind-icon">beat</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="transport.html#frames" class="tsd-kind-icon">frames</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="transport.html#isfastforwarding" class="tsd-kind-icon">is<wbr>Fast<wbr>Forwarding</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
@@ -744,6 +983,21 @@
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="transport.html#isstopped" class="tsd-kind-icon">is<wbr>Stopped</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="transport.html#time" class="tsd-kind-icon">time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="transport.html#jumptobeat" class="tsd-kind-icon">jump<wbr>ToBeat</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="transport.html#jumptoframe" class="tsd-kind-icon">jump<wbr>ToFrame</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="transport.html#jumptotime" class="tsd-kind-icon">jump<wbr>ToTime</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="transport.html#jumptotimerelative" class="tsd-kind-icon">jump<wbr>ToTime<wbr>Relative</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="transport.html#onpropertychanged" class="tsd-kind-icon">on<wbr>Property<wbr>Changed</a>
@@ -786,10 +1040,49 @@
 						<a href="transportmessagehandler.html" class="tsd-kind-icon">Transport<wbr>Message<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-interface root">
+						<a href="../interfaces/floatargument.html" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface root">
 						<a href="../interfaces/imessagehandler.html" class="tsd-kind-icon">IMessage<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-interface root">
+						<a href="../interfaces/inotifypropertychanged.html" class="tsd-kind-icon">INotify<wbr>Property<wbr>Changed</a>
+					</li>
+					<li class=" tsd-kind-interface root">
 						<a href="../interfaces/isendoscmessage.html" class="tsd-kind-icon">ISend<wbr>Osc<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-interface root">
+						<a href="../interfaces/intargument.html" class="tsd-kind-icon">Int<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter root">
+						<a href="../interfaces/oscargument.html" class="tsd-kind-icon">Osc<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-interface root">
+						<a href="../interfaces/stringargument.html" class="tsd-kind-icon">String<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="../modules.html#loglevel" class="tsd-kind-icon">Log<wbr>Level</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="../modules.html#logger" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="../modules.html#rawoscmessage" class="tsd-kind-icon">Raw<wbr>Osc<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-type-alias root">
+						<a href="../modules.html#someoscargument" class="tsd-kind-icon">Some<wbr>Osc<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="../modules.html#boolargument" class="tsd-kind-icon">Bool<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="../modules.html#floatargument" class="tsd-kind-icon">Float<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="../modules.html#intargument" class="tsd-kind-icon">Int<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-function root">
+						<a href="../modules.html#stringargument" class="tsd-kind-icon">String<wbr>Argument</a>
 					</li>
 				</ul>
 			</nav>
