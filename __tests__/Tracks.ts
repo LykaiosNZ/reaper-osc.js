@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {BoolArgument, BooleanMessage, FloatArgument, FloatMessage, IntArgument, IntegerMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {RecordMonitoringMode, Track} from '../dist/Tracks';
 
@@ -165,7 +166,7 @@ describe('methods send correct messages', () => {
   test('deselect sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/select', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/select', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -178,7 +179,7 @@ describe('methods send correct messages', () => {
   test('mute sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/mute', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/mute', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -191,7 +192,7 @@ describe('methods send correct messages', () => {
   test('recordArm sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/recarm', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/recarm', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -204,7 +205,7 @@ describe('methods send correct messages', () => {
   test('recordDisarm sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/recarm', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/recarm', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -218,7 +219,7 @@ describe('methods send correct messages', () => {
     const expected = 'foo';
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/name', args: [new StringArgument(expected)]});
+        expect(message).toMatchObject({address: '/track/1/name', args: [StringArgument(expected)]});
         done();
       } catch (error) {
         done(error);
@@ -232,7 +233,7 @@ describe('methods send correct messages', () => {
   test('select sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/select', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/select', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -247,7 +248,7 @@ describe('methods send correct messages', () => {
     (expected, done: any) => {
       const track = new Track(1, 1, message => {
         try {
-          expect(message).toMatchObject({address: '/track/1/monitor', args: [new IntArgument(expected)]});
+          expect(message).toMatchObject({address: '/track/1/monitor', args: [IntArgument(expected)]});
           done();
         } catch (error) {
           done(error);
@@ -262,7 +263,7 @@ describe('methods send correct messages', () => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/pan', args: [new FloatArgument(expected)]});
+        expect(message).toMatchObject({address: '/track/1/pan', args: [FloatArgument(expected)]});
         done();
       } catch (error) {
         done(error);
@@ -276,7 +277,7 @@ describe('methods send correct messages', () => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/pan2', args: [new FloatArgument(expected)]});
+        expect(message).toMatchObject({address: '/track/1/pan2', args: [FloatArgument(expected)]});
         done();
       } catch (error) {
         done(error);
@@ -290,7 +291,7 @@ describe('methods send correct messages', () => {
     const expected = 12;
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/volume/db', args: [new FloatArgument(expected)]});
+        expect(message).toMatchObject({address: '/track/1/volume/db', args: [FloatArgument(expected)]});
         done();
       } catch (error) {
         done(error);
@@ -304,7 +305,7 @@ describe('methods send correct messages', () => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/volume', args: [new FloatArgument(expected)]});
+        expect(message).toMatchObject({address: '/track/1/volume', args: [FloatArgument(expected)]});
         done();
       } catch (error) {
         done(error);
@@ -317,7 +318,7 @@ describe('methods send correct messages', () => {
   test('solo sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/solo', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/track/1/solo', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -369,7 +370,7 @@ describe('methods send correct messages', () => {
   test('unmute sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/mute', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/mute', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -382,7 +383,7 @@ describe('methods send correct messages', () => {
   test('unsolo sends expected message', done => {
     const track = new Track(1, 1, message => {
       try {
-        expect(message).toMatchObject({address: '/track/1/solo', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/track/1/solo', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);

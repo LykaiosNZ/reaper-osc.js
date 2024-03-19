@@ -1,5 +1,7 @@
-import {BoolArgument, BooleanMessage, OscMessage} from '../dist/Messages';
-import {Transport} from '../dist/Transport';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import exp from 'constants';
+import {BoolArgument, BooleanMessage, FloatArgument, FloatMessage, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
+import {Beat, Transport} from '../dist/Transport';
 
 describe('properties set by messages', () => {
   let transport : Transport;
@@ -55,6 +57,33 @@ describe('properties set by messages', () => {
 
     expect(transport.isStopped).toBe(value);
   });
+
+  test.each([0.1, 88.456])('time message sets time: %p', value => {
+    const message = new FloatMessage('/time', value);
+
+    transport.receive(message);
+
+    expect(transport.time).toBe(value);
+  });
+
+
+  test.each([new Beat(1, 1, 0), new Beat(2,5,45)])('beat message sets beat: %p', value => {
+    const beatStr = value.toString();
+    const message = new StringMessage('/beat/str', beatStr)
+
+    transport.receive(message);
+
+    expect(transport.beat).toBe(beatStr);
+  });
+
+  test('frame message sets frame', () => {
+    const expected = '01:02:03:04'
+    const message = new StringMessage('/frames/str', expected)
+
+    transport.receive(message);
+
+    expect(transport.frames).toBe(expected)
+  })
 });
 
 describe('methods send expected messages', () => {
@@ -100,7 +129,7 @@ describe('methods send expected messages', () => {
   test('startFastForwarding sends expected message', done => {
     const transport = new Transport((message: OscMessage) => {
       try {
-        expect(message).toMatchObject({address: '/forward', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/forward', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -113,7 +142,7 @@ describe('methods send expected messages', () => {
   test('startRewinding sends expected message', done => {
     const transport = new Transport((message: OscMessage) => {
       try {
-        expect(message).toMatchObject({address: '/rewind', args: [new BoolArgument(true)]});
+        expect(message).toMatchObject({address: '/rewind', args: [BoolArgument(true)]});
         done();
       } catch (error) {
         done(error);
@@ -139,7 +168,7 @@ describe('methods send expected messages', () => {
   test('stopFastForwarding sends expected message', done => {
     const transport = new Transport((message: OscMessage) => {
       try {
-        expect(message).toMatchObject({address: '/forward', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/forward', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -152,7 +181,7 @@ describe('methods send expected messages', () => {
   test('stopRewinding sends expected message', done => {
     const transport = new Transport((message: OscMessage) => {
       try {
-        expect(message).toMatchObject({address: '/rewind', args: [new BoolArgument(false)]});
+        expect(message).toMatchObject({address: '/rewind', args: [BoolArgument(false)]});
         done();
       } catch (error) {
         done(error);
@@ -173,5 +202,66 @@ describe('methods send expected messages', () => {
     });
 
     transport.toggleRepeat();
+  });
+
+  test('jumpToTime sends expected message', done => {
+    const time = 93.49
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/time', args: [FloatArgument(time)]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    transport.jumpToTime(time);
+  });
+
+  test('jumpToBeat sends expected message', done => {
+    const beat = new Beat(3,6,99);
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/beat/str', args: [StringArgument(beat.toString())]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    transport.jumpToBeat(beat);
+  });
+
+  test('jumpToFrame sends expected message', done => {
+    const frame = '01:02:03:04';
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/frames/str', args: [StringArgument(frame)]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    transport.jumpToFrame(frame);
+  });
+
+  test.each([-1, 1])('jumpToTimeRelative sends expected message: %p', (value, done: any) => {
+    const currentTime = 60;
+    const expected = currentTime + value;
+
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/time', args: [FloatArgument(expected)]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    // Set the current time
+    transport.receive(new FloatMessage('/time', currentTime));
+
+    transport.jumpToTimeRelative(value);
   });
 });

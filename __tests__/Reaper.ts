@@ -72,17 +72,17 @@ describe('methods send expected messages', () => {
   });
 
   test('refreshControlSurfaces sends expected message', async () => {
-   await expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [new StringArgument('41743')]});
+   await expectOscMessage(() => reaper.refreshControlSurfaces(), {address: '/action/str', args: [StringArgument('41743')]});
   });
 
   test.each(['foo', 1234])('triggerAction sends expected message: %p', async (commandId, ) => {
-    await expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [new StringArgument(commandId.toString())]});
+    await expectOscMessage(() => reaper.triggerAction(commandId), {address: '/action/str', args: [StringArgument(commandId.toString())]});
   });
 
   test('triggerAction sends expected additional args', async () => {
     const commandId = 'foo';
     const value = 127;
-    const expectedArgs = [new StringArgument(commandId.toString()), new FloatArgument(value)];
+    const expectedArgs = [StringArgument(commandId.toString()), FloatArgument(value)];
    await expectOscMessage(() => reaper.triggerAction(commandId, value), {address: '/action/str', args: expectedArgs});
   });
 
