@@ -83,7 +83,25 @@ describe('properties set by messages', () => {
     transport.receive(message);
 
     expect(transport.frames).toBe(expected)
-  })
+  });
+
+  test('loop start message sets loopStart', () => {
+    const expected = 983.833;
+    const message = new FloatMessage('/loop/start/time', expected);
+
+    transport.receive(message);
+
+    expect(transport.loopStart).toBe(expected);
+  });
+
+  test('loop end message sets loopEnd', () => {
+    const expected = 384.827;
+    const message = new FloatMessage('/loop/end/time', expected);
+
+    transport.receive(message);
+
+    expect(transport.loopEnd).toBe(expected);
+  });
 });
 
 describe('methods send expected messages', () => {
@@ -263,5 +281,33 @@ describe('methods send expected messages', () => {
     transport.receive(new FloatMessage('/time', currentTime));
 
     transport.jumpToTimeRelative(value);
+  });
+
+  test('setLoopStart sends expected message', done => {
+    const time = 393.442
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/loop/start/time', args: [FloatArgument(time)]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    transport.setLoopStart(time);
+  });
+
+  test('setLoopStart sends expected message', done => {
+    const time = 948.382
+    const transport = new Transport((message: OscMessage) => {
+      try {
+        expect(message).toMatchObject({address: '/loop/end/time', args: [FloatArgument(time)]});
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+
+    transport.setLoopEnd(time);
   });
 });
