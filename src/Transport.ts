@@ -33,6 +33,12 @@ export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isStopped')
   private _isStopped = false;
 
+  @notify<Transport>('loopEnd')
+  private _loopEnd = 0;
+
+  @notify<Transport>('loopStart')
+  private _loopStart = 0;
+
   @notify<Transport>('time')
   private _time = 0;
 
@@ -46,7 +52,10 @@ export class Transport implements INotifyPropertyChanged {
 
     new FloatMessageHandler('/time', value => (this._time = value)),
     new StringMessageHandler('/beat/str', value => (this._beat = value)),
-    new StringMessageHandler('/frames/str', value => (this._frames = value))
+    new StringMessageHandler('/frames/str', value => (this._frames = value)),
+
+    new FloatMessageHandler('/loop/start/time', value => (this._loopStart = value)),
+    new FloatMessageHandler('/loop/end/time', value => (this._loopEnd = value))
   ];
 
   private readonly _sendOscMessage: ISendOscMessage;
@@ -96,6 +105,16 @@ export class Transport implements INotifyPropertyChanged {
   /** Indicates whether repeat is enabled */
   public get isRepeatEnabled(): boolean {
     return this._isRepeatEnabled;
+  }
+
+  /** Indicates the end time of the loop (in seconds) */
+  public get loopEnd() : number {
+    return this._loopEnd;
+  }
+
+  /** Indicates the start time of the loop (in seconds) */
+  public get loopStart(): number {
+    return this._loopStart;
   }
 
   /** Indicates the current transport time in seconds */
@@ -168,6 +187,22 @@ export class Transport implements INotifyPropertyChanged {
   /** Toggle recording */
   public record(): void {
     this._sendOscMessage(new OscMessage('/record'));
+  }
+
+  /**
+   * Sets the loop end time
+   * @param time End time for the loop (in seconds)
+   */
+  public setLoopEnd(time: number) : void {
+    this._sendOscMessage(new FloatMessage('/loop/end/time', time));
+  }
+
+  /**
+   * Sets the loop start time
+   * @param time Start time for the loop (in seconds)
+   */
+  public setLoopStart(time: number) : void {
+    this._sendOscMessage(new FloatMessage('/loop/start/time', time));
   }
 
   /** Start fast fowarding. Will continue until stopped */
