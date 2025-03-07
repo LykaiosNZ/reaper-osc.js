@@ -22,7 +22,7 @@ export class Track implements INotifyPropertyChanged {
   private _isSoloed = false;
 
   @notify<Track>('name')
-  private _name: string = 'Fx' + this.trackNumber;
+  private _name: string = 'Track' + this.trackNumber;
 
   @notify<Track>('pan')
   private _pan = 0;
