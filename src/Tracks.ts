@@ -172,9 +172,7 @@ export class Track implements INotifyPropertyChanged {
   public rename(name: string): void {
     this._sendOscMessage(new StringMessage(this.oscAddress + '/name', name));
 
-    // Haven't figured out why yet (possibly to do with track selection?)
-    // but Reaper doesn't send an OSC message even though it does if you
-    // change the name in Reaper
+    // Reaper will not send a name message in response
     this._name = name;
   }
 
@@ -201,6 +199,9 @@ export class Track implements INotifyPropertyChanged {
     }
 
     this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan', value));
+
+    // Reaper won't send a pan message, but will send pan2 when pan changes
+    this._pan = value;
   }
 
   /**
@@ -213,6 +214,9 @@ export class Track implements INotifyPropertyChanged {
     }
 
     this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan2', value));
+
+    // Reaper won't send a pan2 message, but will send pan when pan2 changes
+    this._pan2 = value;
   }
 
   /**
