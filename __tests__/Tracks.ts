@@ -259,7 +259,7 @@ describe('methods send correct messages', () => {
     },
   );
 
-  test('setPan sends expected message', done => {
+  test('setPan sends expected message and sets value', done => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
@@ -271,9 +271,10 @@ describe('methods send correct messages', () => {
     });
 
     track.setPan(expected);
+    expect(track.pan).toBe(expected);
   });
 
-  test('setPan2 sends expected message', done => {
+  test('setPan2 sends expected message and sets value', done => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
@@ -285,9 +286,10 @@ describe('methods send correct messages', () => {
     });
 
     track.setPan2(expected);
+    expect(track.pan2).toBe(expected);
   });
 
-  test('setVolumeDb sends expected message', done => {
+  test('setVolumeDb sends expected message and sets value', done => {
     const expected = 12;
     const track = new Track(1, 1, message => {
       try {
@@ -299,9 +301,10 @@ describe('methods send correct messages', () => {
     });
 
     track.setVolumeDb(expected);
+    expect(track.volumeDb).toBe(expected);
   });
 
-  test('setVolumeFaderPosition sends expected message', done => {
+  test('setVolumeFaderPosition sends expected message and sets value', done => {
     const expected = 0.12345;
     const track = new Track(1, 1, message => {
       try {
@@ -313,6 +316,7 @@ describe('methods send correct messages', () => {
     });
 
     track.setVolumeFaderPosition(expected);
+    expect(track.volumeFaderPosition).toBe(expected);
   });
 
   test('solo sends expected message', done => {
