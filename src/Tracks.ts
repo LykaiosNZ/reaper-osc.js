@@ -225,6 +225,9 @@ export class Track implements INotifyPropertyChanged {
     }
 
     this._sendOscMessage(new FloatMessage(this.oscAddress + '/volume/db', value));
+
+    // Reaper does not send OSC message to update this, but does send other volume messages
+    this._volumeDb = value;
   }
 
   /** Sets the volume by moving the fader to a specific position
@@ -236,6 +239,9 @@ export class Track implements INotifyPropertyChanged {
     }
 
     this._sendOscMessage(new FloatMessage(this.oscAddress + '/volume', position));
+
+    // Reaper does not send OSC message to update this, but does send other volume messages
+    this._volumeFaderPosition = position;
   }
 
   /** Solo the track */
