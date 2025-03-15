@@ -110,17 +110,37 @@ export class Reaper implements INotifyPropertyChanged {
       return;
     }
 
-    const promise = new Promise<void>(resolve => {
-      this._osc.once('ready', () => {
-        this._log('debug', 'OSC listener ready');
-        this._isReady = true;
-        resolve();
-      });
+    let errorCallback: (err: Error) => void;
+    let readyCallback: () => void;
+
+    const promise = new Promise<void>((resolve, reject) => {
+        errorCallback = (err: Error): void => {
+            this._log('debug', 'Error opening OSC connection', err);
+            reject(err);
+        }
+
+        readyCallback = () => {
+            this._log('debug', 'OSC listener ready');
+            this._isReady = true;
+            resolve();
+        }
+
+      this._osc.once('ready', readyCallback);
+      this._osc.once('error', errorCallback);
     });
+
+    const removeListeners = () => {
+        this._osc.removeListener('ready', readyCallback);
+        this._osc.removeListener('error', errorCallback);
+    }
 
     this._osc.open();
 
-    return promise;
+    try {
+        await promise;
+    } finally {
+        removeListeners();
+    }
   }
 
   /** Stop listening for OSC messages */
