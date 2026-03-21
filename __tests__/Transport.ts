@@ -18,6 +18,14 @@ describe('properties set by messages', () => {
     expect(transport.isFastForwarding).toBe(value);
   });
 
+  test.each([true, false])('pause message sets isPaused: %p', value => {
+    const message = new BooleanMessage('/pause', value);
+
+    transport.receive(message);
+
+    expect(transport.isPaused).toBe(value);
+  });
+
   test.each([true, false])('play message sets isPlaying: %p', value => {
     const message = new BooleanMessage('/play', value);
 

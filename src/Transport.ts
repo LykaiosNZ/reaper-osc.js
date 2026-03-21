@@ -18,6 +18,9 @@ export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isFastForwarding')
   private _isFastForwarding = false;
 
+  @notify<Transport>('isPaused')
+  private _isPaused = false;
+
   @notify<Transport>('isPlaying')
   private _isPlaying = false;
 
@@ -46,6 +49,7 @@ export class Transport implements INotifyPropertyChanged {
     new BooleanMessageHandler('/repeat', value => (this._isRepeatEnabled = value)),
     new BooleanMessageHandler('/record', value => (this._isRecording = value)),
     new BooleanMessageHandler('/stop', value => (this._isStopped = value)),
+    new BooleanMessageHandler('/pause', value => (this._isPaused = value)),
     new BooleanMessageHandler('/play', value => (this._isPlaying = value)),
     new BooleanMessageHandler('/rewind', value => (this._isRewinding = value)),
     new BooleanMessageHandler('/forward', value => (this._isFastForwarding = value)),
@@ -75,6 +79,11 @@ export class Transport implements INotifyPropertyChanged {
   /** Indicates the current transport from in format h:m:s:f */
   public get frames(): string {
     return this._frames;
+  }
+
+  /** Indicates whether playback is paused */
+  public get isPaused(): boolean {
+    return this._isPaused;
   }
 
   /** Indicates whether playback is active  */
