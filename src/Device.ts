@@ -2,11 +2,13 @@
  * Contains classes for controlling Reaper's OSC device state
  * @module
  */
-import {ISendOscMessage, OscMessage} from './Messages';
+import {SelectDeviceTrack, NextDeviceTrack, PreviousDeviceTrack, SelectDeviceTrackBank, NextDeviceTrackBank, PreviousDeviceTrackBank, SelectDeviceFx, NextDeviceFx, PreviousDeviceFx, SelectDeviceFxParameterBank, NextDeviceFxParameterBank, PreviousDeviceFxParameterBank, SelectDeviceFxInstrumentParameterBank, NextDeviceFxInstrumentParameterBank, PreviousDeviceFxInstrumentParameterBank, SelectDeviceMarkerBank, NextDeviceMarkerBank, PreviousDeviceMarkerBank, SelectDeviceRegionBank, NextDeviceRegionBank, PreviousDeviceRegionBank, ReaperOscCommand} from './Client/Commands';
+
+type SendCommand = (command: ReaperOscCommand) => void;
 
 /** Controls the OSC device's navigation state within Reaper */
 export class DeviceState {
-  constructor(private readonly _sendOscMessage: ISendOscMessage) {}
+  constructor(private readonly _send: SendCommand) {}
 
   // --- Track ---
 
@@ -16,17 +18,17 @@ export class DeviceState {
    * @param index 1-based track index within the current device track bank
    */
   public selectTrack(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/track/select/${index}`));
+    this._send(SelectDeviceTrack(index));
   }
 
   /** Move the device's focused track to the next track in the bank */
   public nextTrack(): void {
-    this._sendOscMessage(new OscMessage('/device/track/+'));
+    this._send(NextDeviceTrack());
   }
 
   /** Move the device's focused track to the previous track in the bank */
-  public prevTrack(): void {
-    this._sendOscMessage(new OscMessage('/device/track/-'));
+  public previousTrack(): void {
+    this._send(PreviousDeviceTrack());
   }
 
   // --- Track bank ---
@@ -37,17 +39,17 @@ export class DeviceState {
    * @param index 1-based bank index
    */
   public selectTrackBank(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/track/bank/select/${index}`));
+    this._send(SelectDeviceTrackBank(index));
   }
 
   /** Move to the next track bank */
   public nextTrackBank(): void {
-    this._sendOscMessage(new OscMessage('/device/track/bank/+'));
+    this._send(NextDeviceTrackBank());
   }
 
   /** Move to the previous track bank */
-  public prevTrackBank(): void {
-    this._sendOscMessage(new OscMessage('/device/track/bank/-'));
+  public previousTrackBank(): void {
+    this._send(PreviousDeviceTrackBank());
   }
 
   // --- FX ---
@@ -57,17 +59,17 @@ export class DeviceState {
    * @param index 1-based FX index within the current device FX bank
    */
   public selectFx(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/fx/select/${index}`));
+    this._send(SelectDeviceFx(index));
   }
 
   /** Move the device's focused FX to the next slot */
   public nextFx(): void {
-    this._sendOscMessage(new OscMessage('/device/fx/+'));
+    this._send(NextDeviceFx());
   }
 
   /** Move the device's focused FX to the previous slot */
-  public prevFx(): void {
-    this._sendOscMessage(new OscMessage('/device/fx/-'));
+  public previousFx(): void {
+    this._send(PreviousDeviceFx());
   }
 
   // --- FX param bank ---
@@ -76,18 +78,18 @@ export class DeviceState {
    * Set the active FX parameter bank.
    * @param index 1-based bank index
    */
-  public selectFxParamBank(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/fxparam/bank/select/${index}`));
+  public selectFxParameterBank(index: number): void {
+    this._send(SelectDeviceFxParameterBank(index));
   }
 
   /** Move to the next FX parameter bank */
-  public nextFxParamBank(): void {
-    this._sendOscMessage(new OscMessage('/device/fxparam/bank/+'));
+  public nextFxParameterBank(): void {
+    this._send(NextDeviceFxParameterBank());
   }
 
   /** Move to the previous FX parameter bank */
-  public prevFxParamBank(): void {
-    this._sendOscMessage(new OscMessage('/device/fxparam/bank/-'));
+  public previousFxParameterBank(): void {
+    this._send(PreviousDeviceFxParameterBank());
   }
 
   // --- FX instrument param bank ---
@@ -96,18 +98,18 @@ export class DeviceState {
    * Set the active FX instrument parameter bank.
    * @param index 1-based bank index
    */
-  public selectFxInstParamBank(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/fxinstparam/bank/select/${index}`));
+  public selectFxInstrumentParameterBank(index: number): void {
+    this._send(SelectDeviceFxInstrumentParameterBank(index));
   }
 
   /** Move to the next FX instrument parameter bank */
-  public nextFxInstParamBank(): void {
-    this._sendOscMessage(new OscMessage('/device/fxinstparam/bank/+'));
+  public nextFxInstrumentParameterBank(): void {
+    this._send(NextDeviceFxInstrumentParameterBank());
   }
 
   /** Move to the previous FX instrument parameter bank */
-  public prevFxInstParamBank(): void {
-    this._sendOscMessage(new OscMessage('/device/fxinstparam/bank/-'));
+  public previousFxInstrumentParameterBank(): void {
+    this._send(PreviousDeviceFxInstrumentParameterBank());
   }
 
   // --- Marker bank ---
@@ -117,17 +119,17 @@ export class DeviceState {
    * @param index 1-based bank index
    */
   public selectMarkerBank(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/marker/bank/select/${index}`));
+    this._send(SelectDeviceMarkerBank(index));
   }
 
   /** Move to the next marker bank */
   public nextMarkerBank(): void {
-    this._sendOscMessage(new OscMessage('/device/marker/bank/+'));
+    this._send(NextDeviceMarkerBank());
   }
 
   /** Move to the previous marker bank */
-  public prevMarkerBank(): void {
-    this._sendOscMessage(new OscMessage('/device/marker/bank/-'));
+  public previousMarkerBank(): void {
+    this._send(PreviousDeviceMarkerBank());
   }
 
   // --- Region bank ---
@@ -137,16 +139,16 @@ export class DeviceState {
    * @param index 1-based bank index
    */
   public selectRegionBank(index: number): void {
-    this._sendOscMessage(new OscMessage(`/device/region/bank/select/${index}`));
+    this._send(SelectDeviceRegionBank(index));
   }
 
   /** Move to the next region bank */
   public nextRegionBank(): void {
-    this._sendOscMessage(new OscMessage('/device/region/bank/+'));
+    this._send(NextDeviceRegionBank());
   }
 
   /** Move to the previous region bank */
-  public prevRegionBank(): void {
-    this._sendOscMessage(new OscMessage('/device/region/bank/-'));
+  public previousRegionBank(): void {
+    this._send(PreviousDeviceRegionBank());
   }
 }

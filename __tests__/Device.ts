@@ -1,128 +1,136 @@
-import {OscMessage} from '../dist/Messages';
+import {
+  SelectDeviceTrack, NextDeviceTrack, PreviousDeviceTrack,
+  SelectDeviceTrackBank, NextDeviceTrackBank, PreviousDeviceTrackBank,
+  SelectDeviceFx, NextDeviceFx, PreviousDeviceFx,
+  SelectDeviceFxParameterBank, NextDeviceFxParameterBank, PreviousDeviceFxParameterBank,
+  SelectDeviceMarkerBank, NextDeviceMarkerBank, PreviousDeviceMarkerBank,
+  SelectDeviceRegionBank, NextDeviceRegionBank, PreviousDeviceRegionBank,
+  ReaperOscCommand,
+} from '../dist/Client/Commands';
 import {DeviceState} from '../dist/Device';
 
-function makeDevice(): { device: DeviceState; sent: OscMessage[] } {
-  const sent: OscMessage[] = [];
-  const device = new DeviceState(message => sent.push(message));
+function makeDevice(): { device: DeviceState; sent: ReaperOscCommand[] } {
+  const sent: ReaperOscCommand[] = [];
+  const device = new DeviceState(command => sent.push(command));
   return {device, sent};
 }
 
 describe('track', () => {
-  test.each([1, 4, 8])('selectTrack sends expected message: %p', index => {
+  test.each([1, 4, 8])('selectTrack sends expected command: %p', index => {
     const {device, sent} = makeDevice();
     device.selectTrack(index);
-    expect(sent[0]).toMatchObject({address: `/device/track/select/${index}`, args: []});
+    expect(sent[0]).toMatchObject(SelectDeviceTrack(index));
   });
 
-  test('nextTrack sends expected message', () => {
+  test('nextTrack sends expected command', () => {
     const {device, sent} = makeDevice();
     device.nextTrack();
-    expect(sent[0]).toMatchObject({address: '/device/track/+', args: []});
+    expect(sent[0]).toMatchObject(NextDeviceTrack());
   });
 
-  test('prevTrack sends expected message', () => {
+  test('previousTrack sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevTrack();
-    expect(sent[0]).toMatchObject({address: '/device/track/-', args: []});
+    device.previousTrack();
+    expect(sent[0]).toMatchObject(PreviousDeviceTrack());
   });
 });
 
 describe('track bank', () => {
-  test.each([1, 2, 3])('selectTrackBank sends expected message: %p', index => {
+  test.each([1, 2, 3])('selectTrackBank sends expected command: %p', index => {
     const {device, sent} = makeDevice();
     device.selectTrackBank(index);
-    expect(sent[0]).toMatchObject({address: `/device/track/bank/select/${index}`, args: []});
+    expect(sent[0]).toMatchObject(SelectDeviceTrackBank(index));
   });
 
-  test('nextTrackBank sends expected message', () => {
+  test('nextTrackBank sends expected command', () => {
     const {device, sent} = makeDevice();
     device.nextTrackBank();
-    expect(sent[0]).toMatchObject({address: '/device/track/bank/+', args: []});
+    expect(sent[0]).toMatchObject(NextDeviceTrackBank());
   });
 
-  test('prevTrackBank sends expected message', () => {
+  test('previousTrackBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevTrackBank();
-    expect(sent[0]).toMatchObject({address: '/device/track/bank/-', args: []});
+    device.previousTrackBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceTrackBank());
   });
 });
 
 describe('fx', () => {
-  test.each([1, 4, 8])('selectFx sends expected message: %p', index => {
+  test.each([1, 4, 8])('selectFx sends expected command: %p', index => {
     const {device, sent} = makeDevice();
     device.selectFx(index);
-    expect(sent[0]).toMatchObject({address: `/device/fx/select/${index}`, args: []});
+    expect(sent[0]).toMatchObject(SelectDeviceFx(index));
   });
 
-  test('nextFx sends expected message', () => {
+  test('nextFx sends expected command', () => {
     const {device, sent} = makeDevice();
     device.nextFx();
-    expect(sent[0]).toMatchObject({address: '/device/fx/+', args: []});
+    expect(sent[0]).toMatchObject(NextDeviceFx());
   });
 
-  test('prevFx sends expected message', () => {
+  test('previousFx sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevFx();
-    expect(sent[0]).toMatchObject({address: '/device/fx/-', args: []});
+    device.previousFx();
+    expect(sent[0]).toMatchObject(PreviousDeviceFx());
   });
 });
 
-describe('fx param bank', () => {
-  test.each([1, 2])('selectFxParamBank sends expected message: %p', index => {
+describe('fx parameter bank', () => {
+  test.each([1, 2])('selectFxParameterBank sends expected command: %p', index => {
     const {device, sent} = makeDevice();
-    device.selectFxParamBank(index);
-    expect(sent[0]).toMatchObject({address: `/device/fxparam/bank/select/${index}`, args: []});
+    device.selectFxParameterBank(index);
+    expect(sent[0]).toMatchObject(SelectDeviceFxParameterBank(index));
   });
 
-  test('nextFxParamBank sends expected message', () => {
+  test('nextFxParameterBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.nextFxParamBank();
-    expect(sent[0]).toMatchObject({address: '/device/fxparam/bank/+', args: []});
+    device.nextFxParameterBank();
+    expect(sent[0]).toMatchObject(NextDeviceFxParameterBank());
   });
 
-  test('prevFxParamBank sends expected message', () => {
+  test('previousFxParameterBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevFxParamBank();
-    expect(sent[0]).toMatchObject({address: '/device/fxparam/bank/-', args: []});
+    device.previousFxParameterBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceFxParameterBank());
   });
 });
 
 describe('marker bank', () => {
-  test.each([1, 2])('selectMarkerBank sends expected message: %p', index => {
+  test.each([1, 2])('selectMarkerBank sends expected command: %p', index => {
     const {device, sent} = makeDevice();
     device.selectMarkerBank(index);
-    expect(sent[0]).toMatchObject({address: `/device/marker/bank/select/${index}`, args: []});
+    expect(sent[0]).toMatchObject(SelectDeviceMarkerBank(index));
   });
 
-  test('nextMarkerBank sends expected message', () => {
+  test('nextMarkerBank sends expected command', () => {
     const {device, sent} = makeDevice();
     device.nextMarkerBank();
-    expect(sent[0]).toMatchObject({address: '/device/marker/bank/+', args: []});
+    expect(sent[0]).toMatchObject(NextDeviceMarkerBank());
   });
 
-  test('prevMarkerBank sends expected message', () => {
+  test('previousMarkerBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevMarkerBank();
-    expect(sent[0]).toMatchObject({address: '/device/marker/bank/-', args: []});
+    device.previousMarkerBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceMarkerBank());
   });
 });
 
 describe('region bank', () => {
-  test.each([1, 2])('selectRegionBank sends expected message: %p', index => {
+  test.each([1, 2])('selectRegionBank sends expected command: %p', index => {
     const {device, sent} = makeDevice();
     device.selectRegionBank(index);
-    expect(sent[0]).toMatchObject({address: `/device/region/bank/select/${index}`, args: []});
+    expect(sent[0]).toMatchObject(SelectDeviceRegionBank(index));
   });
 
-  test('nextRegionBank sends expected message', () => {
+  test('nextRegionBank sends expected command', () => {
     const {device, sent} = makeDevice();
     device.nextRegionBank();
-    expect(sent[0]).toMatchObject({address: '/device/region/bank/+', args: []});
+    expect(sent[0]).toMatchObject(NextDeviceRegionBank());
   });
 
-  test('prevRegionBank sends expected message', () => {
+  test('previousRegionBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevRegionBank();
-    expect(sent[0]).toMatchObject({address: '/device/region/bank/-', args: []});
+    device.previousRegionBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceRegionBank());
   });
 });

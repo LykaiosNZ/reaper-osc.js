@@ -1,10 +1,27 @@
-import {BoolArgument, BooleanMessage, FloatArgument, FloatMessage, IntArgument, IntegerMessage, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {RecordMonitoringMode} from '../dist/Tracks';
 import {SelectedTrack} from '../dist/SelectedTrack';
+import {
+  SetSelectedTrackMute, ToggleSelectedTrackMute,
+  SetSelectedTrackSolo, ToggleSelectedTrackSolo,
+  SetSelectedTrackRecordArm, ToggleSelectedTrackRecordArm,
+  SetSelectedTrackSelect, SetSelectedTrackName,
+  SetSelectedTrackPan, SetSelectedTrackPan2,
+  SetSelectedTrackVolume, SetSelectedTrackVolumeDb,
+  SetSelectedTrackMonitoringMode,
+  ReaperOscCommand,
+} from '../dist/Client/Commands';
+import {
+  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecordArmEvent,
+  SelectedTrackSelectEvent, SelectedTrackNameChanged,
+  SelectedTrackPanChanged, SelectedTrackPan2Changed, SelectedTrackPanModeChanged,
+  SelectedTrackVolumeChanged, SelectedTrackVolumeDbChanged,
+  SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged,
+  SelectedTrackMonitoringModeChanged,
+} from '../dist/Client/Events';
 
-function makeTrack(): { track: SelectedTrack; sent: OscMessage[] } {
-  const sent: OscMessage[] = [];
-  const track = new SelectedTrack(8, message => sent.push(message));
+function makeTrack(): { track: SelectedTrack; sent: ReaperOscCommand[] } {
+  const sent: ReaperOscCommand[] = [];
+  const track = new SelectedTrack(8, command => sent.push(command));
   return {track, sent};
 }
 
@@ -39,207 +56,207 @@ test.each([-0.1, 1.1])('setVolumeFaderPosition throws when less than 0 or greate
   expect(() => track.setVolumeFaderPosition(value)).toThrow(RangeError);
 });
 
-describe('properties set by messages', () => {
-  test.each([true, false])('mute message sets isMuted: %p', value => {
+describe('properties set by events', () => {
+  test.each([true, false])('mute event sets isMuted: %p', value => {
     const {track} = makeTrack();
-    expect(track.receive(new BooleanMessage('/track/mute', value))).toBe(true);
+    track.handleEvent(SelectedTrackMuteEvent(value));
     expect(track.isMuted).toBe(value);
   });
 
-  test.each([true, false])('recarm message sets isRecordArmed: %p', value => {
+  test.each([true, false])('recarm event sets isRecordArmed: %p', value => {
     const {track} = makeTrack();
-    expect(track.receive(new BooleanMessage('/track/recarm', value))).toBe(true);
+    track.handleEvent(SelectedTrackRecordArmEvent(value));
     expect(track.isRecordArmed).toBe(value);
   });
 
-  test.each([true, false])('select message sets isSelected: %p', value => {
+  test.each([true, false])('select event sets isSelected: %p', value => {
     const {track} = makeTrack();
-    expect(track.receive(new BooleanMessage('/track/select', value))).toBe(true);
+    track.handleEvent(SelectedTrackSelectEvent(value));
     expect(track.isSelected).toBe(value);
   });
 
-  test.each([true, false])('solo message sets isSoloed: %p', value => {
+  test.each([true, false])('solo event sets isSoloed: %p', value => {
     const {track} = makeTrack();
-    expect(track.receive(new BooleanMessage('/track/solo', value))).toBe(true);
+    track.handleEvent(SelectedTrackSoloEvent(value));
     expect(track.isSoloed).toBe(value);
   });
 
-  test('name message sets name', () => {
+  test('name event sets name', () => {
     const {track} = makeTrack();
-    expect(track.receive(new StringMessage('/track/name', 'foo'))).toBe(true);
+    track.handleEvent(SelectedTrackNameChanged('foo'));
     expect(track.name).toBe('foo');
   });
 
-  test('pan message sets pan', () => {
+  test('pan event sets pan', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/pan', expected))).toBe(true);
+    track.handleEvent(SelectedTrackPanChanged(expected));
     expect(track.pan).toBe(expected);
   });
 
-  test('pan2 message sets pan2', () => {
+  test('pan2 event sets pan2', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/pan2', expected))).toBe(true);
+    track.handleEvent(SelectedTrackPan2Changed(expected));
     expect(track.pan2).toBe(expected);
   });
 
-  test('panmode message sets panMode', () => {
+  test('panMode event sets panMode', () => {
     const {track} = makeTrack();
-    expect(track.receive(new StringMessage('/track/panmode', 'Balance'))).toBe(true);
+    track.handleEvent(SelectedTrackPanModeChanged('Balance'));
     expect(track.panMode).toBe('Balance');
   });
 
-  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor message sets recordMonitoring: %p', value => {
+  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor event sets recordMonitoring: %p', value => {
     const {track} = makeTrack();
-    expect(track.receive(new IntegerMessage('/track/monitor', value))).toBe(true);
+    track.handleEvent(SelectedTrackMonitoringModeChanged(value));
     expect(track.recordMonitoring).toBe(value);
   });
 
-  test('volume/db message sets volumeDb', () => {
+  test('volumeDb event sets volumeDb', () => {
     const expected = 12;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/volume/db', expected))).toBe(true);
+    track.handleEvent(SelectedTrackVolumeDbChanged(expected));
     expect(track.volumeDb).toBe(expected);
   });
 
-  test('volume message sets volumeFaderPosition', () => {
+  test('volume event sets volumeFaderPosition', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/volume', expected))).toBe(true);
+    track.handleEvent(SelectedTrackVolumeChanged(expected));
     expect(track.volumeFaderPosition).toBe(expected);
   });
 
-  test('vu message sets vu', () => {
+  test('vu event sets vu', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/vu', expected))).toBe(true);
+    track.handleEvent(SelectedTrackVuChanged(expected));
     expect(track.vu).toBe(expected);
   });
 
-  test('vu/L message sets vuLeft', () => {
+  test('vuLeft event sets vuLeft', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/vu/L', expected))).toBe(true);
+    track.handleEvent(SelectedTrackVuLeftChanged(expected));
     expect(track.vuLeft).toBe(expected);
   });
 
-  test('vu/R message sets vuRight', () => {
+  test('vuRight event sets vuRight', () => {
     const expected = 0.12345;
     const {track} = makeTrack();
-    expect(track.receive(new FloatMessage('/track/vu/R', expected))).toBe(true);
+    track.handleEvent(SelectedTrackVuRightChanged(expected));
     expect(track.vuRight).toBe(expected);
   });
 });
 
-describe('methods send correct messages', () => {
-  test('deselect sends expected message', () => {
+describe('methods send expected commands', () => {
+  test('deselect sends expected command', () => {
     const {track, sent} = makeTrack();
     track.deselect();
-    expect(sent[0]).toMatchObject({address: '/track/select', args: [BoolArgument(false)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackSelect(false));
   });
 
-  test('mute sends expected message', () => {
+  test('mute sends expected command', () => {
     const {track, sent} = makeTrack();
     track.mute();
-    expect(sent[0]).toMatchObject({address: '/track/mute', args: [BoolArgument(true)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackMute(true));
   });
 
-  test('recordArm sends expected message', () => {
+  test('recordArm sends expected command', () => {
     const {track, sent} = makeTrack();
     track.recordArm();
-    expect(sent[0]).toMatchObject({address: '/track/recarm', args: [BoolArgument(true)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackRecordArm(true));
   });
 
-  test('recordDisarm sends expected message', () => {
+  test('recordDisarm sends expected command', () => {
     const {track, sent} = makeTrack();
     track.recordDisarm();
-    expect(sent[0]).toMatchObject({address: '/track/recarm', args: [BoolArgument(false)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackRecordArm(false));
   });
 
-  test('rename sends expected message and sets name', () => {
+  test('rename sends expected command and sets name', () => {
     const {track, sent} = makeTrack();
     track.rename('foo');
-    expect(sent[0]).toMatchObject({address: '/track/name', args: [StringArgument('foo')]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackName('foo'));
     expect(track.name).toBe('foo');
   });
 
-  test('select sends expected message', () => {
+  test('select sends expected command', () => {
     const {track, sent} = makeTrack();
     track.select();
-    expect(sent[0]).toMatchObject({address: '/track/select', args: [BoolArgument(true)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackSelect(true));
   });
 
-  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('setMonitoringMode sends expected message: %p', value => {
+  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('setMonitoringMode sends expected command: %p', value => {
     const {track, sent} = makeTrack();
     track.setMonitoringMode(value);
-    expect(sent[0]).toMatchObject({address: '/track/monitor', args: [IntArgument(value)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackMonitoringMode(value));
   });
 
-  test('setPan sends expected message and sets value', () => {
+  test('setPan sends expected command and sets value', () => {
     const expected = 0.12345;
     const {track, sent} = makeTrack();
     track.setPan(expected);
-    expect(sent[0]).toMatchObject({address: '/track/pan', args: [FloatArgument(expected)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackPan(expected));
     expect(track.pan).toBe(expected);
   });
 
-  test('setPan2 sends expected message and sets value', () => {
+  test('setPan2 sends expected command and sets value', () => {
     const expected = 0.12345;
     const {track, sent} = makeTrack();
     track.setPan2(expected);
-    expect(sent[0]).toMatchObject({address: '/track/pan2', args: [FloatArgument(expected)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackPan2(expected));
     expect(track.pan2).toBe(expected);
   });
 
-  test('setVolumeDb sends expected message and sets value', () => {
+  test('setVolumeDb sends expected command and sets value', () => {
     const {track, sent} = makeTrack();
     track.setVolumeDb(12);
-    expect(sent[0]).toMatchObject({address: '/track/volume/db', args: [FloatArgument(12)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackVolumeDb(12));
     expect(track.volumeDb).toBe(12);
   });
 
-  test('setVolumeFaderPosition sends expected message and sets value', () => {
+  test('setVolumeFaderPosition sends expected command and sets value', () => {
     const expected = 0.12345;
     const {track, sent} = makeTrack();
     track.setVolumeFaderPosition(expected);
-    expect(sent[0]).toMatchObject({address: '/track/volume', args: [FloatArgument(expected)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackVolume(expected));
     expect(track.volumeFaderPosition).toBe(expected);
   });
 
-  test('solo sends expected message', () => {
+  test('solo sends expected command', () => {
     const {track, sent} = makeTrack();
     track.solo();
-    expect(sent[0]).toMatchObject({address: '/track/solo', args: [BoolArgument(true)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackSolo(true));
   });
 
-  test('toggleMute sends expected message', () => {
+  test('toggleMute sends expected command', () => {
     const {track, sent} = makeTrack();
     track.toggleMute();
-    expect(sent[0]).toMatchObject({address: '/track/mute/toggle', args: []});
+    expect(sent[0]).toMatchObject(ToggleSelectedTrackMute());
   });
 
-  test('toggleRecordArm sends expected message', () => {
+  test('toggleRecordArm sends expected command', () => {
     const {track, sent} = makeTrack();
     track.toggleRecordArm();
-    expect(sent[0]).toMatchObject({address: '/track/recarm/toggle', args: []});
+    expect(sent[0]).toMatchObject(ToggleSelectedTrackRecordArm());
   });
 
-  test('toggleSolo sends expected message', () => {
+  test('toggleSolo sends expected command', () => {
     const {track, sent} = makeTrack();
     track.toggleSolo();
-    expect(sent[0]).toMatchObject({address: '/track/solo/toggle', args: []});
+    expect(sent[0]).toMatchObject(ToggleSelectedTrackSolo());
   });
 
-  test('unmute sends expected message', () => {
+  test('unmute sends expected command', () => {
     const {track, sent} = makeTrack();
     track.unmute();
-    expect(sent[0]).toMatchObject({address: '/track/mute', args: [BoolArgument(false)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackMute(false));
   });
 
-  test('unsolo sends expected message', () => {
+  test('unsolo sends expected command', () => {
     const {track, sent} = makeTrack();
     track.unsolo();
-    expect(sent[0]).toMatchObject({address: '/track/solo', args: [BoolArgument(false)]});
+    expect(sent[0]).toMatchObject(SetSelectedTrackSolo(false));
   });
 });

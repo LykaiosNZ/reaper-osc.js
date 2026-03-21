@@ -2,14 +2,18 @@
  * Contains classes for controlling Reaper via OSC
  * @module
  */
-import {ActionMessage, OscMessage, RawOscMessage} from './Messages';
+import {OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
 import {DeviceState} from './Device';
 import {SelectedTrack} from './SelectedTrack';
-import * as osc from 'osc';
-import {BooleanMessageHandler, IMessageHandler, SelectedTrackFxMessageHandler, SelectedTrackMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
+import {ReaperOscClient} from './Client/Client';
+import {ToggleAutoRecordArm, ToggleMetronome, ResetSolos, TriggerAction} from './Client/Commands';
+import {ReaperConfiguration} from './Config';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
+
+// Re-export for backwards compatibility
+export {ReaperConfiguration, ConsoleLogger, LogLevel, Logger} from './Config';
 
 /**
  * Allows control of an instance of Reaper via OSC.
@@ -26,8 +30,8 @@ import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify'
  */
 @notifyOnPropertyChanged
 export class Reaper implements INotifyPropertyChanged {
-  @notify<Reaper>('isAutoRecArmEnabled')
-  private _isAutoRecArmEnabled = false;
+  @notify<Reaper>('isAutoRecordArmEnabled')
+  private _isAutoRecordArmEnabled = false;
 
   @notify<Reaper>('isAnySoloed')
   private _isAnySoloed = false;
@@ -36,42 +40,76 @@ export class Reaper implements INotifyPropertyChanged {
   private _isMetronomeEnabled = false;
 
   private readonly _afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null;
-  private readonly _handlers: IMessageHandler[] = [];
-  private _isReady = false;
-  private readonly _log: Logger;
+  private readonly _client: ReaperOscClient;
   private readonly _masterTrack: Track;
 
-  // No type defs for osc libary so don't have much choice here
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly _osc: any;
-
-  private readonly _device: DeviceState = new DeviceState(message => this.sendOscMessage(message));
+  private readonly _device: DeviceState;
   private readonly _selectedTrack: SelectedTrack;
   private readonly _tracks: Track[] = [];
-  private readonly _transport: Transport = new Transport(message => this.sendOscMessage(message));
+  private readonly _transport: Transport;
 
-  constructor(config: ReaperConfiguration = new ReaperConfiguration()) {
-    this._osc = new osc.UDPPort({
-      localAddress: config.localAddress,
-      localPort: config.localPort,
-      remoteAddress: config.remoteAddress,
-      remotePort: config.remotePort,
-      broadcast: true,
-      metadata: true,
+  constructor(config?: ReaperConfiguration);
+  constructor(client: ReaperOscClient, config?: ReaperConfiguration);
+  constructor(clientOrConfig?: ReaperOscClient | ReaperConfiguration, config?: ReaperConfiguration) {
+    let resolvedConfig: ReaperConfiguration;
+
+    if (clientOrConfig instanceof ReaperOscClient) {
+      this._client = clientOrConfig;
+      resolvedConfig = config ?? new ReaperConfiguration();
+    } else {
+      resolvedConfig = clientOrConfig ?? new ReaperConfiguration();
+      this._client = new ReaperOscClient(resolvedConfig);
+    }
+
+    this._afterMessageReceived = resolvedConfig.afterMessageReceived;
+
+    const send = (command: Parameters<ReaperOscClient['send']>[0]) => this._client.send(command);
+
+    this._device = new DeviceState(send);
+    this._transport = new Transport(send);
+    this._selectedTrack = new SelectedTrack(resolvedConfig.numberOfFx, send);
+    this._masterTrack = new Track(0, resolvedConfig.numberOfFx, send);
+
+    for (let i = 0; i < resolvedConfig.numberOfTracks; i++) {
+      this._tracks[i] = new Track(i + 1, resolvedConfig.numberOfFx, send);
+    }
+
+    // Track whether the last parsed event was known (for afterMessageReceived)
+    let lastEventWasKnown = false;
+
+    this._client.on('message', event => {
+      lastEventWasKnown = event.type !== 'unknown';
+
+      switch (event.type) {
+        case 'metronome': this._isMetronomeEnabled = event.enabled; break;
+        case 'autoRecordArm': this._isAutoRecordArmEnabled = event.enabled; break;
+        case 'anySolo': this._isAnySoloed = event.active; break;
+      }
+
+      this._transport.handleEvent(event);
+      this._selectedTrack.handleEvent(event);
+
+      if ('trackNumber' in event) {
+        const trackNumber = (event as {trackNumber: number}).trackNumber;
+
+        if (trackNumber === 0) {
+          this._masterTrack.handleEvent(event);
+        } else {
+          this._tracks[trackNumber - 1]?.handleEvent(event);
+        }
+      }
     });
 
-    this._afterMessageReceived = config.afterMessageReceived;
-    this._log = config.log;
-    this._selectedTrack = new SelectedTrack(config.numberOfFx, message => this.sendOscMessage(message));
+    this._client.on('rawMessage', message => {
+      if (this._afterMessageReceived !== null) {
+        this._afterMessageReceived(message, lastEventWasKnown);
+      }
+    });
+  }
 
-    this.initOsc();
-    this.initHandlers();
-
-    this._masterTrack = new Track(0, config.numberOfFx, message => this.sendOscMessage(message));
-
-    for (let i = 0; i < config.numberOfTracks; i++) {
-      this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
-    }
+  /** The underlying stateless OSC client */
+  public get client(): ReaperOscClient {
+    return this._client;
   }
 
   /** Controls the OSC device's navigation state (track/bank/FX selection) */
@@ -79,9 +117,9 @@ export class Reaper implements INotifyPropertyChanged {
     return this._device;
   }
 
-  /** Indicates whether auto-rec-arm is enabled */
-  public get isAutoRecArmEnabled(): boolean {
-    return this._isAutoRecArmEnabled;
+  /** Indicates whether auto-record-arm is enabled */
+  public get isAutoRecordArmEnabled(): boolean {
+    return this._isAutoRecordArmEnabled;
   }
 
   /** Indicates whether any track is soloed */
@@ -96,7 +134,7 @@ export class Reaper implements INotifyPropertyChanged {
 
   /** Indicates whether OSC is ready to send and receive messages */
   public get isReady(): boolean {
-    return this._isReady;
+    return this._client.isReady;
   }
 
   /** The master track */
@@ -121,86 +159,32 @@ export class Reaper implements INotifyPropertyChanged {
    * @param message The OSC message to be sent
    */
   public sendOscMessage(message: OscMessage): void {
-    if (!this._isReady) {
-      throw new Error("Can't send while OSC is not ready");
-    }
-
-    this._osc.send(message);
-
-    this._log('debug', 'OSC Message sent', message);
+    this._client.sendRaw(message);
   }
 
   /** Open the OSC port and start listening for messages */
   public async start(): Promise<void> {
-    if (this.isReady) {
-      return;
-    }
-
-    let errorCallback: (err: Error) => void;
-    let readyCallback: () => void;
-
-    const promise = new Promise<void>((resolve, reject) => {
-        errorCallback = (err: Error): void => {
-            this._log('debug', 'Error opening OSC connection', err);
-            reject(err);
-        }
-
-        readyCallback = () => {
-            this._log('debug', 'OSC listener ready');
-            this._isReady = true;
-            resolve();
-        }
-
-      this._osc.once('ready', readyCallback);
-      this._osc.once('error', errorCallback);
-    });
-
-    const removeListeners = () => {
-        this._osc.removeListener('ready', readyCallback);
-        this._osc.removeListener('error', errorCallback);
-    }
-
-    this._osc.open();
-
-    try {
-        await promise;
-    } finally {
-        removeListeners();
-    }
+    return this._client.start();
   }
 
   /** Stop listening for OSC messages */
   public async stop(): Promise<void> {
-    if (!this._isReady) {
-      return;
-    }
-
-    const promise = new Promise<void>(resolve => {
-      this._osc.once('close', () => {
-        this._log('debug', 'OSC listener stopped');
-        resolve();
-      });
-    });
-
-    this._isReady = false;
-    this._osc.close();
-
-    return promise;
+    return this._client.stop();
   }
 
-  /** Toggle auto-rec-arm on or off */
-  public toggleAutoRecArm(): void {
-    this.sendOscMessage(new OscMessage('/autorecarm'));
+  /** Toggle auto-record-arm on or off */
+  public toggleAutoRecordArm(): void {
+    this._client.send(ToggleAutoRecordArm());
   }
 
   /** Toggle the metronome on or off */
   public toggleMetronome(): void {
-    this.sendOscMessage(new OscMessage('/click'));
+    this._client.send(ToggleMetronome());
   }
 
   /** Reset all solos */
   public soloReset(): void {
-    this.sendOscMessage(new OscMessage('/soloreset'));
+    this._client.send(ResetSolos());
   }
 
   /**
@@ -241,98 +225,6 @@ export class Reaper implements INotifyPropertyChanged {
       throw new RangeError('Values must be between 0 and 127 inclusive');
     }
 
-    this.sendOscMessage(new ActionMessage(commandId, value));
-  }
-
-  private initHandlers() {
-    this._handlers.push(
-      new TrackMessageHandler(trackNumber => {
-        if (trackNumber == 0) {
-          return this._masterTrack;
-        }
-
-        return this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null;
-      }),
-      new SelectedTrackMessageHandler(this._selectedTrack),
-      new SelectedTrackFxMessageHandler(fxNumber => {
-        if (fxNumber === null) {
-          return this._selectedTrack.selectedFx;
-        }
-
-        return this._selectedTrack.fx[fxNumber - 1] ?? null;
-      }),
-      new TransportMessageHandler(this._transport),
-      new BooleanMessageHandler('/autorecarm', value => (this._isAutoRecArmEnabled = value)),
-      new BooleanMessageHandler('/anysolo', value => (this._isAnySoloed = value)),
-      new BooleanMessageHandler('/click', value => (this._isMetronomeEnabled = value)),
-    );
-  }
-
-  private initOsc() {
-    this._osc.on('error', (err: Error) => {
-      this._log('error', 'OSC error received', err);
-    });
-
-    this._osc.on('message', (rawMessage: RawOscMessage) => {
-     const message = new OscMessage(rawMessage.address, rawMessage.args);
-
-      let handled = false;
-
-      for (const handler of this._handlers) {
-        if (handler.handle(message)) {
-          handled = true;
-          break;
-        }
-      }
-
-      if (this._afterMessageReceived !== null) {
-        this._afterMessageReceived(message, handled);
-      }
-    });
-  }
-}
-
-export class ReaperConfiguration {
-  afterMessageReceived: ((message: OscMessage, handled: boolean) => void) | null = null;
-  /** The address to listen for Reaper OSC messages on */
-  localAddress = '127.0.0.1';
-  /** The port to listen for Reaper OSC messages on */
-  localPort = 9000;
-  /** Function for logging messages. Defaults to logging to console */
-  log: Logger = ConsoleLogger;
-  /** Number of FX per track */
-  numberOfFx = 8;
-  /** Number of tracks per bank */
-  numberOfTracks = 8;
-  /** The address to send Reaper OSC messages to */
-  remoteAddress = '127.0.0.1';
-  /** The port to send Reaper OSC messages to */
-  remotePort = 8000;
-}
-
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Logger = (level: LogLevel, message: string, ...optionalParams: any[]) => void;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ConsoleLogger(level: LogLevel, message: string, ...optionalParams: any[]): void {
-  switch (level) {
-    case 'debug': {
-      console.debug(message, optionalParams);
-      break;
-    }
-    case 'info': {
-      console.log(message, optionalParams);
-      break;
-    }
-    case 'warn': {
-      console.warn(message, optionalParams);
-      break;
-    }
-    case 'error': {
-      console.error(message, optionalParams);
-      break;
-    }
+    this._client.send(TriggerAction(commandId, value ?? undefined));
   }
 }

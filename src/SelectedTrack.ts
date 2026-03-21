@@ -2,11 +2,12 @@
  * Contains classes for the OSC device's currently selected track
  * @module
  */
-import {Fx} from './Fx';
+import {DeviceSelectedFx, Fx, SelectedTrackFxSlot} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {BooleanMessageHandler, FloatMessageHandler, IMessageHandler, IntegerMessageHandler, StringMessageHandler} from './Handlers';
-import {BooleanMessage, FloatMessage, ISendOscMessage, IntegerMessage, OscMessage, StringMessage, ToggleMessage} from './Messages';
-import {RecordMonitoringMode} from './Tracks';
+import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
+import {SetSelectedTrackSelect, SetSelectedTrackMute, ToggleSelectedTrackMute, SetSelectedTrackSolo, ToggleSelectedTrackSolo, SetSelectedTrackRecordArm, ToggleSelectedTrackRecordArm, SetSelectedTrackName, SetSelectedTrackPan, SetSelectedTrackPan2, SetSelectedTrackVolume, SetSelectedTrackVolumeDb, SetSelectedTrackMonitoringMode, ReaperOscCommand} from './Client/Commands';
+
+type SendCommand = (command: ReaperOscCommand) => void;
 
 /**
  * The OSC device's currently selected track.
@@ -60,35 +61,69 @@ export class SelectedTrack implements INotifyPropertyChanged {
   @notify<SelectedTrack>('vuRight')
   private _vuRight = 0;
 
-  private readonly _fx: Fx[] = [];
-  private readonly _handlers: IMessageHandler[] = [];
-  private readonly _selectedFx: Fx;
-  private readonly _sendOscMessage: ISendOscMessage;
+  private readonly _fx: SelectedTrackFxSlot[] = [];
+  private readonly _selectedFx: DeviceSelectedFx;
+  private readonly _send: SendCommand;
 
   /**
    * @param numberOfFx The number of FX slots in the device FX bank
-   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   * @param send A callback used to send typed commands to Reaper
    */
-  constructor(numberOfFx: number, sendOscMessage: ISendOscMessage) {
-    this._sendOscMessage = sendOscMessage;
+  constructor(numberOfFx: number, send: SendCommand) {
+    this._send = send;
 
     for (let i = 0; i < numberOfFx; i++) {
-      this._fx[i] = new Fx(`Fx ${i + 1}`, `/fx/${i + 1}`, sendOscMessage);
+      this._fx[i] = new SelectedTrackFxSlot(i + 1, send);
     }
 
-    this._selectedFx = new Fx('Selected FX', '/fx', sendOscMessage);
-
-    this.initHandlers();
+    this._selectedFx = new DeviceSelectedFx(send);
   }
 
   /** Deselect this track in Reaper */
   public deselect(): void {
-    this._sendOscMessage(new BooleanMessage('/track/select', false));
+    this._send(SetSelectedTrackSelect(false));
   }
 
   /** The FX bank for this track */
   public get fx(): ReadonlyArray<Fx> {
     return this._fx;
+  }
+
+  /**
+   * Handle a typed incoming event
+   * @param event The event to handle
+   */
+  public handleEvent(event: ReaperOscEvent): void {
+    switch (event.type) {
+      case 'selectedTrack:name': this._name = event.name; break;
+      case 'selectedTrack:mute': this._isMuted = event.muted; break;
+      case 'selectedTrack:solo': this._isSoloed = event.soloed; break;
+      case 'selectedTrack:recordArm': this._isRecordArmed = event.armed; break;
+      case 'selectedTrack:monitoringMode': this._recordMonitoring = event.mode; break;
+      case 'selectedTrack:select': this._isSelected = event.selected; break;
+      case 'selectedTrack:pan': this._pan = event.pan; break;
+      case 'selectedTrack:pan2': this._pan2 = event.pan2; break;
+      case 'selectedTrack:panMode': this._panMode = event.panMode; break;
+      case 'selectedTrack:volume': this._volumeFaderPosition = event.volume; break;
+      case 'selectedTrack:volumeDb': this._volumeDb = event.volumeDb; break;
+      case 'selectedTrack:vu': this._vu = event.vu; break;
+      case 'selectedTrack:vuLeft': this._vuLeft = event.vuLeft; break;
+      case 'selectedTrack:vuRight': this._vuRight = event.vuRight; break;
+      case 'selectedTrack:fx:name':
+      case 'selectedTrack:fx:bypass':
+      case 'selectedTrack:fx:openUi':
+      case 'selectedTrack:fx:preset': {
+        const slot = this._fx[event.fxNumber - 1];
+        if (slot) slot.handleEvent(event);
+        break;
+      }
+      case 'selectedFx:name':
+      case 'selectedFx:bypass':
+      case 'selectedFx:openUi':
+      case 'selectedFx:preset':
+        this._selectedFx.handleEvent(event);
+        break;
+    }
   }
 
   /** Indicates whether the track is muted */
@@ -116,7 +151,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
 
   /** Mute the track */
   public mute(): void {
-    this._sendOscMessage(new BooleanMessage('/track/mute', true));
+    this._send(SetSelectedTrackMute(true));
   }
 
   /** The track name */
@@ -144,23 +179,9 @@ export class SelectedTrack implements INotifyPropertyChanged {
     return this._panMode;
   }
 
-  /**
-   * Receive and handle an OSC message
-   * @param message The message to be handled
-   */
-  public receive(message: OscMessage): boolean {
-    for (const handler of this._handlers) {
-      if (handler.handle(message)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   /** Arm the track for recording */
   public recordArm(): void {
-    this._sendOscMessage(new BooleanMessage('/track/recarm', true));
+    this._send(SetSelectedTrackRecordArm(true));
   }
 
   /** Indicates the record monitoring mode */
@@ -170,7 +191,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
 
   /** Disarm track recording */
   public recordDisarm(): void {
-    this._sendOscMessage(new BooleanMessage('/track/recarm', false));
+    this._send(SetSelectedTrackRecordArm(false));
   }
 
   /**
@@ -178,7 +199,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
    * @param name The new name for the track
    */
   public rename(name: string): void {
-    this._sendOscMessage(new StringMessage('/track/name', name));
+    this._send(SetSelectedTrackName(name));
     this._name = name;
   }
 
@@ -188,7 +209,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
    * device is focused on, use {@link DeviceState.selectTrack} instead.
    */
   public select(): void {
-    this._sendOscMessage(new BooleanMessage('/track/select', true));
+    this._send(SetSelectedTrackSelect(true));
   }
 
   /** The device's currently focused FX on this track */
@@ -201,7 +222,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
    * @param value The monitoring mode to set
    */
   public setMonitoringMode(value: RecordMonitoringMode): void {
-    this._sendOscMessage(new IntegerMessage('/track/monitor', value));
+    this._send(SetSelectedTrackMonitoringMode(value));
   }
 
   /**
@@ -213,7 +234,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
       throw new RangeError('Must be between -1 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage('/track/pan', value));
+    this._send(SetSelectedTrackPan(value));
     this._pan = value;
   }
 
@@ -226,7 +247,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
       throw new RangeError('Must be between -1 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage('/track/pan2', value));
+    this._send(SetSelectedTrackPan2(value));
     this._pan2 = value;
   }
 
@@ -239,7 +260,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
       throw new RangeError('Must be between -100 and 12');
     }
 
-    this._sendOscMessage(new FloatMessage('/track/volume/db', value));
+    this._send(SetSelectedTrackVolumeDb(value));
     this._volumeDb = value;
   }
 
@@ -252,38 +273,38 @@ export class SelectedTrack implements INotifyPropertyChanged {
       throw new RangeError('Must be between 0 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage('/track/volume', position));
+    this._send(SetSelectedTrackVolume(position));
     this._volumeFaderPosition = position;
   }
 
   /** Solo the track */
   public solo(): void {
-    this._sendOscMessage(new BooleanMessage('/track/solo', true));
+    this._send(SetSelectedTrackSolo(true));
   }
 
   /** Toggle mute on/off */
   public toggleMute(): void {
-    this._sendOscMessage(new ToggleMessage('/track/mute'));
+    this._send(ToggleSelectedTrackMute());
   }
 
   /** Toggle record arm on/off */
   public toggleRecordArm(): void {
-    this._sendOscMessage(new ToggleMessage('/track/recarm'));
+    this._send(ToggleSelectedTrackRecordArm());
   }
 
   /** Toggle solo on/off */
   public toggleSolo(): void {
-    this._sendOscMessage(new ToggleMessage('/track/solo'));
+    this._send(ToggleSelectedTrackSolo());
   }
 
   /** Unmute the track */
   public unmute(): void {
-    this._sendOscMessage(new BooleanMessage('/track/mute', false));
+    this._send(SetSelectedTrackMute(false));
   }
 
   /** Unsolo the track */
   public unsolo(): void {
-    this._sendOscMessage(new BooleanMessage('/track/solo', false));
+    this._send(SetSelectedTrackSolo(false));
   }
 
   /** The track volume in dB */
@@ -309,24 +330,5 @@ export class SelectedTrack implements INotifyPropertyChanged {
   /** A floating-point value between 0 and 1 that indicates the Right VU level */
   public get vuRight(): number {
     return this._vuRight;
-  }
-
-  private initHandlers(): void {
-    this._handlers.push(
-      new StringMessageHandler('/track/name', value => (this._name = value)),
-      new BooleanMessageHandler('/track/mute', value => (this._isMuted = value)),
-      new BooleanMessageHandler('/track/solo', value => (this._isSoloed = value)),
-      new BooleanMessageHandler('/track/recarm', value => (this._isRecordArmed = value)),
-      new IntegerMessageHandler('/track/monitor', value => (this._recordMonitoring = value)),
-      new BooleanMessageHandler('/track/select', value => (this._isSelected = value)),
-      new FloatMessageHandler('/track/pan', value => (this._pan = value)),
-      new FloatMessageHandler('/track/pan2', value => (this._pan2 = value)),
-      new StringMessageHandler('/track/panmode', value => (this._panMode = value)),
-      new FloatMessageHandler('/track/volume', value => (this._volumeFaderPosition = value)),
-      new FloatMessageHandler('/track/volume/db', value => (this._volumeDb = value)),
-      new FloatMessageHandler('/track/vu', value => (this._vu = value)),
-      new FloatMessageHandler('/track/vu/L', value => (this._vuLeft = value)),
-      new FloatMessageHandler('/track/vu/R', value => (this._vuRight = value)),
-    );
   }
 }

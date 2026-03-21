@@ -530,39 +530,32 @@ DEVICE_FX_FOLLOWS_DEVICE t/device/fx/follows/device
 DEVICE_FX_FOLLOWS_LAST_TOUCHED t/device/fx/follows/last_touched
 DEVICE_FX_FOLLOWS_FOCUSED t/device/fx/follows/focused
 
-# TODO Device track
 DEVICE_TRACK_SELECT i/device/track/select t/device/track/select/@ 
 DEVICE_PREV_TRACK t/device/track/-
 DEVICE_NEXT_TRACK t/device/track/+
 
-# TODO Device track
 DEVICE_TRACK_BANK_SELECT i/device/track/bank/select t/device/track/bank/select/@
 DEVICE_PREV_TRACK_BANK t/device/track/bank/-
 DEVICE_NEXT_TRACK_BANK t/device/track/bank/+
 
-# TODO Device fx
 DEVICE_FX_SELECT i/device/fx/select t/device/fx/select/@
 DEVICE_PREV_FX t/device/fx/-
 DEVICE_NEXT_FX t/device/fx/+
 
-# TODO Device fx params
 DEVICE_FX_PARAM_BANK_SELECT i/device/fxparam/bank/select t/device/fxparam/bank/select/@ 
 DEVICE_FX_PARAM_BANK_SELECT s/device/fxparam/bank/str
 DEVICE_PREV_FX_PARAM_BANK t/device/fxparam/bank/-
 DEVICE_NEXT_FX_PARAM_BANK t/device/fxparam/bank/+
 
-# TODO Device FX Inst Params
 DEVICE_FX_INST_PARAM_BANK_SELECT i/device/fxinstparam/bank/select t/device/fxinstparam/bank/select/@
 DEVICE_FX_INST_PARAM_BANK_SELECT s/device/fxinstparam/bank/str
 DEVICE_PREV_FX_INST_PARAM_BANK t/device/fxinstparam/bank/-
 DEVICE_NEXT_FX_INST_PARAM_BANK t/device/fxinstparam/bank/+
 
-# TODO Device markers
 DEVICE_MARKER_BANK_SELECT i/device/marker/bank/select t/device/marker/bank/select/@
 DEVICE_PREV_MARKER_BANK t/device/marker/bank/-
 DEVICE_NEXT_MARKER_BANK t/device/marker/bank/+
 
-# TODO Device regions
 DEVICE_REGION_BANK_SELECT i/device/region/bank/select t/device/region/bank/select/@
 DEVICE_PREV_REGION_BANK t/device/region/bank/-
 DEVICE_NEXT_REGION_BANK t/device/region/bank/+

@@ -34,17 +34,20 @@
     "jest": "^27.0.4",
     "prettier": "^2.3.0",
     "semantic-release": "^25.0.3",
+    "tinybench": "^6.0.0",
     "tsc-watch": "^4.2.9",
+    "tsx": "^4.21.0",
     "typedoc": "^0.20.36",
     "typedoc-neo-theme": "^1.1.1",
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "build": "tsc",
+    "bench": "tsx benchmarks/index.ts",
+    "build": "rm -rf dist && tsc",
     "watch": "tsc -w",
     "docs": "typedoc --options ./typedoc.json",
-    "run": "tsc && node .",
-    "test": "tsc && jest",
+    "run": "rm -rf dist && tsc && node .",
+    "test": "rm -rf dist && tsc && jest",
     "checkFormatting": "prettier --check ./src",
     "format": "prettier --write ./src"
   },

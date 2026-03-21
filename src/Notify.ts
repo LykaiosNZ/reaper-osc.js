@@ -28,6 +28,8 @@ export function notify<T>(overrideName?: keyof T) {
   return (target: Object, propertyKey: string): void => {
     // Create a new prop to hold the value
     const valueKey = `_${propertyKey}Notify`;
+    // Pre-compute once at decoration time rather than on every property set
+    const propertyName = overrideName ?? propertyKey;
 
     // Replace the decorated prop with getter/setter that handles the notifications
     Object.defineProperty(target, propertyKey, {
@@ -43,8 +45,6 @@ export function notify<T>(overrideName?: keyof T) {
         if (this._propertyChanged === undefined) {
           return;
         }
-
-        const propertyName = overrideName ? overrideName : propertyKey;
 
         this._propertyChanged.dispatch(propertyName);
       },
