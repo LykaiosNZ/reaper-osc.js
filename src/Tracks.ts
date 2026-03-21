@@ -4,7 +4,7 @@
 import {TrackFx} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
-import {SetTrackSelect, SetTrackMute, ToggleTrackMute, SetTrackSolo, ToggleTrackSolo, SetTrackRecordArm, ToggleTrackRecordArm, SetTrackName, SetTrackPan, SetTrackPan2, SetTrackVolume, SetTrackVolumeDb, SetTrackMonitor, ReaperOscCommand} from './Client/Commands';
+import {SetTrackSelect, SetTrackMute, ToggleTrackMute, SetTrackSolo, ToggleTrackSolo, SetTrackRecordArm, ToggleTrackRecordArm, SetTrackName, SetTrackPan, SetTrackPan2, SetTrackVolume, SetTrackVolumeDb, SetTrackMonitoringMode, ReaperOscCommand} from './Client/Commands';
 
 export {RecordMonitoringMode} from './Client/Events';
 
@@ -95,8 +95,8 @@ export class Track implements INotifyPropertyChanged {
       case 'track:name': if (event.trackNumber === this.trackNumber) this._name = event.name; break;
       case 'track:mute': if (event.trackNumber === this.trackNumber) this._isMuted = event.muted; break;
       case 'track:solo': if (event.trackNumber === this.trackNumber) this._isSoloed = event.soloed; break;
-      case 'track:recarm': if (event.trackNumber === this.trackNumber) this._isRecordArmed = event.armed; break;
-      case 'track:monitor': if (event.trackNumber === this.trackNumber) this._recordMonitoring = event.monitor; break;
+      case 'track:recordArm': if (event.trackNumber === this.trackNumber) this._isRecordArmed = event.armed; break;
+      case 'track:monitoringMode': if (event.trackNumber === this.trackNumber) this._recordMonitoring = event.mode; break;
       case 'track:select': if (event.trackNumber === this.trackNumber) this._isSelected = event.selected; break;
       case 'track:pan': if (event.trackNumber === this.trackNumber) this._pan = event.pan; break;
       case 'track:pan2': if (event.trackNumber === this.trackNumber) this._pan2 = event.pan2; break;
@@ -217,7 +217,7 @@ export class Track implements INotifyPropertyChanged {
    * @param {RecordMonitorMode} value
    * */
   public setMonitoringMode(value: RecordMonitoringMode): void {
-    this._send(SetTrackMonitor(this.trackNumber, value));
+    this._send(SetTrackMonitoringMode(this.trackNumber, value));
   }
 
   /**

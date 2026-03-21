@@ -30,8 +30,8 @@ export {ReaperConfiguration, ConsoleLogger, LogLevel, Logger} from './Config';
  */
 @notifyOnPropertyChanged
 export class Reaper implements INotifyPropertyChanged {
-  @notify<Reaper>('isAutoRecArmEnabled')
-  private _isAutoRecArmEnabled = false;
+  @notify<Reaper>('isAutoRecordArmEnabled')
+  private _isAutoRecordArmEnabled = false;
 
   @notify<Reaper>('isAnySoloed')
   private _isAnySoloed = false;
@@ -82,7 +82,7 @@ export class Reaper implements INotifyPropertyChanged {
 
       switch (event.type) {
         case 'metronome': this._isMetronomeEnabled = event.enabled; break;
-        case 'autoRecArm': this._isAutoRecArmEnabled = event.enabled; break;
+        case 'autoRecordArm': this._isAutoRecordArmEnabled = event.enabled; break;
         case 'anySolo': this._isAnySoloed = event.active; break;
       }
 
@@ -117,9 +117,9 @@ export class Reaper implements INotifyPropertyChanged {
     return this._device;
   }
 
-  /** Indicates whether auto-rec-arm is enabled */
-  public get isAutoRecArmEnabled(): boolean {
-    return this._isAutoRecArmEnabled;
+  /** Indicates whether auto-record-arm is enabled */
+  public get isAutoRecordArmEnabled(): boolean {
+    return this._isAutoRecordArmEnabled;
   }
 
   /** Indicates whether any track is soloed */
@@ -172,8 +172,8 @@ export class Reaper implements INotifyPropertyChanged {
     return this._client.stop();
   }
 
-  /** Toggle auto-rec-arm on or off */
-  public toggleAutoRecArm(): void {
+  /** Toggle auto-record-arm on or off */
+  public toggleAutoRecordArm(): void {
     this._client.send(ToggleAutoRecordArm());
   }
 

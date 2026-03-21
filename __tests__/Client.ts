@@ -7,10 +7,10 @@ import {
   MetronomeEvent, AutoRecordArmEvent, AnySoloEvent,
   PlayEvent, StopEvent, PauseEvent, RecordEvent, RewindEvent, FastForwardEvent, RepeatEvent,
   TimeChanged, BeatChanged, FramesChanged, LoopStartChanged, LoopEndChanged,
-  TrackMuteEvent, TrackSoloEvent, TrackRecArmEvent, TrackSelectEvent, TrackNameChanged,
+  TrackMuteEvent, TrackSoloEvent, TrackRecordArmEvent, TrackSelectEvent, TrackNameChanged,
   TrackPanChanged, TrackPan2Changed, TrackPanModeChanged,
   TrackVolumeChanged, TrackVolumeDbChanged, TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged,
-  TrackMonitorChanged,
+  TrackMonitoringModeChanged,
   TrackFxNameChanged, TrackFxBypassEvent, TrackFxOpenUiEvent, TrackFxPresetChanged,
   SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackNameChanged, SelectedTrackVolumeChanged,
   SelectedTrackFxNameChanged, SelectedTrackFxBypassEvent,
@@ -20,13 +20,13 @@ import {
   commandToOscMessage,
   ToggleMetronome, ToggleAutoRecordArm, ResetSolos, TriggerAction,
   Play, Stop, Pause, SetRewind, ToggleRepeat, SetTime, SetFrames, SetLoopStart, SetLoopEnd,
-  SetTrackMute, ToggleTrackMute, SetTrackVolume, SetTrackVolumeDb, SetTrackName, SetTrackMonitor,
-  SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PrevTrackFxPreset,
+  SetTrackMute, ToggleTrackMute, SetTrackVolume, SetTrackVolumeDb, SetTrackName, SetTrackMonitoringMode,
+  SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PreviousTrackFxPreset,
   SetSelectedTrackMute, ToggleSelectedTrackMute, SetSelectedTrackVolume,
   SetSelectedTrackFxBypass,
   SetSelectedFxBypass, NextSelectedFxPreset,
   SelectDeviceTrack, NextDeviceTrack, SelectDeviceTrackBank,
-  SelectDeviceFx, NextDeviceFxParamBank, SelectDeviceMarkerBank, PreviousDeviceRegionBank,
+  SelectDeviceFx, NextDeviceFxParameterBank, SelectDeviceMarkerBank, PreviousDeviceRegionBank,
   RawMessage,
 } from '../dist/Client/Commands';
 
@@ -144,7 +144,7 @@ describe('event parsing', () => {
   test.each([
     ['/track/3/mute', [{type: 'i', value: 1}], TrackMuteEvent(3, true)],
     ['/track/3/solo', [{type: 'i', value: 0}], TrackSoloEvent(3, false)],
-    ['/track/1/recarm', [{type: 'i', value: 1}], TrackRecArmEvent(1, true)],
+    ['/track/1/recarm', [{type: 'i', value: 1}], TrackRecordArmEvent(1, true)],
     ['/track/2/select', [{type: 'i', value: 1}], TrackSelectEvent(2, true)],
     ['/track/1/name', [{type: 's', value: 'Guitar'}], TrackNameChanged(1, 'Guitar')],
     ['/track/1/pan', [{type: 'f', value: -0.5}], TrackPanChanged(1, -0.5)],
@@ -155,7 +155,7 @@ describe('event parsing', () => {
     ['/track/1/vu', [{type: 'f', value: 0.5}], TrackVuChanged(1, 0.5)],
     ['/track/1/vu/L', [{type: 'f', value: 0.25}], TrackVuLeftChanged(1, 0.25)],
     ['/track/1/vu/R', [{type: 'f', value: 0.5}], TrackVuRightChanged(1, 0.5)],
-    ['/track/1/monitor', [{type: 'f', value: 2}], TrackMonitorChanged(1, 2)],
+    ['/track/1/monitor', [{type: 'f', value: 2}], TrackMonitoringModeChanged(1, 2)],
   ] as [string, any[], ReaperOscEvent][])(
     'parses track message %s',
     async (address, args, expected) => {
@@ -264,7 +264,7 @@ describe('commandToOscMessage', () => {
     expect(msg.address).toBe('/click');
   });
 
-  test('autoRecArm:toggle', () => {
+  test('autoRecordArm:toggle', () => {
     const msg = commandToOscMessage(ToggleAutoRecordArm());
     expect(msg.address).toBe('/autorecarm');
   });
@@ -354,8 +354,8 @@ describe('commandToOscMessage', () => {
     expect(msg.args[0]?.value).toBe('Guitar');
   });
 
-  test('track:monitor', () => {
-    const msg = commandToOscMessage(SetTrackMonitor(1, 2));
+  test('track:monitoringMode', () => {
+    const msg = commandToOscMessage(SetTrackMonitoringMode(1, 2));
     expect(msg.address).toBe('/track/1/monitor');
     expect(msg.args[0]?.value).toBe(2);
   });
@@ -377,8 +377,8 @@ describe('commandToOscMessage', () => {
     expect(msg.address).toBe('/track/1/fx/2/preset+');
   });
 
-  test('track:fx:preset:prev', () => {
-    const msg = commandToOscMessage(PrevTrackFxPreset(1, 2));
+  test('track:fx:preset:previous', () => {
+    const msg = commandToOscMessage(PreviousTrackFxPreset(1, 2));
     expect(msg.address).toBe('/track/1/fx/2/preset-');
   });
 
@@ -438,8 +438,8 @@ describe('commandToOscMessage', () => {
     expect(msg.address).toBe('/device/fx/select/1');
   });
 
-  test('device:fxParamBank:next', () => {
-    const msg = commandToOscMessage(NextDeviceFxParamBank());
+  test('device:fxParameterBank:next', () => {
+    const msg = commandToOscMessage(NextDeviceFxParameterBank());
     expect(msg.address).toBe('/device/fxparam/bank/+');
   });
 

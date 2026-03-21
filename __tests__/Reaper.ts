@@ -51,7 +51,7 @@ test.each([-1, 128])('triggerAction should throw when value is less than 0 or gr
 });
 
 describe('properties set by messages', () => {
-  test.each([true, false])('autorecarm message sets isAutoRecArmEnabled: %p', async (value) => {
+  test.each([true, false])('autorecarm message sets isAutoRecordArmEnabled: %p', async (value) => {
     await reaper.start()
     testOsc.open();
 
@@ -60,7 +60,7 @@ describe('properties set by messages', () => {
     testOsc.send(message);
 
     return new Promise<void>((res) => setTimeout(() => {
-      expect(reaper.isAutoRecArmEnabled).toBe(value);
+      expect(reaper.isAutoRecordArmEnabled).toBe(value);
       res()
     }, 10));
   });
@@ -95,8 +95,8 @@ describe('properties set by messages', () => {
 });
 
 describe('methods send expected messages', () => {
-  test('toggleAutoRecArm sends expected message', async () => {
-    await expectOscMessage(() => reaper.toggleAutoRecArm(), {address: '/autorecarm', args: []});
+  test('toggleAutoRecordArm sends expected message', async () => {
+    await expectOscMessage(() => reaper.toggleAutoRecordArm(), {address: '/autorecarm', args: []});
   });
 
   test('soloReset sends expected message', async () => {

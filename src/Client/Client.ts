@@ -13,17 +13,17 @@ import {
   PlayEvent, StopEvent, PauseEvent, RecordEvent, RewindEvent, FastForwardEvent, RepeatEvent,
   TimeChanged, BeatChanged, FramesChanged, LoopStartChanged, LoopEndChanged,
   // Track
-  TrackMuteEvent, TrackSoloEvent, TrackRecArmEvent, TrackSelectEvent, TrackNameChanged,
+  TrackMuteEvent, TrackSoloEvent, TrackRecordArmEvent, TrackSelectEvent, TrackNameChanged,
   TrackPanChanged, TrackPan2Changed, TrackPanModeChanged,
   TrackVolumeChanged, TrackVolumeDbChanged,
-  TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitorChanged,
+  TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitoringModeChanged,
   // Track FX
   TrackFxNameChanged, TrackFxBypassEvent, TrackFxOpenUiEvent, TrackFxPresetChanged,
   // Selected Track
-  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecArmEvent, SelectedTrackSelectEvent,
+  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecordArmEvent, SelectedTrackSelectEvent,
   SelectedTrackNameChanged, SelectedTrackPanChanged, SelectedTrackPan2Changed, SelectedTrackPanModeChanged,
   SelectedTrackVolumeChanged, SelectedTrackVolumeDbChanged,
-  SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged, SelectedTrackMonitorChanged,
+  SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged, SelectedTrackMonitoringModeChanged,
   // Selected Track FX
   SelectedTrackFxNameChanged, SelectedTrackFxBypassEvent, SelectedTrackFxOpenUiEvent, SelectedTrackFxPresetChanged,
   // Selected FX
@@ -79,7 +79,7 @@ type IndexedTrackParser = (trackNumber: number, msg: OscMessage) => ReaperOscEve
 const TRACK_PARSERS = new Map<string, IndexedTrackParser>([
   ['mute', (n, m) => TrackMuteEvent(n, boolFrom(m))],
   ['solo', (n, m) => TrackSoloEvent(n, boolFrom(m))],
-  ['recarm', (n, m) => TrackRecArmEvent(n, boolFrom(m))],
+  ['recarm', (n, m) => TrackRecordArmEvent(n, boolFrom(m))],
   ['select', (n, m) => TrackSelectEvent(n, boolFrom(m))],
   ['name', (n, m) => TrackNameChanged(n, stringFrom(m))],
   ['pan', (n, m) => TrackPanChanged(n, floatFrom(m))],
@@ -90,7 +90,7 @@ const TRACK_PARSERS = new Map<string, IndexedTrackParser>([
   ['vu', (n, m) => TrackVuChanged(n, floatFrom(m))],
   ['vu/L', (n, m) => TrackVuLeftChanged(n, floatFrom(m))],
   ['vu/R', (n, m) => TrackVuRightChanged(n, floatFrom(m))],
-  ['monitor', (n, m) => TrackMonitorChanged(n, intFrom(m) as RecordMonitoringMode)],
+  ['monitor', (n, m) => TrackMonitoringModeChanged(n, intFrom(m) as RecordMonitoringMode)],
 ]);
 
 // --- Track FX suffix parsers (for /track/N/fx/M/suffix) ---
@@ -112,7 +112,7 @@ type SelectedTrackParser = (msg: OscMessage) => ReaperOscEvent;
 const SELECTED_TRACK_PARSERS = new Map<string, SelectedTrackParser>([
   ['mute', m => SelectedTrackMuteEvent(boolFrom(m))],
   ['solo', m => SelectedTrackSoloEvent(boolFrom(m))],
-  ['recarm', m => SelectedTrackRecArmEvent(boolFrom(m))],
+  ['recarm', m => SelectedTrackRecordArmEvent(boolFrom(m))],
   ['select', m => SelectedTrackSelectEvent(boolFrom(m))],
   ['name', m => SelectedTrackNameChanged(stringFrom(m))],
   ['pan', m => SelectedTrackPanChanged(floatFrom(m))],
@@ -123,7 +123,7 @@ const SELECTED_TRACK_PARSERS = new Map<string, SelectedTrackParser>([
   ['vu', m => SelectedTrackVuChanged(floatFrom(m))],
   ['vu/L', m => SelectedTrackVuLeftChanged(floatFrom(m))],
   ['vu/R', m => SelectedTrackVuRightChanged(floatFrom(m))],
-  ['monitor', m => SelectedTrackMonitorChanged(intFrom(m) as RecordMonitoringMode)],
+  ['monitor', m => SelectedTrackMonitoringModeChanged(intFrom(m) as RecordMonitoringMode)],
 ]);
 
 // --- FX on selected track (for /fx/M/suffix) ---

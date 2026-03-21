@@ -1,6 +1,6 @@
 import {TrackFx} from '../dist/Fx';
 import {
-  SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PrevTrackFxPreset,
+  SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PreviousTrackFxPreset,
   ReaperOscCommand,
 } from '../dist/Client/Commands';
 import {
@@ -119,7 +119,7 @@ describe('methods send expected commands', () => {
   test('previousPreset sends expected command', done => {
     const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject(PrevTrackFxPreset(1, 1));
+        expect(command).toMatchObject(PreviousTrackFxPreset(1, 1));
         done();
       } catch (error) {
         done(error);

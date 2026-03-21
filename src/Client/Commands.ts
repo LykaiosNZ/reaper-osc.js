@@ -10,8 +10,8 @@ import {RecordMonitoringMode} from './Events';
 export interface ToggleMetronome { type: 'metronome:toggle' }
 export function ToggleMetronome(): ToggleMetronome { return {type: 'metronome:toggle'}; }
 
-export interface ToggleAutoRecordArm { type: 'autoRecArm:toggle' }
-export function ToggleAutoRecordArm(): ToggleAutoRecordArm { return {type: 'autoRecArm:toggle'}; }
+export interface ToggleAutoRecordArm { type: 'autoRecordArm:toggle' }
+export function ToggleAutoRecordArm(): ToggleAutoRecordArm { return {type: 'autoRecordArm:toggle'}; }
 
 export interface ResetSolos { type: 'soloReset' }
 export function ResetSolos(): ResetSolos { return {type: 'soloReset'}; }
@@ -71,11 +71,11 @@ export function SetTrackSolo(trackNumber: number, soloed: boolean): SetTrackSolo
 export interface ToggleTrackSolo { type: 'track:solo:toggle'; trackNumber: number }
 export function ToggleTrackSolo(trackNumber: number): ToggleTrackSolo { return {type: 'track:solo:toggle', trackNumber}; }
 
-export interface SetTrackRecordArm { type: 'track:recarm'; trackNumber: number; armed: boolean }
-export function SetTrackRecordArm(trackNumber: number, armed: boolean): SetTrackRecordArm { return {type: 'track:recarm', trackNumber, armed}; }
+export interface SetTrackRecordArm { type: 'track:recordArm'; trackNumber: number; armed: boolean }
+export function SetTrackRecordArm(trackNumber: number, armed: boolean): SetTrackRecordArm { return {type: 'track:recordArm', trackNumber, armed}; }
 
-export interface ToggleTrackRecordArm { type: 'track:recarm:toggle'; trackNumber: number }
-export function ToggleTrackRecordArm(trackNumber: number): ToggleTrackRecordArm { return {type: 'track:recarm:toggle', trackNumber}; }
+export interface ToggleTrackRecordArm { type: 'track:recordArm:toggle'; trackNumber: number }
+export function ToggleTrackRecordArm(trackNumber: number): ToggleTrackRecordArm { return {type: 'track:recordArm:toggle', trackNumber}; }
 
 export interface SetTrackSelect { type: 'track:select'; trackNumber: number; selected: boolean }
 export function SetTrackSelect(trackNumber: number, selected: boolean): SetTrackSelect { return {type: 'track:select', trackNumber, selected}; }
@@ -95,8 +95,8 @@ export function SetTrackVolume(trackNumber: number, volume: number): SetTrackVol
 export interface SetTrackVolumeDb { type: 'track:volumeDb'; trackNumber: number; volumeDb: number }
 export function SetTrackVolumeDb(trackNumber: number, volumeDb: number): SetTrackVolumeDb { return {type: 'track:volumeDb', trackNumber, volumeDb}; }
 
-export interface SetTrackMonitor { type: 'track:monitor'; trackNumber: number; monitor: RecordMonitoringMode }
-export function SetTrackMonitor(trackNumber: number, monitor: RecordMonitoringMode): SetTrackMonitor { return {type: 'track:monitor', trackNumber, monitor}; }
+export interface SetTrackMonitoringMode { type: 'track:monitoringMode'; trackNumber: number; mode: RecordMonitoringMode }
+export function SetTrackMonitoringMode(trackNumber: number, mode: RecordMonitoringMode): SetTrackMonitoringMode { return {type: 'track:monitoringMode', trackNumber, mode: mode}; }
 
 // --- Track FX Commands ---
 
@@ -109,8 +109,8 @@ export function SetTrackFxOpenUi(trackNumber: number, fxNumber: number, open: bo
 export interface NextTrackFxPreset { type: 'track:fx:preset:next'; trackNumber: number; fxNumber: number }
 export function NextTrackFxPreset(trackNumber: number, fxNumber: number): NextTrackFxPreset { return {type: 'track:fx:preset:next', trackNumber, fxNumber}; }
 
-export interface PrevTrackFxPreset { type: 'track:fx:preset:prev'; trackNumber: number; fxNumber: number }
-export function PrevTrackFxPreset(trackNumber: number, fxNumber: number): PrevTrackFxPreset { return {type: 'track:fx:preset:prev', trackNumber, fxNumber}; }
+export interface PreviousTrackFxPreset { type: 'track:fx:preset:previous'; trackNumber: number; fxNumber: number }
+export function PreviousTrackFxPreset(trackNumber: number, fxNumber: number): PreviousTrackFxPreset { return {type: 'track:fx:preset:previous', trackNumber, fxNumber}; }
 
 // --- Selected Track Commands ---
 
@@ -126,11 +126,11 @@ export function SetSelectedTrackSolo(soloed: boolean): SetSelectedTrackSolo { re
 export interface ToggleSelectedTrackSolo { type: 'selectedTrack:solo:toggle' }
 export function ToggleSelectedTrackSolo(): ToggleSelectedTrackSolo { return {type: 'selectedTrack:solo:toggle'}; }
 
-export interface SetSelectedTrackRecordArm { type: 'selectedTrack:recarm'; armed: boolean }
-export function SetSelectedTrackRecordArm(armed: boolean): SetSelectedTrackRecordArm { return {type: 'selectedTrack:recarm', armed}; }
+export interface SetSelectedTrackRecordArm { type: 'selectedTrack:recordArm'; armed: boolean }
+export function SetSelectedTrackRecordArm(armed: boolean): SetSelectedTrackRecordArm { return {type: 'selectedTrack:recordArm', armed}; }
 
-export interface ToggleSelectedTrackRecordArm { type: 'selectedTrack:recarm:toggle' }
-export function ToggleSelectedTrackRecordArm(): ToggleSelectedTrackRecordArm { return {type: 'selectedTrack:recarm:toggle'}; }
+export interface ToggleSelectedTrackRecordArm { type: 'selectedTrack:recordArm:toggle' }
+export function ToggleSelectedTrackRecordArm(): ToggleSelectedTrackRecordArm { return {type: 'selectedTrack:recordArm:toggle'}; }
 
 export interface SetSelectedTrackSelect { type: 'selectedTrack:select'; selected: boolean }
 export function SetSelectedTrackSelect(selected: boolean): SetSelectedTrackSelect { return {type: 'selectedTrack:select', selected}; }
@@ -150,8 +150,8 @@ export function SetSelectedTrackVolume(volume: number): SetSelectedTrackVolume {
 export interface SetSelectedTrackVolumeDb { type: 'selectedTrack:volumeDb'; volumeDb: number }
 export function SetSelectedTrackVolumeDb(volumeDb: number): SetSelectedTrackVolumeDb { return {type: 'selectedTrack:volumeDb', volumeDb}; }
 
-export interface SetSelectedTrackMonitor { type: 'selectedTrack:monitor'; monitor: RecordMonitoringMode }
-export function SetSelectedTrackMonitor(monitor: RecordMonitoringMode): SetSelectedTrackMonitor { return {type: 'selectedTrack:monitor', monitor}; }
+export interface SetSelectedTrackMonitoringMode { type: 'selectedTrack:monitoringMode'; mode: RecordMonitoringMode }
+export function SetSelectedTrackMonitoringMode(mode: RecordMonitoringMode): SetSelectedTrackMonitoringMode { return {type: 'selectedTrack:monitoringMode', mode: mode}; }
 
 // --- Selected Track FX Commands ---
 
@@ -164,8 +164,8 @@ export function SetSelectedTrackFxOpenUi(fxNumber: number, open: boolean): SetSe
 export interface NextSelectedTrackFxPreset { type: 'selectedTrack:fx:preset:next'; fxNumber: number }
 export function NextSelectedTrackFxPreset(fxNumber: number): NextSelectedTrackFxPreset { return {type: 'selectedTrack:fx:preset:next', fxNumber}; }
 
-export interface PrevSelectedTrackFxPreset { type: 'selectedTrack:fx:preset:prev'; fxNumber: number }
-export function PrevSelectedTrackFxPreset(fxNumber: number): PrevSelectedTrackFxPreset { return {type: 'selectedTrack:fx:preset:prev', fxNumber}; }
+export interface PreviousSelectedTrackFxPreset { type: 'selectedTrack:fx:preset:previous'; fxNumber: number }
+export function PreviousSelectedTrackFxPreset(fxNumber: number): PreviousSelectedTrackFxPreset { return {type: 'selectedTrack:fx:preset:previous', fxNumber}; }
 
 // --- Selected FX Commands ---
 
@@ -178,8 +178,8 @@ export function SetSelectedFxOpenUi(open: boolean): SetSelectedFxOpenUi { return
 export interface NextSelectedFxPreset { type: 'selectedFx:preset:next' }
 export function NextSelectedFxPreset(): NextSelectedFxPreset { return {type: 'selectedFx:preset:next'}; }
 
-export interface PrevSelectedFxPreset { type: 'selectedFx:preset:prev' }
-export function PrevSelectedFxPreset(): PrevSelectedFxPreset { return {type: 'selectedFx:preset:prev'}; }
+export interface PreviousSelectedFxPreset { type: 'selectedFx:preset:previous' }
+export function PreviousSelectedFxPreset(): PreviousSelectedFxPreset { return {type: 'selectedFx:preset:previous'}; }
 
 // --- Device Navigation Commands ---
 
@@ -189,8 +189,8 @@ export function SelectDeviceTrack(index: number): SelectDeviceTrack { return {ty
 export interface NextDeviceTrack { type: 'device:track:next' }
 export function NextDeviceTrack(): NextDeviceTrack { return {type: 'device:track:next'}; }
 
-export interface PrevDeviceTrack { type: 'device:track:prev' }
-export function PrevDeviceTrack(): PrevDeviceTrack { return {type: 'device:track:prev'}; }
+export interface PreviousDeviceTrack { type: 'device:track:previous' }
+export function PreviousDeviceTrack(): PreviousDeviceTrack { return {type: 'device:track:previous'}; }
 
 export interface SelectDeviceTrackBank { type: 'device:trackBank:select'; index: number }
 export function SelectDeviceTrackBank(index: number): SelectDeviceTrackBank { return {type: 'device:trackBank:select', index}; }
@@ -198,8 +198,8 @@ export function SelectDeviceTrackBank(index: number): SelectDeviceTrackBank { re
 export interface NextDeviceTrackBank { type: 'device:trackBank:next' }
 export function NextDeviceTrackBank(): NextDeviceTrackBank { return {type: 'device:trackBank:next'}; }
 
-export interface PrevDeviceTrackBank { type: 'device:trackBank:prev' }
-export function PrevDeviceTrackBank(): PrevDeviceTrackBank { return {type: 'device:trackBank:prev'}; }
+export interface PreviousDeviceTrackBank { type: 'device:trackBank:previous' }
+export function PreviousDeviceTrackBank(): PreviousDeviceTrackBank { return {type: 'device:trackBank:previous'}; }
 
 export interface SelectDeviceFx { type: 'device:fx:select'; index: number }
 export function SelectDeviceFx(index: number): SelectDeviceFx { return {type: 'device:fx:select', index}; }
@@ -207,26 +207,26 @@ export function SelectDeviceFx(index: number): SelectDeviceFx { return {type: 'd
 export interface NextDeviceFx { type: 'device:fx:next' }
 export function NextDeviceFx(): NextDeviceFx { return {type: 'device:fx:next'}; }
 
-export interface PrevDeviceFx { type: 'device:fx:prev' }
-export function PrevDeviceFx(): PrevDeviceFx { return {type: 'device:fx:prev'}; }
+export interface PreviousDeviceFx { type: 'device:fx:previous' }
+export function PreviousDeviceFx(): PreviousDeviceFx { return {type: 'device:fx:previous'}; }
 
-export interface SelectDeviceFxParamBank { type: 'device:fxParamBank:select'; index: number }
-export function SelectDeviceFxParamBank(index: number): SelectDeviceFxParamBank { return {type: 'device:fxParamBank:select', index}; }
+export interface SelectDeviceFxParameterBank { type: 'device:fx:parameterBank:select'; index: number }
+export function SelectDeviceFxParameterBank(index: number): SelectDeviceFxParameterBank { return {type: 'device:fx:parameterBank:select', index}; }
 
-export interface NextDeviceFxParamBank { type: 'device:fxParamBank:next' }
-export function NextDeviceFxParamBank(): NextDeviceFxParamBank { return {type: 'device:fxParamBank:next'}; }
+export interface NextDeviceFxParameterBank { type: 'device:fx:parameterBank:next' }
+export function NextDeviceFxParameterBank(): NextDeviceFxParameterBank { return {type: 'device:fx:parameterBank:next'}; }
 
-export interface PrevDeviceFxParamBank { type: 'device:fxParamBank:prev' }
-export function PrevDeviceFxParamBank(): PrevDeviceFxParamBank { return {type: 'device:fxParamBank:prev'}; }
+export interface PreviousDeviceFxParameterBank { type: 'device:fx:parameterBank:previous' }
+export function PreviousDeviceFxParameterBank(): PreviousDeviceFxParameterBank { return {type: 'device:fx:parameterBank:previous'}; }
 
-export interface SelectDeviceFxInstParamBank { type: 'device:fxInstParamBank:select'; index: number }
-export function SelectDeviceFxInstParamBank(index: number): SelectDeviceFxInstParamBank { return {type: 'device:fxInstParamBank:select', index}; }
+export interface SelectDeviceFxInstrumentParameterBank { type: 'device:fx:instrumentParameterBank:select'; index: number }
+export function SelectDeviceFxInstrumentParameterBank(index: number): SelectDeviceFxInstrumentParameterBank { return {type: 'device:fx:instrumentParameterBank:select', index}; }
 
-export interface NextDeviceFxInstParamBank { type: 'device:fxInstParamBank:next' }
-export function NextDeviceFxInstParamBank(): NextDeviceFxInstParamBank { return {type: 'device:fxInstParamBank:next'}; }
+export interface NextDeviceFxInstrumentParameterBank { type: 'device:fx:instrumentParameterBank:next' }
+export function NextDeviceFxInstrumentParameterBank(): NextDeviceFxInstrumentParameterBank { return {type: 'device:fx:instrumentParameterBank:next'}; }
 
-export interface PrevDeviceFxInstParamBank { type: 'device:fxInstParamBank:prev' }
-export function PrevDeviceFxInstParamBank(): PrevDeviceFxInstParamBank { return {type: 'device:fxInstParamBank:prev'}; }
+export interface PreviousDeviceFxInstrumentParameterBank { type: 'device:fx:instrumentParameterBank:previous' }
+export function PreviousDeviceFxInstrumentParameterBank(): PreviousDeviceFxInstrumentParameterBank { return {type: 'device:fx:instrumentParameterBank:previous'}; }
 
 export interface SelectDeviceMarkerBank { type: 'device:markerBank:select'; index: number }
 export function SelectDeviceMarkerBank(index: number): SelectDeviceMarkerBank { return {type: 'device:markerBank:select', index}; }
@@ -234,8 +234,8 @@ export function SelectDeviceMarkerBank(index: number): SelectDeviceMarkerBank { 
 export interface NextDeviceMarkerBank { type: 'device:markerBank:next' }
 export function NextDeviceMarkerBank(): NextDeviceMarkerBank { return {type: 'device:markerBank:next'}; }
 
-export interface PrevDeviceMarkerBank { type: 'device:markerBank:prev' }
-export function PrevDeviceMarkerBank(): PrevDeviceMarkerBank { return {type: 'device:markerBank:prev'}; }
+export interface PreviousDeviceMarkerBank { type: 'device:markerBank:previous' }
+export function PreviousDeviceMarkerBank(): PreviousDeviceMarkerBank { return {type: 'device:markerBank:previous'}; }
 
 export interface SelectDeviceRegionBank { type: 'device:regionBank:select'; index: number }
 export function SelectDeviceRegionBank(index: number): SelectDeviceRegionBank { return {type: 'device:regionBank:select', index}; }
@@ -243,8 +243,8 @@ export function SelectDeviceRegionBank(index: number): SelectDeviceRegionBank { 
 export interface NextDeviceRegionBank { type: 'device:regionBank:next' }
 export function NextDeviceRegionBank(): NextDeviceRegionBank { return {type: 'device:regionBank:next'}; }
 
-export interface PreviousDeviceRegionBank { type: 'device:regionBank:prev' }
-export function PreviousDeviceRegionBank(): PreviousDeviceRegionBank { return {type: 'device:regionBank:prev'}; }
+export interface PreviousDeviceRegionBank { type: 'device:regionBank:previous' }
+export function PreviousDeviceRegionBank(): PreviousDeviceRegionBank { return {type: 'device:regionBank:previous'}; }
 
 // --- Raw Command ---
 
@@ -285,12 +285,12 @@ export type ReaperOscCommand =
   | SetTrackPan2
   | SetTrackVolume
   | SetTrackVolumeDb
-  | SetTrackMonitor
+  | SetTrackMonitoringMode
   // Track FX
   | SetTrackFxBypass
   | SetTrackFxOpenUi
   | NextTrackFxPreset
-  | PrevTrackFxPreset
+  | PreviousTrackFxPreset
   // Selected Track
   | SetSelectedTrackMute
   | ToggleSelectedTrackMute
@@ -304,36 +304,36 @@ export type ReaperOscCommand =
   | SetSelectedTrackPan2
   | SetSelectedTrackVolume
   | SetSelectedTrackVolumeDb
-  | SetSelectedTrackMonitor
+  | SetSelectedTrackMonitoringMode
   // Selected Track FX
   | SetSelectedTrackFxBypass
   | SetSelectedTrackFxOpenUi
   | NextSelectedTrackFxPreset
-  | PrevSelectedTrackFxPreset
+  | PreviousSelectedTrackFxPreset
   // Selected FX
   | SetSelectedFxBypass
   | SetSelectedFxOpenUi
   | NextSelectedFxPreset
-  | PrevSelectedFxPreset
+  | PreviousSelectedFxPreset
   // Device Navigation
   | SelectDeviceTrack
   | NextDeviceTrack
-  | PrevDeviceTrack
+  | PreviousDeviceTrack
   | SelectDeviceTrackBank
   | NextDeviceTrackBank
-  | PrevDeviceTrackBank
+  | PreviousDeviceTrackBank
   | SelectDeviceFx
   | NextDeviceFx
-  | PrevDeviceFx
-  | SelectDeviceFxParamBank
-  | NextDeviceFxParamBank
-  | PrevDeviceFxParamBank
-  | SelectDeviceFxInstParamBank
-  | NextDeviceFxInstParamBank
-  | PrevDeviceFxInstParamBank
+  | PreviousDeviceFx
+  | SelectDeviceFxParameterBank
+  | NextDeviceFxParameterBank
+  | PreviousDeviceFxParameterBank
+  | SelectDeviceFxInstrumentParameterBank
+  | NextDeviceFxInstrumentParameterBank
+  | PreviousDeviceFxInstrumentParameterBank
   | SelectDeviceMarkerBank
   | NextDeviceMarkerBank
-  | PrevDeviceMarkerBank
+  | PreviousDeviceMarkerBank
   | SelectDeviceRegionBank
   | NextDeviceRegionBank
   | PreviousDeviceRegionBank
@@ -345,7 +345,7 @@ export function commandToOscMessage(command: ReaperOscCommand): OscMessage {
   switch (command.type) {
     // Global
     case 'metronome:toggle': return new OscMessage('/click');
-    case 'autoRecArm:toggle': return new OscMessage('/autorecarm');
+    case 'autoRecordArm:toggle': return new OscMessage('/autorecarm');
     case 'soloReset': return new OscMessage('/soloreset');
     case 'action': return new ActionMessage(command.commandId, command.value ?? null);
 
@@ -368,71 +368,71 @@ export function commandToOscMessage(command: ReaperOscCommand): OscMessage {
     case 'track:mute:toggle': return new OscMessage(`/track/${command.trackNumber}/mute/toggle`);
     case 'track:solo': return new BooleanMessage(`/track/${command.trackNumber}/solo`, command.soloed);
     case 'track:solo:toggle': return new OscMessage(`/track/${command.trackNumber}/solo/toggle`);
-    case 'track:recarm': return new BooleanMessage(`/track/${command.trackNumber}/recarm`, command.armed);
-    case 'track:recarm:toggle': return new OscMessage(`/track/${command.trackNumber}/recarm/toggle`);
+    case 'track:recordArm': return new BooleanMessage(`/track/${command.trackNumber}/recarm`, command.armed);
+    case 'track:recordArm:toggle': return new OscMessage(`/track/${command.trackNumber}/recarm/toggle`);
     case 'track:select': return new BooleanMessage(`/track/${command.trackNumber}/select`, command.selected);
     case 'track:name': return new StringMessage(`/track/${command.trackNumber}/name`, command.name);
     case 'track:pan': return new FloatMessage(`/track/${command.trackNumber}/pan`, command.pan);
     case 'track:pan2': return new FloatMessage(`/track/${command.trackNumber}/pan2`, command.pan2);
     case 'track:volume': return new FloatMessage(`/track/${command.trackNumber}/volume`, command.volume);
     case 'track:volumeDb': return new FloatMessage(`/track/${command.trackNumber}/volume/db`, command.volumeDb);
-    case 'track:monitor': return new IntegerMessage(`/track/${command.trackNumber}/monitor`, command.monitor);
+    case 'track:monitoringMode': return new IntegerMessage(`/track/${command.trackNumber}/monitor`, command.mode);
 
     // Track FX (bypass is inverted on the wire: false = bypassed)
     case 'track:fx:bypass': return new BooleanMessage(`/track/${command.trackNumber}/fx/${command.fxNumber}/bypass`, !command.bypassed);
     case 'track:fx:openUi': return new BooleanMessage(`/track/${command.trackNumber}/fx/${command.fxNumber}/openui`, command.open);
     case 'track:fx:preset:next': return new OscMessage(`/track/${command.trackNumber}/fx/${command.fxNumber}/preset+`);
-    case 'track:fx:preset:prev': return new OscMessage(`/track/${command.trackNumber}/fx/${command.fxNumber}/preset-`);
+    case 'track:fx:preset:previous': return new OscMessage(`/track/${command.trackNumber}/fx/${command.fxNumber}/preset-`);
 
     // Selected track
     case 'selectedTrack:mute': return new BooleanMessage('/track/mute', command.muted);
     case 'selectedTrack:mute:toggle': return new OscMessage('/track/mute/toggle');
     case 'selectedTrack:solo': return new BooleanMessage('/track/solo', command.soloed);
     case 'selectedTrack:solo:toggle': return new OscMessage('/track/solo/toggle');
-    case 'selectedTrack:recarm': return new BooleanMessage('/track/recarm', command.armed);
-    case 'selectedTrack:recarm:toggle': return new OscMessage('/track/recarm/toggle');
+    case 'selectedTrack:recordArm': return new BooleanMessage('/track/recarm', command.armed);
+    case 'selectedTrack:recordArm:toggle': return new OscMessage('/track/recarm/toggle');
     case 'selectedTrack:select': return new BooleanMessage('/track/select', command.selected);
     case 'selectedTrack:name': return new StringMessage('/track/name', command.name);
     case 'selectedTrack:pan': return new FloatMessage('/track/pan', command.pan);
     case 'selectedTrack:pan2': return new FloatMessage('/track/pan2', command.pan2);
     case 'selectedTrack:volume': return new FloatMessage('/track/volume', command.volume);
     case 'selectedTrack:volumeDb': return new FloatMessage('/track/volume/db', command.volumeDb);
-    case 'selectedTrack:monitor': return new IntegerMessage('/track/monitor', command.monitor);
+    case 'selectedTrack:monitoringMode': return new IntegerMessage('/track/monitor', command.mode);
 
     // Selected track FX (bypass inverted)
     case 'selectedTrack:fx:bypass': return new BooleanMessage(`/fx/${command.fxNumber}/bypass`, !command.bypassed);
     case 'selectedTrack:fx:openUi': return new BooleanMessage(`/fx/${command.fxNumber}/openui`, command.open);
     case 'selectedTrack:fx:preset:next': return new OscMessage(`/fx/${command.fxNumber}/preset+`);
-    case 'selectedTrack:fx:preset:prev': return new OscMessage(`/fx/${command.fxNumber}/preset-`);
+    case 'selectedTrack:fx:preset:previous': return new OscMessage(`/fx/${command.fxNumber}/preset-`);
 
     // Selected FX (bypass inverted)
     case 'selectedFx:bypass': return new BooleanMessage('/fx/bypass', !command.bypassed);
     case 'selectedFx:openUi': return new BooleanMessage('/fx/openui', command.open);
     case 'selectedFx:preset:next': return new OscMessage('/fx/preset+');
-    case 'selectedFx:preset:prev': return new OscMessage('/fx/preset-');
+    case 'selectedFx:preset:previous': return new OscMessage('/fx/preset-');
 
     // Device navigation
     case 'device:track:select': return new OscMessage(`/device/track/select/${command.index}`);
     case 'device:track:next': return new OscMessage('/device/track/+');
-    case 'device:track:prev': return new OscMessage('/device/track/-');
+    case 'device:track:previous': return new OscMessage('/device/track/-');
     case 'device:trackBank:select': return new OscMessage(`/device/track/bank/select/${command.index}`);
     case 'device:trackBank:next': return new OscMessage('/device/track/bank/+');
-    case 'device:trackBank:prev': return new OscMessage('/device/track/bank/-');
+    case 'device:trackBank:previous': return new OscMessage('/device/track/bank/-');
     case 'device:fx:select': return new OscMessage(`/device/fx/select/${command.index}`);
     case 'device:fx:next': return new OscMessage('/device/fx/+');
-    case 'device:fx:prev': return new OscMessage('/device/fx/-');
-    case 'device:fxParamBank:select': return new OscMessage(`/device/fxparam/bank/select/${command.index}`);
-    case 'device:fxParamBank:next': return new OscMessage('/device/fxparam/bank/+');
-    case 'device:fxParamBank:prev': return new OscMessage('/device/fxparam/bank/-');
-    case 'device:fxInstParamBank:select': return new OscMessage(`/device/fxinstparam/bank/select/${command.index}`);
-    case 'device:fxInstParamBank:next': return new OscMessage('/device/fxinstparam/bank/+');
-    case 'device:fxInstParamBank:prev': return new OscMessage('/device/fxinstparam/bank/-');
+    case 'device:fx:previous': return new OscMessage('/device/fx/-');
+    case 'device:fx:parameterBank:select': return new OscMessage(`/device/fxparam/bank/select/${command.index}`);
+    case 'device:fx:parameterBank:next': return new OscMessage('/device/fxparam/bank/+');
+    case 'device:fx:parameterBank:previous': return new OscMessage('/device/fxparam/bank/-');
+    case 'device:fx:instrumentParameterBank:select': return new OscMessage(`/device/fxinstparam/bank/select/${command.index}`);
+    case 'device:fx:instrumentParameterBank:next': return new OscMessage('/device/fxinstparam/bank/+');
+    case 'device:fx:instrumentParameterBank:previous': return new OscMessage('/device/fxinstparam/bank/-');
     case 'device:markerBank:select': return new OscMessage(`/device/marker/bank/select/${command.index}`);
     case 'device:markerBank:next': return new OscMessage('/device/marker/bank/+');
-    case 'device:markerBank:prev': return new OscMessage('/device/marker/bank/-');
+    case 'device:markerBank:previous': return new OscMessage('/device/marker/bank/-');
     case 'device:regionBank:select': return new OscMessage(`/device/region/bank/select/${command.index}`);
     case 'device:regionBank:next': return new OscMessage('/device/region/bank/+');
-    case 'device:regionBank:prev': return new OscMessage('/device/region/bank/-');
+    case 'device:regionBank:previous': return new OscMessage('/device/region/bank/-');
 
     // Raw
     case 'raw': return command.message;

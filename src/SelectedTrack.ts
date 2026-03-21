@@ -5,7 +5,7 @@
 import {DeviceSelectedFx, Fx, SelectedTrackFxSlot} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
-import {SetSelectedTrackSelect, SetSelectedTrackMute, ToggleSelectedTrackMute, SetSelectedTrackSolo, ToggleSelectedTrackSolo, SetSelectedTrackRecordArm, ToggleSelectedTrackRecordArm, SetSelectedTrackName, SetSelectedTrackPan, SetSelectedTrackPan2, SetSelectedTrackVolume, SetSelectedTrackVolumeDb, SetSelectedTrackMonitor, ReaperOscCommand} from './Client/Commands';
+import {SetSelectedTrackSelect, SetSelectedTrackMute, ToggleSelectedTrackMute, SetSelectedTrackSolo, ToggleSelectedTrackSolo, SetSelectedTrackRecordArm, ToggleSelectedTrackRecordArm, SetSelectedTrackName, SetSelectedTrackPan, SetSelectedTrackPan2, SetSelectedTrackVolume, SetSelectedTrackVolumeDb, SetSelectedTrackMonitoringMode, ReaperOscCommand} from './Client/Commands';
 
 type SendCommand = (command: ReaperOscCommand) => void;
 
@@ -98,8 +98,8 @@ export class SelectedTrack implements INotifyPropertyChanged {
       case 'selectedTrack:name': this._name = event.name; break;
       case 'selectedTrack:mute': this._isMuted = event.muted; break;
       case 'selectedTrack:solo': this._isSoloed = event.soloed; break;
-      case 'selectedTrack:recarm': this._isRecordArmed = event.armed; break;
-      case 'selectedTrack:monitor': this._recordMonitoring = event.monitor; break;
+      case 'selectedTrack:recordArm': this._isRecordArmed = event.armed; break;
+      case 'selectedTrack:monitoringMode': this._recordMonitoring = event.mode; break;
       case 'selectedTrack:select': this._isSelected = event.selected; break;
       case 'selectedTrack:pan': this._pan = event.pan; break;
       case 'selectedTrack:pan2': this._pan2 = event.pan2; break;
@@ -222,7 +222,7 @@ export class SelectedTrack implements INotifyPropertyChanged {
    * @param value The monitoring mode to set
    */
   public setMonitoringMode(value: RecordMonitoringMode): void {
-    this._send(SetSelectedTrackMonitor(value));
+    this._send(SetSelectedTrackMonitoringMode(value));
   }
 
   /**

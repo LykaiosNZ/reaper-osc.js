@@ -20,8 +20,8 @@ export enum RecordMonitoringMode {
 export interface MetronomeEvent { type: 'metronome'; enabled: boolean }
 export function MetronomeEvent(enabled: boolean): MetronomeEvent { return {type: 'metronome', enabled}; }
 
-export interface AutoRecordArmEvent { type: 'autoRecArm'; enabled: boolean }
-export function AutoRecordArmEvent(enabled: boolean): AutoRecordArmEvent { return {type: 'autoRecArm', enabled}; }
+export interface AutoRecordArmEvent { type: 'autoRecordArm'; enabled: boolean }
+export function AutoRecordArmEvent(enabled: boolean): AutoRecordArmEvent { return {type: 'autoRecordArm', enabled}; }
 
 export interface AnySoloEvent { type: 'anySolo'; active: boolean }
 export function AnySoloEvent(active: boolean): AnySoloEvent { return {type: 'anySolo', active}; }
@@ -72,8 +72,8 @@ export function TrackMuteEvent(trackNumber: number, muted: boolean): TrackMuteEv
 export interface TrackSoloEvent { type: 'track:solo'; trackNumber: number; soloed: boolean }
 export function TrackSoloEvent(trackNumber: number, soloed: boolean): TrackSoloEvent { return {type: 'track:solo', trackNumber, soloed}; }
 
-export interface TrackRecArmEvent { type: 'track:recarm'; trackNumber: number; armed: boolean }
-export function TrackRecArmEvent(trackNumber: number, armed: boolean): TrackRecArmEvent { return {type: 'track:recarm', trackNumber, armed}; }
+export interface TrackRecordArmEvent { type: 'track:recordArm'; trackNumber: number; armed: boolean }
+export function TrackRecordArmEvent(trackNumber: number, armed: boolean): TrackRecordArmEvent { return {type: 'track:recordArm', trackNumber, armed}; }
 
 export interface TrackSelectEvent { type: 'track:select'; trackNumber: number; selected: boolean }
 export function TrackSelectEvent(trackNumber: number, selected: boolean): TrackSelectEvent { return {type: 'track:select', trackNumber, selected}; }
@@ -105,8 +105,8 @@ export function TrackVuLeftChanged(trackNumber: number, vuLeft: number): TrackVu
 export interface TrackVuRightChanged { type: 'track:vuRight'; trackNumber: number; vuRight: number }
 export function TrackVuRightChanged(trackNumber: number, vuRight: number): TrackVuRightChanged { return {type: 'track:vuRight', trackNumber, vuRight}; }
 
-export interface TrackMonitorChanged { type: 'track:monitor'; trackNumber: number; monitor: RecordMonitoringMode }
-export function TrackMonitorChanged(trackNumber: number, monitor: RecordMonitoringMode): TrackMonitorChanged { return {type: 'track:monitor', trackNumber, monitor}; }
+export interface TrackMonitoringModeChanged { type: 'track:monitoringMode'; trackNumber: number; mode: RecordMonitoringMode }
+export function TrackMonitoringModeChanged(trackNumber: number, mode: RecordMonitoringMode): TrackMonitoringModeChanged { return {type: 'track:monitoringMode', trackNumber, mode: mode}; }
 
 // --- Track FX Events ---
 
@@ -130,8 +130,8 @@ export function SelectedTrackMuteEvent(muted: boolean): SelectedTrackMuteEvent {
 export interface SelectedTrackSoloEvent { type: 'selectedTrack:solo'; soloed: boolean }
 export function SelectedTrackSoloEvent(soloed: boolean): SelectedTrackSoloEvent { return {type: 'selectedTrack:solo', soloed}; }
 
-export interface SelectedTrackRecArmEvent { type: 'selectedTrack:recarm'; armed: boolean }
-export function SelectedTrackRecArmEvent(armed: boolean): SelectedTrackRecArmEvent { return {type: 'selectedTrack:recarm', armed}; }
+export interface SelectedTrackRecordArmEvent { type: 'selectedTrack:recordArm'; armed: boolean }
+export function SelectedTrackRecordArmEvent(armed: boolean): SelectedTrackRecordArmEvent { return {type: 'selectedTrack:recordArm', armed}; }
 
 export interface SelectedTrackSelectEvent { type: 'selectedTrack:select'; selected: boolean }
 export function SelectedTrackSelectEvent(selected: boolean): SelectedTrackSelectEvent { return {type: 'selectedTrack:select', selected}; }
@@ -163,8 +163,8 @@ export function SelectedTrackVuLeftChanged(vuLeft: number): SelectedTrackVuLeftC
 export interface SelectedTrackVuRightChanged { type: 'selectedTrack:vuRight'; vuRight: number }
 export function SelectedTrackVuRightChanged(vuRight: number): SelectedTrackVuRightChanged { return {type: 'selectedTrack:vuRight', vuRight}; }
 
-export interface SelectedTrackMonitorChanged { type: 'selectedTrack:monitor'; monitor: RecordMonitoringMode }
-export function SelectedTrackMonitorChanged(monitor: RecordMonitoringMode): SelectedTrackMonitorChanged { return {type: 'selectedTrack:monitor', monitor}; }
+export interface SelectedTrackMonitoringModeChanged { type: 'selectedTrack:monitoringMode'; mode: RecordMonitoringMode }
+export function SelectedTrackMonitoringModeChanged(mode: RecordMonitoringMode): SelectedTrackMonitoringModeChanged { return {type: 'selectedTrack:monitoringMode', mode: mode}; }
 
 // --- Selected Track FX Events ---
 
@@ -221,7 +221,7 @@ export type ReaperOscEvent =
   // Track
   | TrackMuteEvent
   | TrackSoloEvent
-  | TrackRecArmEvent
+  | TrackRecordArmEvent
   | TrackSelectEvent
   | TrackNameChanged
   | TrackPanChanged
@@ -232,7 +232,7 @@ export type ReaperOscEvent =
   | TrackVuChanged
   | TrackVuLeftChanged
   | TrackVuRightChanged
-  | TrackMonitorChanged
+  | TrackMonitoringModeChanged
   // Track FX
   | TrackFxNameChanged
   | TrackFxBypassEvent
@@ -241,7 +241,7 @@ export type ReaperOscEvent =
   // Selected Track
   | SelectedTrackMuteEvent
   | SelectedTrackSoloEvent
-  | SelectedTrackRecArmEvent
+  | SelectedTrackRecordArmEvent
   | SelectedTrackSelectEvent
   | SelectedTrackNameChanged
   | SelectedTrackPanChanged
@@ -252,7 +252,7 @@ export type ReaperOscEvent =
   | SelectedTrackVuChanged
   | SelectedTrackVuLeftChanged
   | SelectedTrackVuRightChanged
-  | SelectedTrackMonitorChanged
+  | SelectedTrackMonitoringModeChanged
   // Selected Track FX
   | SelectedTrackFxNameChanged
   | SelectedTrackFxBypassEvent

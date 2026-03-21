@@ -7,16 +7,16 @@ import {
   SetSelectedTrackSelect, SetSelectedTrackName,
   SetSelectedTrackPan, SetSelectedTrackPan2,
   SetSelectedTrackVolume, SetSelectedTrackVolumeDb,
-  SetSelectedTrackMonitor,
+  SetSelectedTrackMonitoringMode,
   ReaperOscCommand,
 } from '../dist/Client/Commands';
 import {
-  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecArmEvent,
+  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecordArmEvent,
   SelectedTrackSelectEvent, SelectedTrackNameChanged,
   SelectedTrackPanChanged, SelectedTrackPan2Changed, SelectedTrackPanModeChanged,
   SelectedTrackVolumeChanged, SelectedTrackVolumeDbChanged,
   SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged,
-  SelectedTrackMonitorChanged,
+  SelectedTrackMonitoringModeChanged,
 } from '../dist/Client/Events';
 
 function makeTrack(): { track: SelectedTrack; sent: ReaperOscCommand[] } {
@@ -65,7 +65,7 @@ describe('properties set by events', () => {
 
   test.each([true, false])('recarm event sets isRecordArmed: %p', value => {
     const {track} = makeTrack();
-    track.handleEvent(SelectedTrackRecArmEvent(value));
+    track.handleEvent(SelectedTrackRecordArmEvent(value));
     expect(track.isRecordArmed).toBe(value);
   });
 
@@ -109,7 +109,7 @@ describe('properties set by events', () => {
 
   test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor event sets recordMonitoring: %p', value => {
     const {track} = makeTrack();
-    track.handleEvent(SelectedTrackMonitorChanged(value));
+    track.handleEvent(SelectedTrackMonitoringModeChanged(value));
     expect(track.recordMonitoring).toBe(value);
   });
 
@@ -190,7 +190,7 @@ describe('methods send expected commands', () => {
   test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('setMonitoringMode sends expected command: %p', value => {
     const {track, sent} = makeTrack();
     track.setMonitoringMode(value);
-    expect(sent[0]).toMatchObject(SetSelectedTrackMonitor(value));
+    expect(sent[0]).toMatchObject(SetSelectedTrackMonitoringMode(value));
   });
 
   test('setPan sends expected command and sets value', () => {

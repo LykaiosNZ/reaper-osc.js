@@ -3,13 +3,13 @@ import {
   SetTrackMute, ToggleTrackMute, SetTrackSolo, ToggleTrackSolo,
   SetTrackRecordArm, ToggleTrackRecordArm, SetTrackSelect,
   SetTrackName, SetTrackPan, SetTrackPan2, SetTrackVolume, SetTrackVolumeDb,
-  SetTrackMonitor, ReaperOscCommand,
+  SetTrackMonitoringMode, ReaperOscCommand,
 } from '../dist/Client/Commands';
 import {
-  TrackMuteEvent, TrackSoloEvent, TrackRecArmEvent, TrackSelectEvent, TrackNameChanged,
+  TrackMuteEvent, TrackSoloEvent, TrackRecordArmEvent, TrackSelectEvent, TrackNameChanged,
   TrackPanChanged, TrackPan2Changed, TrackPanModeChanged,
   TrackVolumeChanged, TrackVolumeDbChanged,
-  TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitorChanged,
+  TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitoringModeChanged,
 } from '../dist/Client/Events';
 
 test('has correct number of fx', () => {
@@ -66,7 +66,7 @@ describe('properties set by events', () => {
   });
 
   test.each([true, false])('recarm event sets isRecordArmed: %p', value => {
-    track.handleEvent(TrackRecArmEvent(1, value));
+    track.handleEvent(TrackRecordArmEvent(1, value));
     expect(track.isRecordArmed).toBe(value);
   });
 
@@ -103,7 +103,7 @@ describe('properties set by events', () => {
   });
 
   test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor event sets recordMonitoring: %p', expected => {
-    track.handleEvent(TrackMonitorChanged(1, expected));
+    track.handleEvent(TrackMonitoringModeChanged(1, expected));
     expect(track.recordMonitoring).toBe(expected);
   });
 
@@ -230,7 +230,7 @@ describe('methods send expected commands', () => {
     (expected, done: any) => {
       const track = new Track(1, 1, (command: ReaperOscCommand) => {
         try {
-          expect(command).toMatchObject(SetTrackMonitor(1, expected));
+          expect(command).toMatchObject(SetTrackMonitoringMode(1, expected));
           done();
         } catch (error) {
           done(error);

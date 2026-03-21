@@ -1,9 +1,9 @@
 import {
-  SelectDeviceTrack, NextDeviceTrack, PrevDeviceTrack,
-  SelectDeviceTrackBank, NextDeviceTrackBank, PrevDeviceTrackBank,
-  SelectDeviceFx, NextDeviceFx, PrevDeviceFx,
-  SelectDeviceFxParamBank, NextDeviceFxParamBank, PrevDeviceFxParamBank,
-  SelectDeviceMarkerBank, NextDeviceMarkerBank, PrevDeviceMarkerBank,
+  SelectDeviceTrack, NextDeviceTrack, PreviousDeviceTrack,
+  SelectDeviceTrackBank, NextDeviceTrackBank, PreviousDeviceTrackBank,
+  SelectDeviceFx, NextDeviceFx, PreviousDeviceFx,
+  SelectDeviceFxParameterBank, NextDeviceFxParameterBank, PreviousDeviceFxParameterBank,
+  SelectDeviceMarkerBank, NextDeviceMarkerBank, PreviousDeviceMarkerBank,
   SelectDeviceRegionBank, NextDeviceRegionBank, PreviousDeviceRegionBank,
   ReaperOscCommand,
 } from '../dist/Client/Commands';
@@ -28,10 +28,10 @@ describe('track', () => {
     expect(sent[0]).toMatchObject(NextDeviceTrack());
   });
 
-  test('prevTrack sends expected command', () => {
+  test('previousTrack sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevTrack();
-    expect(sent[0]).toMatchObject(PrevDeviceTrack());
+    device.previousTrack();
+    expect(sent[0]).toMatchObject(PreviousDeviceTrack());
   });
 });
 
@@ -48,10 +48,10 @@ describe('track bank', () => {
     expect(sent[0]).toMatchObject(NextDeviceTrackBank());
   });
 
-  test('prevTrackBank sends expected command', () => {
+  test('previousTrackBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevTrackBank();
-    expect(sent[0]).toMatchObject(PrevDeviceTrackBank());
+    device.previousTrackBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceTrackBank());
   });
 });
 
@@ -68,30 +68,30 @@ describe('fx', () => {
     expect(sent[0]).toMatchObject(NextDeviceFx());
   });
 
-  test('prevFx sends expected command', () => {
+  test('previousFx sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevFx();
-    expect(sent[0]).toMatchObject(PrevDeviceFx());
+    device.previousFx();
+    expect(sent[0]).toMatchObject(PreviousDeviceFx());
   });
 });
 
-describe('fx param bank', () => {
-  test.each([1, 2])('selectFxParamBank sends expected command: %p', index => {
+describe('fx parameter bank', () => {
+  test.each([1, 2])('selectFxParameterBank sends expected command: %p', index => {
     const {device, sent} = makeDevice();
-    device.selectFxParamBank(index);
-    expect(sent[0]).toMatchObject(SelectDeviceFxParamBank(index));
+    device.selectFxParameterBank(index);
+    expect(sent[0]).toMatchObject(SelectDeviceFxParameterBank(index));
   });
 
-  test('nextFxParamBank sends expected command', () => {
+  test('nextFxParameterBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.nextFxParamBank();
-    expect(sent[0]).toMatchObject(NextDeviceFxParamBank());
+    device.nextFxParameterBank();
+    expect(sent[0]).toMatchObject(NextDeviceFxParameterBank());
   });
 
-  test('prevFxParamBank sends expected command', () => {
+  test('previousFxParameterBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevFxParamBank();
-    expect(sent[0]).toMatchObject(PrevDeviceFxParamBank());
+    device.previousFxParameterBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceFxParameterBank());
   });
 });
 
@@ -108,10 +108,10 @@ describe('marker bank', () => {
     expect(sent[0]).toMatchObject(NextDeviceMarkerBank());
   });
 
-  test('prevMarkerBank sends expected command', () => {
+  test('previousMarkerBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevMarkerBank();
-    expect(sent[0]).toMatchObject(PrevDeviceMarkerBank());
+    device.previousMarkerBank();
+    expect(sent[0]).toMatchObject(PreviousDeviceMarkerBank());
   });
 });
 
@@ -128,9 +128,9 @@ describe('region bank', () => {
     expect(sent[0]).toMatchObject(NextDeviceRegionBank());
   });
 
-  test('prevRegionBank sends expected command', () => {
+  test('previousRegionBank sends expected command', () => {
     const {device, sent} = makeDevice();
-    device.prevRegionBank();
+    device.previousRegionBank();
     expect(sent[0]).toMatchObject(PreviousDeviceRegionBank());
   });
 });

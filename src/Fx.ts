@@ -4,7 +4,7 @@
  */
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent, SelectedTrackFxBypassEvent, SelectedTrackFxNameChanged, SelectedTrackFxOpenUiEvent, SelectedTrackFxPresetChanged, TrackFxBypassEvent, TrackFxNameChanged, TrackFxOpenUiEvent, TrackFxPresetChanged} from './Client/Events';
-import {ReaperOscCommand, SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PrevTrackFxPreset, SetSelectedTrackFxBypass, SetSelectedTrackFxOpenUi, NextSelectedTrackFxPreset, PrevSelectedTrackFxPreset, SetSelectedFxBypass, SetSelectedFxOpenUi, NextSelectedFxPreset, PrevSelectedFxPreset} from './Client/Commands';
+import {ReaperOscCommand, SetTrackFxBypass, SetTrackFxOpenUi, NextTrackFxPreset, PreviousTrackFxPreset, SetSelectedTrackFxBypass, SetSelectedTrackFxOpenUi, NextSelectedTrackFxPreset, PreviousSelectedTrackFxPreset, SetSelectedFxBypass, SetSelectedFxOpenUi, NextSelectedFxPreset, PreviousSelectedFxPreset} from './Client/Commands';
 
 type SendCommand = (command: ReaperOscCommand) => void;
 
@@ -131,7 +131,7 @@ export class TrackFx extends Fx {
   public openUi(): void { this._send(SetTrackFxOpenUi(this.trackNumber, this.fxNumber, true)); }
   public closeUi(): void { this._send(SetTrackFxOpenUi(this.trackNumber, this.fxNumber, false)); }
   public nextPreset(): void { this._send(NextTrackFxPreset(this.trackNumber, this.fxNumber)); }
-  public previousPreset(): void { this._send(PrevTrackFxPreset(this.trackNumber, this.fxNumber)); }
+  public previousPreset(): void { this._send(PreviousTrackFxPreset(this.trackNumber, this.fxNumber)); }
 }
 
 /**
@@ -173,7 +173,7 @@ export class SelectedTrackFxSlot extends Fx {
   public openUi(): void { this._send(SetSelectedTrackFxOpenUi(this.fxNumber, true)); }
   public closeUi(): void { this._send(SetSelectedTrackFxOpenUi(this.fxNumber, false)); }
   public nextPreset(): void { this._send(NextSelectedTrackFxPreset(this.fxNumber)); }
-  public previousPreset(): void { this._send(PrevSelectedTrackFxPreset(this.fxNumber)); }
+  public previousPreset(): void { this._send(PreviousSelectedTrackFxPreset(this.fxNumber)); }
 }
 
 /**
@@ -202,5 +202,5 @@ export class DeviceSelectedFx extends Fx {
   public openUi(): void { this._send(SetSelectedFxOpenUi(true)); }
   public closeUi(): void { this._send(SetSelectedFxOpenUi(false)); }
   public nextPreset(): void { this._send(NextSelectedFxPreset()); }
-  public previousPreset(): void { this._send(PrevSelectedFxPreset()); }
+  public previousPreset(): void { this._send(PreviousSelectedFxPreset()); }
 }
