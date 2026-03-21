@@ -1,5 +1,14 @@
 import {Beat, Transport} from '../dist/Transport';
-import {ReaperOscCommand} from '../dist/Client/Commands';
+import {
+  Pause, Play, ToggleRecord, SetFastForward, SetRewind, Stop,
+  ToggleRepeat, SetTime, SetBeat, SetFrames, SetLoopStart, SetLoopEnd,
+  ReaperOscCommand,
+} from '../dist/Client/Commands';
+import {
+  FastForwardEvent, PauseEvent, PlayEvent, RecordEvent, RepeatEvent,
+  RewindEvent, StopEvent, TimeChanged, BeatChanged, FramesChanged,
+  LoopStartChanged, LoopEndChanged,
+} from '../dist/Client/Events';
 
 describe('properties set by events', () => {
   let transport: Transport;
@@ -9,66 +18,66 @@ describe('properties set by events', () => {
   });
 
   test.each([true, false])('fastForward event sets isFastForwarding: %p', value => {
-    transport.handleEvent({type: 'transport:fastForward', fastForwarding: value});
+    transport.handleEvent(FastForwardEvent(value));
     expect(transport.isFastForwarding).toBe(value);
   });
 
   test.each([true, false])('pause event sets isPaused: %p', value => {
-    transport.handleEvent({type: 'transport:pause', paused: value});
+    transport.handleEvent(PauseEvent(value));
     expect(transport.isPaused).toBe(value);
   });
 
   test.each([true, false])('play event sets isPlaying: %p', value => {
-    transport.handleEvent({type: 'transport:play', playing: value});
+    transport.handleEvent(PlayEvent(value));
     expect(transport.isPlaying).toBe(value);
   });
 
   test.each([true, false])('record event sets isRecording: %p', value => {
-    transport.handleEvent({type: 'transport:record', recording: value});
+    transport.handleEvent(RecordEvent(value));
     expect(transport.isRecording).toBe(value);
   });
 
   test.each([true, false])('repeat event sets isRepeatEnabled: %p', value => {
-    transport.handleEvent({type: 'transport:repeat', enabled: value});
+    transport.handleEvent(RepeatEvent(value));
     expect(transport.isRepeatEnabled).toBe(value);
   });
 
   test.each([true, false])('rewind event sets isRewinding: %p', value => {
-    transport.handleEvent({type: 'transport:rewind', rewinding: value});
+    transport.handleEvent(RewindEvent(value));
     expect(transport.isRewinding).toBe(value);
   });
 
   test.each([true, false])('stop event sets isStopped: %p', value => {
-    transport.handleEvent({type: 'transport:stop', stopped: value});
+    transport.handleEvent(StopEvent(value));
     expect(transport.isStopped).toBe(value);
   });
 
   test.each([0.1, 88.456])('time event sets time: %p', value => {
-    transport.handleEvent({type: 'transport:time', time: value});
+    transport.handleEvent(TimeChanged(value));
     expect(transport.time).toBe(value);
   });
 
   test.each([new Beat(1, 1, 0), new Beat(2, 5, 45)])('beat event sets beat: %p', value => {
     const beatStr = value.toString();
-    transport.handleEvent({type: 'transport:beat', beat: beatStr});
+    transport.handleEvent(BeatChanged(beatStr));
     expect(transport.beat).toBe(beatStr);
   });
 
   test('frames event sets frames', () => {
     const expected = '01:02:03:04';
-    transport.handleEvent({type: 'transport:frames', frames: expected});
+    transport.handleEvent(FramesChanged(expected));
     expect(transport.frames).toBe(expected);
   });
 
   test('loopStart event sets loopStart', () => {
     const expected = 983.833;
-    transport.handleEvent({type: 'transport:loopStart', time: expected});
+    transport.handleEvent(LoopStartChanged(expected));
     expect(transport.loopStart).toBe(expected);
   });
 
   test('loopEnd event sets loopEnd', () => {
     const expected = 384.827;
-    transport.handleEvent({type: 'transport:loopEnd', time: expected});
+    transport.handleEvent(LoopEndChanged(expected));
     expect(transport.loopEnd).toBe(expected);
   });
 });
@@ -77,7 +86,7 @@ describe('methods send expected commands', () => {
   test('pause sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:pause'});
+        expect(command).toMatchObject(Pause());
         done();
       } catch (error) {
         done(error);
@@ -90,7 +99,7 @@ describe('methods send expected commands', () => {
   test('play sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:play'});
+        expect(command).toMatchObject(Play());
         done();
       } catch (error) {
         done(error);
@@ -103,7 +112,7 @@ describe('methods send expected commands', () => {
   test('record sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:record'});
+        expect(command).toMatchObject(ToggleRecord());
         done();
       } catch (error) {
         done(error);
@@ -116,7 +125,7 @@ describe('methods send expected commands', () => {
   test('startFastForwarding sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:fastForward', fastForwarding: true});
+        expect(command).toMatchObject(SetFastForward(true));
         done();
       } catch (error) {
         done(error);
@@ -129,7 +138,7 @@ describe('methods send expected commands', () => {
   test('startRewinding sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:rewind', rewinding: true});
+        expect(command).toMatchObject(SetRewind(true));
         done();
       } catch (error) {
         done(error);
@@ -142,7 +151,7 @@ describe('methods send expected commands', () => {
   test('stop sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:stop'});
+        expect(command).toMatchObject(Stop());
         done();
       } catch (error) {
         done(error);
@@ -155,7 +164,7 @@ describe('methods send expected commands', () => {
   test('stopFastForwarding sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:fastForward', fastForwarding: false});
+        expect(command).toMatchObject(SetFastForward(false));
         done();
       } catch (error) {
         done(error);
@@ -168,7 +177,7 @@ describe('methods send expected commands', () => {
   test('stopRewinding sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:rewind', rewinding: false});
+        expect(command).toMatchObject(SetRewind(false));
         done();
       } catch (error) {
         done(error);
@@ -181,7 +190,7 @@ describe('methods send expected commands', () => {
   test('toggleRepeat sends expected command', done => {
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:repeat:toggle'});
+        expect(command).toMatchObject(ToggleRepeat());
         done();
       } catch (error) {
         done(error);
@@ -195,7 +204,7 @@ describe('methods send expected commands', () => {
     const time = 93.49;
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:time', time});
+        expect(command).toMatchObject(SetTime(time));
         done();
       } catch (error) {
         done(error);
@@ -209,7 +218,7 @@ describe('methods send expected commands', () => {
     const beat = new Beat(3, 6, 99);
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:beat', beat: beat.toString()});
+        expect(command).toMatchObject(SetBeat(beat.toString()));
         done();
       } catch (error) {
         done(error);
@@ -223,7 +232,7 @@ describe('methods send expected commands', () => {
     const frame = '01:02:03:04';
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:frames', frames: frame});
+        expect(command).toMatchObject(SetFrames(frame));
         done();
       } catch (error) {
         done(error);
@@ -240,7 +249,7 @@ describe('methods send expected commands', () => {
 
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:time', time: expected});
+        expect(command).toMatchObject(SetTime(expected));
         done();
       } catch (error) {
         done(error);
@@ -248,7 +257,7 @@ describe('methods send expected commands', () => {
     });
 
     // Set the current time
-    transport.handleEvent({type: 'transport:time', time: currentTime});
+    transport.handleEvent(TimeChanged(currentTime));
 
     transport.jumpToTimeRelative(value);
   });
@@ -257,7 +266,7 @@ describe('methods send expected commands', () => {
     const time = 393.442;
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:loopStart', time});
+        expect(command).toMatchObject(SetLoopStart(time));
         done();
       } catch (error) {
         done(error);
@@ -271,7 +280,7 @@ describe('methods send expected commands', () => {
     const time = 948.382;
     const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(command).toMatchObject({type: 'transport:loopEnd', time});
+        expect(command).toMatchObject(SetLoopEnd(time));
         done();
       } catch (error) {
         done(error);

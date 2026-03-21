@@ -5,7 +5,30 @@
 import {EventEmitter} from 'events';
 import * as osc from 'osc';
 import {OscMessage, RawOscMessage} from '../Messages';
-import {ReaperOscEvent, RecordMonitoringMode} from './Events';
+import {
+  ReaperOscEvent, RecordMonitoringMode,
+  // Global
+  MetronomeEvent, AutoRecordArmEvent, AnySoloEvent,
+  // Transport
+  PlayEvent, StopEvent, PauseEvent, RecordEvent, RewindEvent, FastForwardEvent, RepeatEvent,
+  TimeChanged, BeatChanged, FramesChanged, LoopStartChanged, LoopEndChanged,
+  // Track
+  TrackMuteEvent, TrackSoloEvent, TrackRecArmEvent, TrackSelectEvent, TrackNameChanged,
+  TrackPanChanged, TrackPan2Changed, TrackPanModeChanged,
+  TrackVolumeChanged, TrackVolumeDbChanged,
+  TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitorChanged,
+  // Track FX
+  TrackFxNameChanged, TrackFxBypassEvent, TrackFxOpenUiEvent, TrackFxPresetChanged,
+  // Selected Track
+  SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecArmEvent, SelectedTrackSelectEvent,
+  SelectedTrackNameChanged, SelectedTrackPanChanged, SelectedTrackPan2Changed, SelectedTrackPanModeChanged,
+  SelectedTrackVolumeChanged, SelectedTrackVolumeDbChanged,
+  SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged, SelectedTrackMonitorChanged,
+  // Selected Track FX
+  SelectedTrackFxNameChanged, SelectedTrackFxBypassEvent, SelectedTrackFxOpenUiEvent, SelectedTrackFxPresetChanged,
+  // Selected FX
+  SelectedFxNameChanged, SelectedFxBypassEvent, SelectedFxOpenUiEvent, SelectedFxPresetChanged,
+} from './Events';
 import {ReaperOscCommand, commandToOscMessage} from './Commands';
 import {ConsoleLogger, Logger, ReaperConfiguration} from '../Config';
 
@@ -31,22 +54,22 @@ function stringFrom(msg: OscMessage): string {
 
 const EXACT_PARSERS = new Map<string, (msg: OscMessage) => ReaperOscEvent>([
   // Global
-  ['/click', msg => ({type: 'metronome', enabled: boolFrom(msg)})],
-  ['/autorecarm', msg => ({type: 'autoRecArm', enabled: boolFrom(msg)})],
-  ['/anysolo', msg => ({type: 'anySolo', active: boolFrom(msg)})],
+  ['/click', msg => MetronomeEvent(boolFrom(msg))],
+  ['/autorecarm', msg => AutoRecordArmEvent(boolFrom(msg))],
+  ['/anysolo', msg => AnySoloEvent(boolFrom(msg))],
   // Transport
-  ['/play', msg => ({type: 'transport:play', playing: boolFrom(msg)})],
-  ['/stop', msg => ({type: 'transport:stop', stopped: boolFrom(msg)})],
-  ['/pause', msg => ({type: 'transport:pause', paused: boolFrom(msg)})],
-  ['/record', msg => ({type: 'transport:record', recording: boolFrom(msg)})],
-  ['/rewind', msg => ({type: 'transport:rewind', rewinding: boolFrom(msg)})],
-  ['/forward', msg => ({type: 'transport:fastForward', fastForwarding: boolFrom(msg)})],
-  ['/repeat', msg => ({type: 'transport:repeat', enabled: boolFrom(msg)})],
-  ['/time', msg => ({type: 'transport:time', time: floatFrom(msg)})],
-  ['/beat/str', msg => ({type: 'transport:beat', beat: stringFrom(msg)})],
-  ['/frames/str', msg => ({type: 'transport:frames', frames: stringFrom(msg)})],
-  ['/loop/start/time', msg => ({type: 'transport:loopStart', time: floatFrom(msg)})],
-  ['/loop/end/time', msg => ({type: 'transport:loopEnd', time: floatFrom(msg)})],
+  ['/play', msg => PlayEvent(boolFrom(msg))],
+  ['/stop', msg => StopEvent(boolFrom(msg))],
+  ['/pause', msg => PauseEvent(boolFrom(msg))],
+  ['/record', msg => RecordEvent(boolFrom(msg))],
+  ['/rewind', msg => RewindEvent(boolFrom(msg))],
+  ['/forward', msg => FastForwardEvent(boolFrom(msg))],
+  ['/repeat', msg => RepeatEvent(boolFrom(msg))],
+  ['/time', msg => TimeChanged(floatFrom(msg))],
+  ['/beat/str', msg => BeatChanged(stringFrom(msg))],
+  ['/frames/str', msg => FramesChanged(stringFrom(msg))],
+  ['/loop/start/time', msg => LoopStartChanged(floatFrom(msg))],
+  ['/loop/end/time', msg => LoopEndChanged(floatFrom(msg))],
 ]);
 
 // --- Track property suffix parsers ---
@@ -54,20 +77,20 @@ const EXACT_PARSERS = new Map<string, (msg: OscMessage) => ReaperOscEvent>([
 type IndexedTrackParser = (trackNumber: number, msg: OscMessage) => ReaperOscEvent;
 
 const TRACK_PARSERS = new Map<string, IndexedTrackParser>([
-  ['mute', (n, m) => ({type: 'track:mute', trackNumber: n, muted: boolFrom(m)})],
-  ['solo', (n, m) => ({type: 'track:solo', trackNumber: n, soloed: boolFrom(m)})],
-  ['recarm', (n, m) => ({type: 'track:recarm', trackNumber: n, armed: boolFrom(m)})],
-  ['select', (n, m) => ({type: 'track:select', trackNumber: n, selected: boolFrom(m)})],
-  ['name', (n, m) => ({type: 'track:name', trackNumber: n, name: stringFrom(m)})],
-  ['pan', (n, m) => ({type: 'track:pan', trackNumber: n, pan: floatFrom(m)})],
-  ['pan2', (n, m) => ({type: 'track:pan2', trackNumber: n, pan2: floatFrom(m)})],
-  ['panmode', (n, m) => ({type: 'track:panMode', trackNumber: n, panMode: stringFrom(m)})],
-  ['volume', (n, m) => ({type: 'track:volume', trackNumber: n, volume: floatFrom(m)})],
-  ['volume/db', (n, m) => ({type: 'track:volumeDb', trackNumber: n, volumeDb: floatFrom(m)})],
-  ['vu', (n, m) => ({type: 'track:vu', trackNumber: n, vu: floatFrom(m)})],
-  ['vu/L', (n, m) => ({type: 'track:vuLeft', trackNumber: n, vuLeft: floatFrom(m)})],
-  ['vu/R', (n, m) => ({type: 'track:vuRight', trackNumber: n, vuRight: floatFrom(m)})],
-  ['monitor', (n, m) => ({type: 'track:monitor', trackNumber: n, monitor: intFrom(m) as RecordMonitoringMode})],
+  ['mute', (n, m) => TrackMuteEvent(n, boolFrom(m))],
+  ['solo', (n, m) => TrackSoloEvent(n, boolFrom(m))],
+  ['recarm', (n, m) => TrackRecArmEvent(n, boolFrom(m))],
+  ['select', (n, m) => TrackSelectEvent(n, boolFrom(m))],
+  ['name', (n, m) => TrackNameChanged(n, stringFrom(m))],
+  ['pan', (n, m) => TrackPanChanged(n, floatFrom(m))],
+  ['pan2', (n, m) => TrackPan2Changed(n, floatFrom(m))],
+  ['panmode', (n, m) => TrackPanModeChanged(n, stringFrom(m))],
+  ['volume', (n, m) => TrackVolumeChanged(n, floatFrom(m))],
+  ['volume/db', (n, m) => TrackVolumeDbChanged(n, floatFrom(m))],
+  ['vu', (n, m) => TrackVuChanged(n, floatFrom(m))],
+  ['vu/L', (n, m) => TrackVuLeftChanged(n, floatFrom(m))],
+  ['vu/R', (n, m) => TrackVuRightChanged(n, floatFrom(m))],
+  ['monitor', (n, m) => TrackMonitorChanged(n, intFrom(m) as RecordMonitoringMode)],
 ]);
 
 // --- Track FX suffix parsers (for /track/N/fx/M/suffix) ---
@@ -76,10 +99,10 @@ type IndexedFxParser = (trackNumber: number, fxNumber: number, msg: OscMessage) 
 
 const TRACK_FX_PARSERS = new Map<string, IndexedFxParser>([
   // bypass is inverted: Reaper sends 0 when bypassed
-  ['name', (t, f, m) => ({type: 'track:fx:name', trackNumber: t, fxNumber: f, name: stringFrom(m)})],
-  ['bypass', (t, f, m) => ({type: 'track:fx:bypass', trackNumber: t, fxNumber: f, bypassed: !boolFrom(m)})],
-  ['openui', (t, f, m) => ({type: 'track:fx:openUi', trackNumber: t, fxNumber: f, open: boolFrom(m)})],
-  ['preset', (t, f, m) => ({type: 'track:fx:preset', trackNumber: t, fxNumber: f, preset: stringFrom(m)})],
+  ['name', (t, f, m) => TrackFxNameChanged(t, f, stringFrom(m))],
+  ['bypass', (t, f, m) => TrackFxBypassEvent(t, f, !boolFrom(m))],
+  ['openui', (t, f, m) => TrackFxOpenUiEvent(t, f, boolFrom(m))],
+  ['preset', (t, f, m) => TrackFxPresetChanged(t, f, stringFrom(m))],
 ]);
 
 // --- Selected track suffix parsers (for /track/suffix, no track number) ---
@@ -87,20 +110,20 @@ const TRACK_FX_PARSERS = new Map<string, IndexedFxParser>([
 type SelectedTrackParser = (msg: OscMessage) => ReaperOscEvent;
 
 const SELECTED_TRACK_PARSERS = new Map<string, SelectedTrackParser>([
-  ['mute', m => ({type: 'selectedTrack:mute', muted: boolFrom(m)})],
-  ['solo', m => ({type: 'selectedTrack:solo', soloed: boolFrom(m)})],
-  ['recarm', m => ({type: 'selectedTrack:recarm', armed: boolFrom(m)})],
-  ['select', m => ({type: 'selectedTrack:select', selected: boolFrom(m)})],
-  ['name', m => ({type: 'selectedTrack:name', name: stringFrom(m)})],
-  ['pan', m => ({type: 'selectedTrack:pan', pan: floatFrom(m)})],
-  ['pan2', m => ({type: 'selectedTrack:pan2', pan2: floatFrom(m)})],
-  ['panmode', m => ({type: 'selectedTrack:panMode', panMode: stringFrom(m)})],
-  ['volume', m => ({type: 'selectedTrack:volume', volume: floatFrom(m)})],
-  ['volume/db', m => ({type: 'selectedTrack:volumeDb', volumeDb: floatFrom(m)})],
-  ['vu', m => ({type: 'selectedTrack:vu', vu: floatFrom(m)})],
-  ['vu/L', m => ({type: 'selectedTrack:vuLeft', vuLeft: floatFrom(m)})],
-  ['vu/R', m => ({type: 'selectedTrack:vuRight', vuRight: floatFrom(m)})],
-  ['monitor', m => ({type: 'selectedTrack:monitor', monitor: intFrom(m) as RecordMonitoringMode})],
+  ['mute', m => SelectedTrackMuteEvent(boolFrom(m))],
+  ['solo', m => SelectedTrackSoloEvent(boolFrom(m))],
+  ['recarm', m => SelectedTrackRecArmEvent(boolFrom(m))],
+  ['select', m => SelectedTrackSelectEvent(boolFrom(m))],
+  ['name', m => SelectedTrackNameChanged(stringFrom(m))],
+  ['pan', m => SelectedTrackPanChanged(floatFrom(m))],
+  ['pan2', m => SelectedTrackPan2Changed(floatFrom(m))],
+  ['panmode', m => SelectedTrackPanModeChanged(stringFrom(m))],
+  ['volume', m => SelectedTrackVolumeChanged(floatFrom(m))],
+  ['volume/db', m => SelectedTrackVolumeDbChanged(floatFrom(m))],
+  ['vu', m => SelectedTrackVuChanged(floatFrom(m))],
+  ['vu/L', m => SelectedTrackVuLeftChanged(floatFrom(m))],
+  ['vu/R', m => SelectedTrackVuRightChanged(floatFrom(m))],
+  ['monitor', m => SelectedTrackMonitorChanged(intFrom(m) as RecordMonitoringMode)],
 ]);
 
 // --- FX on selected track (for /fx/M/suffix) ---
@@ -108,10 +131,10 @@ const SELECTED_TRACK_PARSERS = new Map<string, SelectedTrackParser>([
 type SelectedTrackFxParser = (fxNumber: number, msg: OscMessage) => ReaperOscEvent;
 
 const SELECTED_TRACK_FX_PARSERS = new Map<string, SelectedTrackFxParser>([
-  ['name', (f, m) => ({type: 'selectedTrack:fx:name', fxNumber: f, name: stringFrom(m)})],
-  ['bypass', (f, m) => ({type: 'selectedTrack:fx:bypass', fxNumber: f, bypassed: !boolFrom(m)})],
-  ['openui', (f, m) => ({type: 'selectedTrack:fx:openUi', fxNumber: f, open: boolFrom(m)})],
-  ['preset', (f, m) => ({type: 'selectedTrack:fx:preset', fxNumber: f, preset: stringFrom(m)})],
+  ['name', (f, m) => SelectedTrackFxNameChanged(f, stringFrom(m))],
+  ['bypass', (f, m) => SelectedTrackFxBypassEvent(f, !boolFrom(m))],
+  ['openui', (f, m) => SelectedTrackFxOpenUiEvent(f, boolFrom(m))],
+  ['preset', (f, m) => SelectedTrackFxPresetChanged(f, stringFrom(m))],
 ]);
 
 // --- Device-selected FX (for /fx/suffix, no FX number) ---
@@ -119,10 +142,10 @@ const SELECTED_TRACK_FX_PARSERS = new Map<string, SelectedTrackFxParser>([
 type SelectedFxParser = (msg: OscMessage) => ReaperOscEvent;
 
 const SELECTED_FX_PARSERS = new Map<string, SelectedFxParser>([
-  ['name', m => ({type: 'selectedFx:name', name: stringFrom(m)})],
-  ['bypass', m => ({type: 'selectedFx:bypass', bypassed: !boolFrom(m)})],
-  ['openui', m => ({type: 'selectedFx:openUi', open: boolFrom(m)})],
-  ['preset', m => ({type: 'selectedFx:preset', preset: stringFrom(m)})],
+  ['name', m => SelectedFxNameChanged(stringFrom(m))],
+  ['bypass', m => SelectedFxBypassEvent(!boolFrom(m))],
+  ['openui', m => SelectedFxOpenUiEvent(boolFrom(m))],
+  ['preset', m => SelectedFxPresetChanged(stringFrom(m))],
 ]);
 
 // --- Message parsing ---

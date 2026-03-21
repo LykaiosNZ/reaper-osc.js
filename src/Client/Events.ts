@@ -18,78 +18,181 @@ export enum RecordMonitoringMode {
 // --- Global Events ---
 
 export interface MetronomeEvent { type: 'metronome'; enabled: boolean }
+export function MetronomeEvent(enabled: boolean): MetronomeEvent { return {type: 'metronome', enabled}; }
+
 export interface AutoRecordArmEvent { type: 'autoRecArm'; enabled: boolean }
+export function AutoRecordArmEvent(enabled: boolean): AutoRecordArmEvent { return {type: 'autoRecArm', enabled}; }
+
 export interface AnySoloEvent { type: 'anySolo'; active: boolean }
+export function AnySoloEvent(active: boolean): AnySoloEvent { return {type: 'anySolo', active}; }
 
 // --- Transport Events ---
 
 export interface PlayEvent { type: 'transport:play'; playing: boolean }
+export function PlayEvent(playing: boolean): PlayEvent { return {type: 'transport:play', playing}; }
+
 export interface StopEvent { type: 'transport:stop'; stopped: boolean }
+export function StopEvent(stopped: boolean): StopEvent { return {type: 'transport:stop', stopped}; }
+
 export interface PauseEvent { type: 'transport:pause'; paused: boolean }
+export function PauseEvent(paused: boolean): PauseEvent { return {type: 'transport:pause', paused}; }
+
 export interface RecordEvent { type: 'transport:record'; recording: boolean }
+export function RecordEvent(recording: boolean): RecordEvent { return {type: 'transport:record', recording}; }
+
 export interface RewindEvent { type: 'transport:rewind'; rewinding: boolean }
+export function RewindEvent(rewinding: boolean): RewindEvent { return {type: 'transport:rewind', rewinding}; }
+
 export interface FastForwardEvent { type: 'transport:fastForward'; fastForwarding: boolean }
+export function FastForwardEvent(fastForwarding: boolean): FastForwardEvent { return {type: 'transport:fastForward', fastForwarding}; }
+
 export interface RepeatEvent { type: 'transport:repeat'; enabled: boolean }
+export function RepeatEvent(enabled: boolean): RepeatEvent { return {type: 'transport:repeat', enabled}; }
+
 export interface TimeChanged { type: 'transport:time'; time: number }
+export function TimeChanged(time: number): TimeChanged { return {type: 'transport:time', time}; }
+
 export interface BeatChanged { type: 'transport:beat'; beat: string }
+export function BeatChanged(beat: string): BeatChanged { return {type: 'transport:beat', beat}; }
+
 export interface FramesChanged { type: 'transport:frames'; frames: string }
+export function FramesChanged(frames: string): FramesChanged { return {type: 'transport:frames', frames}; }
+
 export interface LoopStartChanged { type: 'transport:loopStart'; time: number }
+export function LoopStartChanged(time: number): LoopStartChanged { return {type: 'transport:loopStart', time}; }
+
 export interface LoopEndChanged { type: 'transport:loopEnd'; time: number }
+export function LoopEndChanged(time: number): LoopEndChanged { return {type: 'transport:loopEnd', time}; }
 
 // --- Track Events ---
 
 export interface TrackMuteEvent { type: 'track:mute'; trackNumber: number; muted: boolean }
+export function TrackMuteEvent(trackNumber: number, muted: boolean): TrackMuteEvent { return {type: 'track:mute', trackNumber, muted}; }
+
 export interface TrackSoloEvent { type: 'track:solo'; trackNumber: number; soloed: boolean }
+export function TrackSoloEvent(trackNumber: number, soloed: boolean): TrackSoloEvent { return {type: 'track:solo', trackNumber, soloed}; }
+
 export interface TrackRecArmEvent { type: 'track:recarm'; trackNumber: number; armed: boolean }
+export function TrackRecArmEvent(trackNumber: number, armed: boolean): TrackRecArmEvent { return {type: 'track:recarm', trackNumber, armed}; }
+
 export interface TrackSelectEvent { type: 'track:select'; trackNumber: number; selected: boolean }
+export function TrackSelectEvent(trackNumber: number, selected: boolean): TrackSelectEvent { return {type: 'track:select', trackNumber, selected}; }
+
 export interface TrackNameChanged { type: 'track:name'; trackNumber: number; name: string }
+export function TrackNameChanged(trackNumber: number, name: string): TrackNameChanged { return {type: 'track:name', trackNumber, name}; }
+
 export interface TrackPanChanged { type: 'track:pan'; trackNumber: number; pan: number }
+export function TrackPanChanged(trackNumber: number, pan: number): TrackPanChanged { return {type: 'track:pan', trackNumber, pan}; }
+
 export interface TrackPan2Changed { type: 'track:pan2'; trackNumber: number; pan2: number }
+export function TrackPan2Changed(trackNumber: number, pan2: number): TrackPan2Changed { return {type: 'track:pan2', trackNumber, pan2}; }
+
 export interface TrackPanModeChanged { type: 'track:panMode'; trackNumber: number; panMode: string }
+export function TrackPanModeChanged(trackNumber: number, panMode: string): TrackPanModeChanged { return {type: 'track:panMode', trackNumber, panMode}; }
+
 export interface TrackVolumeChanged { type: 'track:volume'; trackNumber: number; volume: number }
+export function TrackVolumeChanged(trackNumber: number, volume: number): TrackVolumeChanged { return {type: 'track:volume', trackNumber, volume}; }
+
 export interface TrackVolumeDbChanged { type: 'track:volumeDb'; trackNumber: number; volumeDb: number }
+export function TrackVolumeDbChanged(trackNumber: number, volumeDb: number): TrackVolumeDbChanged { return {type: 'track:volumeDb', trackNumber, volumeDb}; }
+
 export interface TrackVuChanged { type: 'track:vu'; trackNumber: number; vu: number }
+export function TrackVuChanged(trackNumber: number, vu: number): TrackVuChanged { return {type: 'track:vu', trackNumber, vu}; }
+
 export interface TrackVuLeftChanged { type: 'track:vuLeft'; trackNumber: number; vuLeft: number }
+export function TrackVuLeftChanged(trackNumber: number, vuLeft: number): TrackVuLeftChanged { return {type: 'track:vuLeft', trackNumber, vuLeft}; }
+
 export interface TrackVuRightChanged { type: 'track:vuRight'; trackNumber: number; vuRight: number }
+export function TrackVuRightChanged(trackNumber: number, vuRight: number): TrackVuRightChanged { return {type: 'track:vuRight', trackNumber, vuRight}; }
+
 export interface TrackMonitorChanged { type: 'track:monitor'; trackNumber: number; monitor: RecordMonitoringMode }
+export function TrackMonitorChanged(trackNumber: number, monitor: RecordMonitoringMode): TrackMonitorChanged { return {type: 'track:monitor', trackNumber, monitor}; }
 
 // --- Track FX Events ---
 
 export interface TrackFxNameChanged { type: 'track:fx:name'; trackNumber: number; fxNumber: number; name: string }
+export function TrackFxNameChanged(trackNumber: number, fxNumber: number, name: string): TrackFxNameChanged { return {type: 'track:fx:name', trackNumber, fxNumber, name}; }
+
 export interface TrackFxBypassEvent { type: 'track:fx:bypass'; trackNumber: number; fxNumber: number; bypassed: boolean }
+export function TrackFxBypassEvent(trackNumber: number, fxNumber: number, bypassed: boolean): TrackFxBypassEvent { return {type: 'track:fx:bypass', trackNumber, fxNumber, bypassed}; }
+
 export interface TrackFxOpenUiEvent { type: 'track:fx:openUi'; trackNumber: number; fxNumber: number; open: boolean }
+export function TrackFxOpenUiEvent(trackNumber: number, fxNumber: number, open: boolean): TrackFxOpenUiEvent { return {type: 'track:fx:openUi', trackNumber, fxNumber, open}; }
+
 export interface TrackFxPresetChanged { type: 'track:fx:preset'; trackNumber: number; fxNumber: number; preset: string }
+export function TrackFxPresetChanged(trackNumber: number, fxNumber: number, preset: string): TrackFxPresetChanged { return {type: 'track:fx:preset', trackNumber, fxNumber, preset}; }
 
 // --- Selected Track Events ---
 
 export interface SelectedTrackMuteEvent { type: 'selectedTrack:mute'; muted: boolean }
+export function SelectedTrackMuteEvent(muted: boolean): SelectedTrackMuteEvent { return {type: 'selectedTrack:mute', muted}; }
+
 export interface SelectedTrackSoloEvent { type: 'selectedTrack:solo'; soloed: boolean }
+export function SelectedTrackSoloEvent(soloed: boolean): SelectedTrackSoloEvent { return {type: 'selectedTrack:solo', soloed}; }
+
 export interface SelectedTrackRecArmEvent { type: 'selectedTrack:recarm'; armed: boolean }
+export function SelectedTrackRecArmEvent(armed: boolean): SelectedTrackRecArmEvent { return {type: 'selectedTrack:recarm', armed}; }
+
 export interface SelectedTrackSelectEvent { type: 'selectedTrack:select'; selected: boolean }
+export function SelectedTrackSelectEvent(selected: boolean): SelectedTrackSelectEvent { return {type: 'selectedTrack:select', selected}; }
+
 export interface SelectedTrackNameChanged { type: 'selectedTrack:name'; name: string }
+export function SelectedTrackNameChanged(name: string): SelectedTrackNameChanged { return {type: 'selectedTrack:name', name}; }
+
 export interface SelectedTrackPanChanged { type: 'selectedTrack:pan'; pan: number }
+export function SelectedTrackPanChanged(pan: number): SelectedTrackPanChanged { return {type: 'selectedTrack:pan', pan}; }
+
 export interface SelectedTrackPan2Changed { type: 'selectedTrack:pan2'; pan2: number }
+export function SelectedTrackPan2Changed(pan2: number): SelectedTrackPan2Changed { return {type: 'selectedTrack:pan2', pan2}; }
+
 export interface SelectedTrackPanModeChanged { type: 'selectedTrack:panMode'; panMode: string }
+export function SelectedTrackPanModeChanged(panMode: string): SelectedTrackPanModeChanged { return {type: 'selectedTrack:panMode', panMode}; }
+
 export interface SelectedTrackVolumeChanged { type: 'selectedTrack:volume'; volume: number }
+export function SelectedTrackVolumeChanged(volume: number): SelectedTrackVolumeChanged { return {type: 'selectedTrack:volume', volume}; }
+
 export interface SelectedTrackVolumeDbChanged { type: 'selectedTrack:volumeDb'; volumeDb: number }
+export function SelectedTrackVolumeDbChanged(volumeDb: number): SelectedTrackVolumeDbChanged { return {type: 'selectedTrack:volumeDb', volumeDb}; }
+
 export interface SelectedTrackVuChanged { type: 'selectedTrack:vu'; vu: number }
+export function SelectedTrackVuChanged(vu: number): SelectedTrackVuChanged { return {type: 'selectedTrack:vu', vu}; }
+
 export interface SelectedTrackVuLeftChanged { type: 'selectedTrack:vuLeft'; vuLeft: number }
+export function SelectedTrackVuLeftChanged(vuLeft: number): SelectedTrackVuLeftChanged { return {type: 'selectedTrack:vuLeft', vuLeft}; }
+
 export interface SelectedTrackVuRightChanged { type: 'selectedTrack:vuRight'; vuRight: number }
+export function SelectedTrackVuRightChanged(vuRight: number): SelectedTrackVuRightChanged { return {type: 'selectedTrack:vuRight', vuRight}; }
+
 export interface SelectedTrackMonitorChanged { type: 'selectedTrack:monitor'; monitor: RecordMonitoringMode }
+export function SelectedTrackMonitorChanged(monitor: RecordMonitoringMode): SelectedTrackMonitorChanged { return {type: 'selectedTrack:monitor', monitor}; }
 
 // --- Selected Track FX Events ---
 
 export interface SelectedTrackFxNameChanged { type: 'selectedTrack:fx:name'; fxNumber: number; name: string }
+export function SelectedTrackFxNameChanged(fxNumber: number, name: string): SelectedTrackFxNameChanged { return {type: 'selectedTrack:fx:name', fxNumber, name}; }
+
 export interface SelectedTrackFxBypassEvent { type: 'selectedTrack:fx:bypass'; fxNumber: number; bypassed: boolean }
+export function SelectedTrackFxBypassEvent(fxNumber: number, bypassed: boolean): SelectedTrackFxBypassEvent { return {type: 'selectedTrack:fx:bypass', fxNumber, bypassed}; }
+
 export interface SelectedTrackFxOpenUiEvent { type: 'selectedTrack:fx:openUi'; fxNumber: number; open: boolean }
+export function SelectedTrackFxOpenUiEvent(fxNumber: number, open: boolean): SelectedTrackFxOpenUiEvent { return {type: 'selectedTrack:fx:openUi', fxNumber, open}; }
+
 export interface SelectedTrackFxPresetChanged { type: 'selectedTrack:fx:preset'; fxNumber: number; preset: string }
+export function SelectedTrackFxPresetChanged(fxNumber: number, preset: string): SelectedTrackFxPresetChanged { return {type: 'selectedTrack:fx:preset', fxNumber, preset}; }
 
 // --- Selected FX Events ---
 
 export interface SelectedFxNameChanged { type: 'selectedFx:name'; name: string }
+export function SelectedFxNameChanged(name: string): SelectedFxNameChanged { return {type: 'selectedFx:name', name}; }
+
 export interface SelectedFxBypassEvent { type: 'selectedFx:bypass'; bypassed: boolean }
+export function SelectedFxBypassEvent(bypassed: boolean): SelectedFxBypassEvent { return {type: 'selectedFx:bypass', bypassed}; }
+
 export interface SelectedFxOpenUiEvent { type: 'selectedFx:openUi'; open: boolean }
+export function SelectedFxOpenUiEvent(open: boolean): SelectedFxOpenUiEvent { return {type: 'selectedFx:openUi', open}; }
+
 export interface SelectedFxPresetChanged { type: 'selectedFx:preset'; preset: string }
+export function SelectedFxPresetChanged(preset: string): SelectedFxPresetChanged { return {type: 'selectedFx:preset', preset}; }
 
 // --- Unknown Event ---
 
