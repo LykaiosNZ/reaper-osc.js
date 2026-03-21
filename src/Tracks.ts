@@ -3,8 +3,12 @@
  */
 import {TrackFx} from './Fx';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {BooleanMessageHandler, StringMessageHandler, IMessageHandler, IntegerMessageHandler, TrackFxMessageHandler, FloatMessageHandler} from './Handlers';
-import {BooleanMessage, IntegerMessage, ISendOscMessage, FloatMessage, OscMessage, StringMessage, ToggleMessage} from './Messages';
+import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
+import {SetTrackSelect, SetTrackMute, ToggleTrackMute, SetTrackSolo, ToggleTrackSolo, SetTrackRecordArm, ToggleTrackRecordArm, SetTrackName, SetTrackPan, SetTrackPan2, SetTrackVolume, SetTrackVolumeDb, SetTrackMonitor, ReaperOscCommand} from './Client/Commands';
+
+export {RecordMonitoringMode} from './Client/Events';
+
+type SendCommand = (command: ReaperOscCommand) => void;
 
 /** A Reaper track */
 @notifyOnPropertyChanged
@@ -53,22 +57,19 @@ export class Track implements INotifyPropertyChanged {
   private _vuRight = 0;
 
   private readonly _fx: TrackFx[] = [];
-  private readonly _handlers: IMessageHandler[] = [];
-  private readonly _sendOscMessage: ISendOscMessage;
+  private readonly _send: SendCommand;
 
   /**
    * @param trackNumber The track's number in the current bank
    * @param numberOfFx The number of FX per FX bank
-   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   * @param send A callback used to send typed commands to Reaper
    */
-  constructor(public readonly trackNumber: number, numberOfFx: number, sendOscMessage: ISendOscMessage) {
-    this._sendOscMessage = sendOscMessage;
+  constructor(public readonly trackNumber: number, numberOfFx: number, send: SendCommand) {
+    this._send = send;
 
     for (let i = 0; i < numberOfFx; i++) {
-      this._fx[i] = new TrackFx(trackNumber, i + 1, sendOscMessage);
+      this._fx[i] = new TrackFx(trackNumber, i + 1, send);
     }
-
-    this.initHandlers();
   }
 
   /**
@@ -77,12 +78,44 @@ export class Track implements INotifyPropertyChanged {
    * To change which track the OSC device is focused on, use {@link DeviceState.selectTrack} instead.
    */
   public deselect(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/select', false));
+    this._send(SetTrackSelect(this.trackNumber, false));
   }
 
   /** The track's current FX back */
   public get fx(): TrackFx[] {
     return this._fx;
+  }
+
+  /**
+   * Handle a typed incoming event
+   * @param event The event to handle
+   */
+  public handleEvent(event: ReaperOscEvent): void {
+    switch (event.type) {
+      case 'track:name': if (event.trackNumber === this.trackNumber) this._name = event.name; break;
+      case 'track:mute': if (event.trackNumber === this.trackNumber) this._isMuted = event.muted; break;
+      case 'track:solo': if (event.trackNumber === this.trackNumber) this._isSoloed = event.soloed; break;
+      case 'track:recarm': if (event.trackNumber === this.trackNumber) this._isRecordArmed = event.armed; break;
+      case 'track:monitor': if (event.trackNumber === this.trackNumber) this._recordMonitoring = event.monitor; break;
+      case 'track:select': if (event.trackNumber === this.trackNumber) this._isSelected = event.selected; break;
+      case 'track:pan': if (event.trackNumber === this.trackNumber) this._pan = event.pan; break;
+      case 'track:pan2': if (event.trackNumber === this.trackNumber) this._pan2 = event.pan2; break;
+      case 'track:panMode': if (event.trackNumber === this.trackNumber) this._panMode = event.panMode; break;
+      case 'track:volume': if (event.trackNumber === this.trackNumber) this._volumeFaderPosition = event.volume; break;
+      case 'track:volumeDb': if (event.trackNumber === this.trackNumber) this._volumeDb = event.volumeDb; break;
+      case 'track:vu': if (event.trackNumber === this.trackNumber) this._vu = event.vu; break;
+      case 'track:vuLeft': if (event.trackNumber === this.trackNumber) this._vuLeft = event.vuLeft; break;
+      case 'track:vuRight': if (event.trackNumber === this.trackNumber) this._vuRight = event.vuRight; break;
+      case 'track:fx:name':
+      case 'track:fx:bypass':
+      case 'track:fx:openUi':
+      case 'track:fx:preset':
+        if (event.trackNumber === this.trackNumber) {
+          const fx = this._fx[event.fxNumber - 1];
+          if (fx) fx.handleEvent(event);
+        }
+        break;
+    }
   }
 
   /** Indicates whether the track is muted */
@@ -111,7 +144,7 @@ export class Track implements INotifyPropertyChanged {
 
   /** Mute the track */
   public mute(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/mute', true));
+    this._send(SetTrackMute(this.trackNumber, true));
   }
 
   /** The track name */
@@ -139,23 +172,9 @@ export class Track implements INotifyPropertyChanged {
     return this._panMode;
   }
 
-  /**
-   * Receive and handle an OSC message
-   * @param message The message to be handled
-   */
-  public receive(message: OscMessage): boolean {
-    for (const handler of this._handlers) {
-      if (handler.handle(message)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   /** Arm the track for recording */
   public recordArm(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/recarm', true));
+    this._send(SetTrackRecordArm(this.trackNumber, true));
   }
 
   /** Indicates the record monitoring mode */
@@ -165,7 +184,7 @@ export class Track implements INotifyPropertyChanged {
 
   /** Disarm track recording */
   public recordDisarm(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/recarm', false));
+    this._send(SetTrackRecordArm(this.trackNumber, false));
   }
 
   /**
@@ -178,7 +197,7 @@ export class Track implements INotifyPropertyChanged {
    * ```
    */
   public rename(name: string): void {
-    this._sendOscMessage(new StringMessage(this.oscAddress + '/name', name));
+    this._send(SetTrackName(this.trackNumber, name));
 
     // Reaper will not send a name message in response
     this._name = name;
@@ -190,7 +209,7 @@ export class Track implements INotifyPropertyChanged {
    * To change which track the OSC device is focused on, use {@link DeviceState.selectTrack} instead.
    */
   public select(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/select', true));
+    this._send(SetTrackSelect(this.trackNumber, true));
   }
 
   /**
@@ -198,7 +217,7 @@ export class Track implements INotifyPropertyChanged {
    * @param {RecordMonitorMode} value
    * */
   public setMonitoringMode(value: RecordMonitoringMode): void {
-    this._sendOscMessage(new IntegerMessage(this.oscAddress + '/monitor', value));
+    this._send(SetTrackMonitor(this.trackNumber, value));
   }
 
   /**
@@ -210,7 +229,7 @@ export class Track implements INotifyPropertyChanged {
       throw new RangeError('Must be between -1 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan', value));
+    this._send(SetTrackPan(this.trackNumber, value));
 
     // Reaper won't send a pan message, but will send pan2 when pan changes
     this._pan = value;
@@ -225,7 +244,7 @@ export class Track implements INotifyPropertyChanged {
       throw new RangeError('Must be between -1 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage(this.oscAddress + '/pan2', value));
+    this._send(SetTrackPan2(this.trackNumber, value));
 
     // Reaper won't send a pan2 message, but will send pan when pan2 changes
     this._pan2 = value;
@@ -240,7 +259,7 @@ export class Track implements INotifyPropertyChanged {
       throw new RangeError('Must be between -100 and 12');
     }
 
-    this._sendOscMessage(new FloatMessage(this.oscAddress + '/volume/db', value));
+    this._send(SetTrackVolumeDb(this.trackNumber, value));
 
     // Reaper does not send OSC message to update this, but does send other volume messages
     this._volumeDb = value;
@@ -254,7 +273,7 @@ export class Track implements INotifyPropertyChanged {
       throw new RangeError('Must be between 0 and 1');
     }
 
-    this._sendOscMessage(new FloatMessage(this.oscAddress + '/volume', position));
+    this._send(SetTrackVolume(this.trackNumber, position));
 
     // Reaper does not send OSC message to update this, but does send other volume messages
     this._volumeFaderPosition = position;
@@ -262,32 +281,32 @@ export class Track implements INotifyPropertyChanged {
 
   /** Solo the track */
   public solo(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/solo', true));
+    this._send(SetTrackSolo(this.trackNumber, true));
   }
 
   /** Toggle mute on/off */
   public toggleMute(): void {
-    this._sendOscMessage(new ToggleMessage(this.oscAddress + '/mute'));
+    this._send(ToggleTrackMute(this.trackNumber));
   }
 
   /** Toggle record arm on/off */
   public toggleRecordArm(): void {
-    this._sendOscMessage(new ToggleMessage(this.oscAddress + '/recarm'));
+    this._send(ToggleTrackRecordArm(this.trackNumber));
   }
 
   /** Toggle solo on/off */
   public toggleSolo(): void {
-    this._sendOscMessage(new ToggleMessage(this.oscAddress + '/solo'));
+    this._send(ToggleTrackSolo(this.trackNumber));
   }
 
   /** Unmute the track */
   public unmute(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/mute', false));
+    this._send(SetTrackMute(this.trackNumber, false));
   }
 
   /** Unsolo the track */
   public unsolo(): void {
-    this._sendOscMessage(new BooleanMessage(this.oscAddress + '/solo', false));
+    this._send(SetTrackSolo(this.trackNumber, false));
   }
 
   /** The track volume in dB */
@@ -314,38 +333,5 @@ export class Track implements INotifyPropertyChanged {
   public get vuRight(): number {
     return this._vuRight;
   }
-
-  private initHandlers() {
-    this._handlers.push(
-      new StringMessageHandler(this.oscAddress + '/name', value => (this._name = value)),
-      new BooleanMessageHandler(this.oscAddress + '/mute', value => (this._isMuted = value)),
-      new BooleanMessageHandler(this.oscAddress + '/solo', value => (this._isSoloed = value)),
-      new BooleanMessageHandler(this.oscAddress + '/recarm', value => (this._isRecordArmed = value)),
-      new IntegerMessageHandler(this.oscAddress + '/monitor', value => (this._recordMonitoring = value)),
-      new BooleanMessageHandler(this.oscAddress + '/select', value => (this._isSelected = value)),
-      new TrackFxMessageHandler(fxNumber => (this._fx[fxNumber - 1] !== undefined ? this._fx[fxNumber - 1] : null)),
-      new FloatMessageHandler(this.oscAddress + '/pan', value => (this._pan = value)),
-      new FloatMessageHandler(this.oscAddress + '/pan2', value => (this._pan2 = value)),
-      new StringMessageHandler(this.oscAddress + '/panmode', value => (this._panMode = value)),
-      new FloatMessageHandler(this.oscAddress + '/volume', value => (this._volumeFaderPosition = value)),
-      new FloatMessageHandler(this.oscAddress + '/volume/db', value => (this._volumeDb = value)),
-      new FloatMessageHandler(this.oscAddress + '/vu', value => (this._vu = value)),
-      new FloatMessageHandler(this.oscAddress + '/vu/L', value => (this._vuLeft = value)),
-      new FloatMessageHandler(this.oscAddress + '/vu/R', value => (this._vuRight = value)),
-    );
-  }
-
-  /** The OSC address of the track */
-  private get oscAddress(): string {
-    return `/track/${this.trackNumber}`;
-  }
 }
 
-export enum RecordMonitoringMode {
-  /** Record monitoring disabled */
-  OFF = 0,
-  /** Record monitoring enabled */
-  ON = 1,
-  /** Tape auto style */
-  AUTO = 2,
-}

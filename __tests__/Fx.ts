@@ -1,64 +1,67 @@
 import {TrackFx} from '../dist/Fx';
-import {BoolArgument, BooleanMessage, StringMessage} from '../dist/Messages';
+import {ReaperOscCommand} from '../dist/Client/Commands';
 
 test('has expected track number', () => {
   const expected = 9876;
-  const track = new TrackFx(expected, 1, () => null);
+  const trackFx = new TrackFx(expected, 1, () => null);
 
-  expect(track.trackNumber).toBe(expected);
+  expect(trackFx.trackNumber).toBe(expected);
 });
 
 test('has expected fx number', () => {
   const expected = 9876;
-  const track = new TrackFx(1, expected, () => null);
+  const trackFx = new TrackFx(1, expected, () => null);
 
-  expect(track.fxNumber).toBe(expected);
+  expect(trackFx.fxNumber).toBe(expected);
 });
 
-describe('properties set by messages', () => {
+describe('properties set by events', () => {
   let trackFx: TrackFx;
 
   beforeEach(() => {
     trackFx = new TrackFx(1, 1, () => null);
   });
 
-  test.each([true, false])('bypass message sets isBypassed', value => {
-    const message = new BooleanMessage('/track/1/fx/1/bypass', value);
-
-    expect(trackFx.receive(message)).toBe(true);
+  test.each([true, false])('bypass event sets isBypassed: %p', value => {
     // Confusingly, Reaper sends a 1 (true) for /bypass when the track is active (i.e. not bypassed)
-    expect(trackFx.isBypassed).toBe(!value);
+    // The client parser inverts this, so the event.bypassed already reflects the library convention
+    trackFx.handleEvent({type: 'track:fx:bypass', trackNumber: 1, fxNumber: 1, bypassed: value});
+    expect(trackFx.isBypassed).toBe(value);
   });
 
-  test.each([true, false])('openui message sets isUiOpen', expected => {
-    const message = new BooleanMessage('/track/1/fx/1/openui', expected);
-
-    expect(trackFx.receive(message)).toBe(true);
-    expect(trackFx.isUiOpen).toBe(expected);
+  test.each([true, false])('openUi event sets isUiOpen: %p', value => {
+    trackFx.handleEvent({type: 'track:fx:openUi', trackNumber: 1, fxNumber: 1, open: value});
+    expect(trackFx.isUiOpen).toBe(value);
   });
 
-  test('name message sets name', () => {
+  test('name event sets name', () => {
     const expected = 'foo';
-    const message = new StringMessage('/track/1/fx/1/name', expected);
-
-    expect(trackFx.receive(message)).toBe(true);
+    trackFx.handleEvent({type: 'track:fx:name', trackNumber: 1, fxNumber: 1, name: expected});
     expect(trackFx.name).toBe(expected);
   });
 
-  test('preset message sets preset', () => {
+  test('preset event sets preset', () => {
     const expected = 'foo';
-    const message = new StringMessage('/track/1/fx/1/preset', expected);
-
-    expect(trackFx.receive(message)).toBe(true);
+    trackFx.handleEvent({type: 'track:fx:preset', trackNumber: 1, fxNumber: 1, preset: expected});
     expect(trackFx.preset).toBe(expected);
+  });
+
+  test('event for different track is ignored', () => {
+    trackFx.handleEvent({type: 'track:fx:name', trackNumber: 2, fxNumber: 1, name: 'other'});
+    expect(trackFx.name).toBe('Fx 1');
+  });
+
+  test('event for different fx number is ignored', () => {
+    trackFx.handleEvent({type: 'track:fx:name', trackNumber: 1, fxNumber: 2, name: 'other'});
+    expect(trackFx.name).toBe('Fx 1');
   });
 });
 
-describe('methods send expected messages', () => {
-  test('bypass sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+describe('methods send expected commands', () => {
+  test('bypass sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:fx:bypass', trackNumber: 1, fxNumber: 1, bypassed: true});
         done();
       } catch (error) {
         done(error);
@@ -68,10 +71,10 @@ describe('methods send expected messages', () => {
     trackFx.bypass();
   });
 
-  test('closeUi sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+  test('closeUi sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:fx:openUi', trackNumber: 1, fxNumber: 1, open: false});
         done();
       } catch (error) {
         done(error);
@@ -81,10 +84,10 @@ describe('methods send expected messages', () => {
     trackFx.closeUi();
   });
 
-  test('nextPreset sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+  test('nextPreset sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/preset+', args: []});
+        expect(command).toMatchObject({type: 'track:fx:preset:next', trackNumber: 1, fxNumber: 1});
         done();
       } catch (error) {
         done(error);
@@ -94,10 +97,10 @@ describe('methods send expected messages', () => {
     trackFx.nextPreset();
   });
 
-  test('openUi sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+  test('openUi sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/openui', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:fx:openUi', trackNumber: 1, fxNumber: 1, open: true});
         done();
       } catch (error) {
         done(error);
@@ -107,10 +110,10 @@ describe('methods send expected messages', () => {
     trackFx.openUi();
   });
 
-  test('previousPreset sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+  test('previousPreset sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/preset-', args: []});
+        expect(command).toMatchObject({type: 'track:fx:preset:prev', trackNumber: 1, fxNumber: 1});
         done();
       } catch (error) {
         done(error);
@@ -120,10 +123,10 @@ describe('methods send expected messages', () => {
     trackFx.previousPreset();
   });
 
-  test('unbypass sends expected message', done => {
-    const trackFx = new TrackFx(1, 1, message => {
+  test('unbypass sends expected command', done => {
+    const trackFx = new TrackFx(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/fx/1/bypass', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:fx:bypass', trackNumber: 1, fxNumber: 1, bypassed: false});
         done();
       } catch (error) {
         done(error);

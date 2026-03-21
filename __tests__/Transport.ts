@@ -1,122 +1,83 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import exp from 'constants';
-import {BoolArgument, BooleanMessage, FloatArgument, FloatMessage, OscMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {Beat, Transport} from '../dist/Transport';
+import {ReaperOscCommand} from '../dist/Client/Commands';
 
-describe('properties set by messages', () => {
-  let transport : Transport;
+describe('properties set by events', () => {
+  let transport: Transport;
 
   beforeEach(() => {
-    transport =  new Transport(() => null);
+    transport = new Transport(() => null);
   });
 
-  test.each([true, false])('forward message sets isFastForwarding: %p', value => {
-    const message = new BooleanMessage('/forward', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('fastForward event sets isFastForwarding: %p', value => {
+    transport.handleEvent({type: 'transport:fastForward', fastForwarding: value});
     expect(transport.isFastForwarding).toBe(value);
   });
 
-  test.each([true, false])('pause message sets isPaused: %p', value => {
-    const message = new BooleanMessage('/pause', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('pause event sets isPaused: %p', value => {
+    transport.handleEvent({type: 'transport:pause', paused: value});
     expect(transport.isPaused).toBe(value);
   });
 
-  test.each([true, false])('play message sets isPlaying: %p', value => {
-    const message = new BooleanMessage('/play', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('play event sets isPlaying: %p', value => {
+    transport.handleEvent({type: 'transport:play', playing: value});
     expect(transport.isPlaying).toBe(value);
   });
 
-  test.each([true, false])('record message sets isRecording: %p', value => {
-    const message = new BooleanMessage('/record', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('record event sets isRecording: %p', value => {
+    transport.handleEvent({type: 'transport:record', recording: value});
     expect(transport.isRecording).toBe(value);
   });
 
-  test.each([true, false])('repeat message sets isRepeatEnabled: %p', value => {
-    const message = new BooleanMessage('/repeat', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('repeat event sets isRepeatEnabled: %p', value => {
+    transport.handleEvent({type: 'transport:repeat', enabled: value});
     expect(transport.isRepeatEnabled).toBe(value);
   });
 
-  test.each([true, false])('rewind message sets isRewinding: %p', value => {
-    const message = new BooleanMessage('/rewind', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('rewind event sets isRewinding: %p', value => {
+    transport.handleEvent({type: 'transport:rewind', rewinding: value});
     expect(transport.isRewinding).toBe(value);
   });
 
-  test.each([true, false])('stop message sets isStopped: %p', value => {
-    const message = new BooleanMessage('/stop', value);
-
-    transport.receive(message);
-
+  test.each([true, false])('stop event sets isStopped: %p', value => {
+    transport.handleEvent({type: 'transport:stop', stopped: value});
     expect(transport.isStopped).toBe(value);
   });
 
-  test.each([0.1, 88.456])('time message sets time: %p', value => {
-    const message = new FloatMessage('/time', value);
-
-    transport.receive(message);
-
+  test.each([0.1, 88.456])('time event sets time: %p', value => {
+    transport.handleEvent({type: 'transport:time', time: value});
     expect(transport.time).toBe(value);
   });
 
-
-  test.each([new Beat(1, 1, 0), new Beat(2,5,45)])('beat message sets beat: %p', value => {
+  test.each([new Beat(1, 1, 0), new Beat(2, 5, 45)])('beat event sets beat: %p', value => {
     const beatStr = value.toString();
-    const message = new StringMessage('/beat/str', beatStr)
-
-    transport.receive(message);
-
+    transport.handleEvent({type: 'transport:beat', beat: beatStr});
     expect(transport.beat).toBe(beatStr);
   });
 
-  test('frame message sets frame', () => {
-    const expected = '01:02:03:04'
-    const message = new StringMessage('/frames/str', expected)
-
-    transport.receive(message);
-
-    expect(transport.frames).toBe(expected)
+  test('frames event sets frames', () => {
+    const expected = '01:02:03:04';
+    transport.handleEvent({type: 'transport:frames', frames: expected});
+    expect(transport.frames).toBe(expected);
   });
 
-  test('loop start message sets loopStart', () => {
+  test('loopStart event sets loopStart', () => {
     const expected = 983.833;
-    const message = new FloatMessage('/loop/start/time', expected);
-
-    transport.receive(message);
-
+    transport.handleEvent({type: 'transport:loopStart', time: expected});
     expect(transport.loopStart).toBe(expected);
   });
 
-  test('loop end message sets loopEnd', () => {
+  test('loopEnd event sets loopEnd', () => {
     const expected = 384.827;
-    const message = new FloatMessage('/loop/end/time', expected);
-
-    transport.receive(message);
-
+    transport.handleEvent({type: 'transport:loopEnd', time: expected});
     expect(transport.loopEnd).toBe(expected);
   });
 });
 
-describe('methods send expected messages', () => {
-  test('pause sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+describe('methods send expected commands', () => {
+  test('pause sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/pause', args: []});
+        expect(command).toMatchObject({type: 'transport:pause'});
         done();
       } catch (error) {
         done(error);
@@ -126,10 +87,10 @@ describe('methods send expected messages', () => {
     transport.pause();
   });
 
-  test('play sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('play sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/play', args: []});
+        expect(command).toMatchObject({type: 'transport:play'});
         done();
       } catch (error) {
         done(error);
@@ -139,10 +100,10 @@ describe('methods send expected messages', () => {
     transport.play();
   });
 
-  test('record sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('record sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/record', args: []});
+        expect(command).toMatchObject({type: 'transport:record'});
         done();
       } catch (error) {
         done(error);
@@ -152,10 +113,10 @@ describe('methods send expected messages', () => {
     transport.record();
   });
 
-  test('startFastForwarding sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('startFastForwarding sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/forward', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'transport:fastForward', fastForwarding: true});
         done();
       } catch (error) {
         done(error);
@@ -165,10 +126,10 @@ describe('methods send expected messages', () => {
     transport.startFastForwarding();
   });
 
-  test('startRewinding sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('startRewinding sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/rewind', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'transport:rewind', rewinding: true});
         done();
       } catch (error) {
         done(error);
@@ -178,10 +139,10 @@ describe('methods send expected messages', () => {
     transport.startRewinding();
   });
 
-  test('stop sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('stop sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/stop', args: []});
+        expect(command).toMatchObject({type: 'transport:stop'});
         done();
       } catch (error) {
         done(error);
@@ -191,10 +152,10 @@ describe('methods send expected messages', () => {
     transport.stop();
   });
 
-  test('stopFastForwarding sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('stopFastForwarding sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/forward', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'transport:fastForward', fastForwarding: false});
         done();
       } catch (error) {
         done(error);
@@ -204,10 +165,10 @@ describe('methods send expected messages', () => {
     transport.stopFastForwarding();
   });
 
-  test('stopRewinding sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('stopRewinding sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/rewind', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'transport:rewind', rewinding: false});
         done();
       } catch (error) {
         done(error);
@@ -217,10 +178,10 @@ describe('methods send expected messages', () => {
     transport.stopRewinding();
   });
 
-  test('toggleRepeat sends expected message', done => {
-    const transport = new Transport((message: OscMessage) => {
+  test('toggleRepeat sends expected command', done => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/repeat', args: []});
+        expect(command).toMatchObject({type: 'transport:repeat:toggle'});
         done();
       } catch (error) {
         done(error);
@@ -230,11 +191,11 @@ describe('methods send expected messages', () => {
     transport.toggleRepeat();
   });
 
-  test('jumpToTime sends expected message', done => {
-    const time = 93.49
-    const transport = new Transport((message: OscMessage) => {
+  test('jumpToTime sends expected command', done => {
+    const time = 93.49;
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/time', args: [FloatArgument(time)]});
+        expect(command).toMatchObject({type: 'transport:time', time});
         done();
       } catch (error) {
         done(error);
@@ -244,11 +205,11 @@ describe('methods send expected messages', () => {
     transport.jumpToTime(time);
   });
 
-  test('jumpToBeat sends expected message', done => {
-    const beat = new Beat(3,6,99);
-    const transport = new Transport((message: OscMessage) => {
+  test('jumpToBeat sends expected command', done => {
+    const beat = new Beat(3, 6, 99);
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/beat/str', args: [StringArgument(beat.toString())]});
+        expect(command).toMatchObject({type: 'transport:beat', beat: beat.toString()});
         done();
       } catch (error) {
         done(error);
@@ -258,11 +219,11 @@ describe('methods send expected messages', () => {
     transport.jumpToBeat(beat);
   });
 
-  test('jumpToFrame sends expected message', done => {
+  test('jumpToFrame sends expected command', done => {
     const frame = '01:02:03:04';
-    const transport = new Transport((message: OscMessage) => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/frames/str', args: [StringArgument(frame)]});
+        expect(command).toMatchObject({type: 'transport:frames', frames: frame});
         done();
       } catch (error) {
         done(error);
@@ -272,13 +233,14 @@ describe('methods send expected messages', () => {
     transport.jumpToFrame(frame);
   });
 
-  test.each([-1, 1])('jumpToTimeRelative sends expected message: %p', (value, done: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  test.each([-1, 1])('jumpToTimeRelative sends expected command: %p', (value, done: any) => {
     const currentTime = 60;
     const expected = currentTime + value;
 
-    const transport = new Transport((message: OscMessage) => {
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/time', args: [FloatArgument(expected)]});
+        expect(command).toMatchObject({type: 'transport:time', time: expected});
         done();
       } catch (error) {
         done(error);
@@ -286,16 +248,16 @@ describe('methods send expected messages', () => {
     });
 
     // Set the current time
-    transport.receive(new FloatMessage('/time', currentTime));
+    transport.handleEvent({type: 'transport:time', time: currentTime});
 
     transport.jumpToTimeRelative(value);
   });
 
-  test('setLoopStart sends expected message', done => {
-    const time = 393.442
-    const transport = new Transport((message: OscMessage) => {
+  test('setLoopStart sends expected command', done => {
+    const time = 393.442;
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/loop/start/time', args: [FloatArgument(time)]});
+        expect(command).toMatchObject({type: 'transport:loopStart', time});
         done();
       } catch (error) {
         done(error);
@@ -305,11 +267,11 @@ describe('methods send expected messages', () => {
     transport.setLoopStart(time);
   });
 
-  test('setLoopStart sends expected message', done => {
-    const time = 948.382
-    const transport = new Transport((message: OscMessage) => {
+  test('setLoopEnd sends expected command', done => {
+    const time = 948.382;
+    const transport = new Transport((command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/loop/end/time', args: [FloatArgument(time)]});
+        expect(command).toMatchObject({type: 'transport:loopEnd', time});
         done();
       } catch (error) {
         done(error);

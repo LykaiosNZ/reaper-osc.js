@@ -7,6 +7,10 @@
 /**
  * @module reaper-osc
  */
+export * from './Config';
+export * from './Client/Client';
+export * from './Client/Events';
+export * from './Client/Commands';
 export * from './Reaper';
 export * from './Tracks';
 export * from './Transport';
@@ -14,7 +18,6 @@ export * from './Fx';
 export * from './Device';
 export * from './SelectedTrack';
 
-export * from './Handlers';
 export * from './Messages';
 
 export { INotifyPropertyChanged } from './Notify'

@@ -3,8 +3,10 @@
  * @module
  */
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
-import {BooleanMessageHandler, FloatMessageHandler, IMessageHandler, StringMessageHandler} from './Handlers';
-import {BooleanMessage, FloatMessage, ISendOscMessage, OscMessage, StringMessage} from './Messages';
+import {ReaperOscEvent} from './Client/Events';
+import {SetBeat, SetFrames, SetTime, Pause, Play, ToggleRecord, SetLoopEnd, SetLoopStart, SetFastForward, SetRewind, Stop, ToggleRepeat, ReaperOscCommand} from './Client/Commands';
+
+type SendCommand = (command: ReaperOscCommand) => void;
 
 /** The Reaper transport */
 @notifyOnPropertyChanged
@@ -45,30 +47,13 @@ export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('time')
   private _time = 0;
 
-  private readonly _handlers: IMessageHandler[] = [
-    new BooleanMessageHandler('/repeat', value => (this._isRepeatEnabled = value)),
-    new BooleanMessageHandler('/record', value => (this._isRecording = value)),
-    new BooleanMessageHandler('/stop', value => (this._isStopped = value)),
-    new BooleanMessageHandler('/pause', value => (this._isPaused = value)),
-    new BooleanMessageHandler('/play', value => (this._isPlaying = value)),
-    new BooleanMessageHandler('/rewind', value => (this._isRewinding = value)),
-    new BooleanMessageHandler('/forward', value => (this._isFastForwarding = value)),
-
-    new FloatMessageHandler('/time', value => (this._time = value)),
-    new StringMessageHandler('/beat/str', value => (this._beat = value)),
-    new StringMessageHandler('/frames/str', value => (this._frames = value)),
-
-    new FloatMessageHandler('/loop/start/time', value => (this._loopStart = value)),
-    new FloatMessageHandler('/loop/end/time', value => (this._loopEnd = value))
-  ];
-
-  private readonly _sendOscMessage: ISendOscMessage;
+  private readonly _send: SendCommand;
 
   /**
-   * @param sendOscMessage A callback used to send OSC messages to Reaper
+   * @param send A callback used to send typed commands to Reaper
    */
-  constructor(sendOscMessage: ISendOscMessage) {
-    this._sendOscMessage = sendOscMessage;
+  constructor(send: SendCommand) {
+    this._send = send;
   }
 
   /** Indicates the current transport beat in format mm.bb.xx */
@@ -131,37 +116,56 @@ export class Transport implements INotifyPropertyChanged {
     return this._time;
   }
 
+  /**
+   * Handle a typed incoming event
+   * @param event The event to handle
+   */
+  public handleEvent(event: ReaperOscEvent): void {
+    switch (event.type) {
+      case 'transport:repeat': this._isRepeatEnabled = event.enabled; break;
+      case 'transport:record': this._isRecording = event.recording; break;
+      case 'transport:stop': this._isStopped = event.stopped; break;
+      case 'transport:pause': this._isPaused = event.paused; break;
+      case 'transport:play': this._isPlaying = event.playing; break;
+      case 'transport:rewind': this._isRewinding = event.rewinding; break;
+      case 'transport:fastForward': this._isFastForwarding = event.fastForwarding; break;
+      case 'transport:time': this._time = event.time; break;
+      case 'transport:beat': this._beat = event.beat; break;
+      case 'transport:frames': this._frames = event.frames; break;
+      case 'transport:loopStart': this._loopStart = event.time; break;
+      case 'transport:loopEnd': this._loopEnd = event.time; break;
+    }
+  }
+
   /** Jumps to the specified beat (absolute)
    * @param beat The beat to jump to
    */
   public jumpToBeat(beat: Beat): void {
-    this._sendOscMessage(new StringMessage('/beat/str', beat.toString()))
+    this._send(SetBeat(beat.toString()));
   }
 
-  /** Jumps to the specified frame (absolute) 
+  /** Jumps to the specified frame (absolute)
    * @param frame Frame to jump to (in format h:m:s:f). Values in an invalid format will be ignored by Reaper
   */
   public jumpToFrame(frame: string): void {
-    this._sendOscMessage(new StringMessage('/frames/str', frame))
+    this._send(SetFrames(frame));
   }
 
   /** Jumps to the specified time in seconds (absolute)
    * @param time The time to jump to (in seconds). If this value is negative, Reaper will jump to 0
    */
   public jumpToTime(time: number): void {
-    this._sendOscMessage(new FloatMessage('/time', time))
+    this._send(SetTime(time));
   }
 
   /**
-   * Jumps to a relative time in seconds. 
+   * Jumps to a relative time in seconds.
    * Note that the absolute value to jump to is calculated by the library based on the currently known time,
    * as Reaper does not appear to support jumping to a relative time via OSC
    * @param time The relative time jump (in seconds)
    */
   public jumpToTimeRelative(time: number): void {
-    const newTime = Math.max(this._time + time, 0);
-
-    this._sendOscMessage(new FloatMessage('/time', newTime))
+    this._send(SetTime(Math.max(this._time + time, 0)));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -171,31 +175,17 @@ export class Transport implements INotifyPropertyChanged {
 
   /** Toggle pause */
   public pause(): void {
-    this._sendOscMessage(new OscMessage('/pause'));
+    this._send(Pause());
   }
 
   /** Toggle play */
   public play(): void {
-    this._sendOscMessage(new OscMessage('/play'));
-  }
-
-  /**
-   * Receive and handle an OSC message
-   * @param message The message to be handled
-   */
-  public receive(message: OscMessage): boolean {
-    for (const handler of this._handlers) {
-      if (handler.handle(message)) {
-        return true;
-      }
-    }
-
-    return false;
+    this._send(Play());
   }
 
   /** Toggle recording */
   public record(): void {
-    this._sendOscMessage(new OscMessage('/record'));
+    this._send(ToggleRecord());
   }
 
   /**
@@ -203,7 +193,7 @@ export class Transport implements INotifyPropertyChanged {
    * @param time End time for the loop (in seconds)
    */
   public setLoopEnd(time: number) : void {
-    this._sendOscMessage(new FloatMessage('/loop/end/time', time));
+    this._send(SetLoopEnd(time));
   }
 
   /**
@@ -211,37 +201,37 @@ export class Transport implements INotifyPropertyChanged {
    * @param time Start time for the loop (in seconds)
    */
   public setLoopStart(time: number) : void {
-    this._sendOscMessage(new FloatMessage('/loop/start/time', time));
+    this._send(SetLoopStart(time));
   }
 
   /** Start fast fowarding. Will continue until stopped */
   public startFastForwarding(): void {
-    this._sendOscMessage(new BooleanMessage('/forward', true));
+    this._send(SetFastForward(true));
   }
 
   /** Start rewinding. Will continue until stopped */
   public startRewinding(): void {
-    this._sendOscMessage(new BooleanMessage('/rewind', true));
+    this._send(SetRewind(true));
   }
 
   /** Stop playback or recording */
   public stop(): void {
-    this._sendOscMessage(new OscMessage('/stop'));
+    this._send(Stop());
   }
 
   /** Stop fast forwarding */
   public stopFastForwarding(): void {
-    this._sendOscMessage(new BooleanMessage('/forward', false));
+    this._send(SetFastForward(false));
   }
 
   /** Stop rewinding */
   public stopRewinding(): void {
-    this._sendOscMessage(new BooleanMessage('/rewind', false));
+    this._send(SetRewind(false));
   }
 
   /** Toggle repeat on or off */
   public toggleRepeat(): void {
-    this._sendOscMessage(new OscMessage('/repeat'));
+    this._send(ToggleRepeat());
   }
 }
 

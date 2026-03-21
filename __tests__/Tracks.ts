@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import {BoolArgument, BooleanMessage, FloatArgument, FloatMessage, IntArgument, IntegerMessage, StringArgument, StringMessage} from '../dist/Messages';
 import {RecordMonitoringMode, Track} from '../dist/Tracks';
+import {ReaperOscCommand} from '../dist/Client/Commands';
 
 test('has correct number of fx', () => {
   const expected = 8;
-
   const track = new Track(1, expected, () => null);
-
   expect(track.fx.length).toBe(expected);
 });
 
@@ -21,9 +18,7 @@ test('fx are initialized with correct track and fx number', () => {
 
 test('has correct track number', () => {
   const expected = 9874;
-
   const track = new Track(expected, 1, () => null);
-
   expect(track.trackNumber).toBe(expected);
 });
 
@@ -47,126 +42,101 @@ test.each([-0.1, 1.1])('setVolumeFaderPosition throws when less than 0 or greate
   expect(() => track.setVolumeFaderPosition(value)).toThrow(RangeError);
 });
 
-describe('properties set by messages', () => {
+describe('properties set by events', () => {
   let track: Track;
 
   beforeEach(() => {
     track = new Track(1, 1, () => null);
   });
 
-  test.each([true, false])('mute message sets isMuted', value => {
-    const message = new BooleanMessage('/track/1/mute', value);
-
-    expect(track.receive(message)).toBe(true);
+  test.each([true, false])('mute event sets isMuted: %p', value => {
+    track.handleEvent({type: 'track:mute', trackNumber: 1, muted: value});
     expect(track.isMuted).toBe(value);
   });
 
-  test.each([true, false])('recarm message sets isRecordArmed', value => {
-    const message = new BooleanMessage('/track/1/recarm', value);
-
-    expect(track.receive(message)).toBe(true);
+  test.each([true, false])('recarm event sets isRecordArmed: %p', value => {
+    track.handleEvent({type: 'track:recarm', trackNumber: 1, armed: value});
     expect(track.isRecordArmed).toBe(value);
   });
 
-  test.each([true, false])('select message sets isSelected', value => {
-    const message = new BooleanMessage('/track/1/select', value);
-
-    expect(track.receive(message)).toBe(true);
+  test.each([true, false])('select event sets isSelected: %p', value => {
+    track.handleEvent({type: 'track:select', trackNumber: 1, selected: value});
     expect(track.isSelected).toBe(value);
   });
 
-  test.each([true, false])('solo message sets isSoloed', value => {
-    const message = new BooleanMessage('/track/1/solo', value);
-
-    expect(track.receive(message)).toBe(true);
+  test.each([true, false])('solo event sets isSoloed: %p', value => {
+    track.handleEvent({type: 'track:solo', trackNumber: 1, soloed: value});
     expect(track.isSoloed).toBe(value);
   });
 
-  test('name message sets name', () => {
-    const expected = 'foo';
-    const message = new StringMessage('/track/1/name', expected);
-
-    expect(track.receive(message)).toBe(true);
-    expect(track.name).toBe(expected);
+  test('name event sets name', () => {
+    track.handleEvent({type: 'track:name', trackNumber: 1, name: 'foo'});
+    expect(track.name).toBe('foo');
   });
 
-  test('pan message sets pan', () => {
+  test('pan event sets pan', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/pan', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:pan', trackNumber: 1, pan: expected});
     expect(track.pan).toBe(expected);
   });
 
-  test('pan2 message sets pan2', () => {
+  test('pan2 event sets pan2', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/pan2', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:pan2', trackNumber: 1, pan2: expected});
     expect(track.pan2).toBe(expected);
   });
 
-  test('panmode message sets panMode', () => {
-    const expected = 'foo';
-    const message = new StringMessage('/track/1/panmode', expected);
-
-    expect(track.receive(message)).toBe(true);
-    expect(track.panMode).toBe(expected);
+  test('panMode event sets panMode', () => {
+    track.handleEvent({type: 'track:panMode', trackNumber: 1, panMode: 'foo'});
+    expect(track.panMode).toBe('foo');
   });
 
-  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor message sets recordMonitoring: %p', expected => {
-    const message = new IntegerMessage('/track/1/monitor', expected);
-
-    expect(track.receive(message)).toBe(true);
+  test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])('monitor event sets recordMonitoring: %p', expected => {
+    track.handleEvent({type: 'track:monitor', trackNumber: 1, monitor: expected});
     expect(track.recordMonitoring).toBe(expected);
   });
 
-  test('volume/db message sets volumeDb', () => {
+  test('volumeDb event sets volumeDb', () => {
     const expected = 12;
-    const message = new FloatMessage('/track/1/volume/db', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:volumeDb', trackNumber: 1, volumeDb: expected});
     expect(track.volumeDb).toBe(expected);
   });
 
-  test('volume message sets volumeFaderPosition', () => {
+  test('volume event sets volumeFaderPosition', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/volume', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:volume', trackNumber: 1, volume: expected});
     expect(track.volumeFaderPosition).toBe(expected);
   });
 
-  test('vu message sets vu', () => {
+  test('vu event sets vu', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/vu', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:vu', trackNumber: 1, vu: expected});
     expect(track.vu).toBe(expected);
   });
 
-  test('vu/L message sets vuLeft', () => {
+  test('vuLeft event sets vuLeft', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/vu/L', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:vuLeft', trackNumber: 1, vuLeft: expected});
     expect(track.vuLeft).toBe(expected);
   });
 
-  test('vu/R message sets vuRight', () => {
+  test('vuRight event sets vuRight', () => {
     const expected = 0.12345;
-    const message = new FloatMessage('/track/1/vu/R', expected);
-
-    expect(track.receive(message)).toBe(true);
+    track.handleEvent({type: 'track:vuRight', trackNumber: 1, vuRight: expected});
     expect(track.vuRight).toBe(expected);
+  });
+
+  test('event for different track is ignored', () => {
+    track.handleEvent({type: 'track:mute', trackNumber: 2, muted: true});
+    expect(track.isMuted).toBe(false);
   });
 });
 
-describe('methods send correct messages', () => {
-  test('deselect sends expected message', done => {
-    const track = new Track(1, 1, message => {
+describe('methods send expected commands', () => {
+  test('deselect sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/select', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:select', trackNumber: 1, selected: false});
         done();
       } catch (error) {
         done(error);
@@ -176,10 +146,10 @@ describe('methods send correct messages', () => {
     track.deselect();
   });
 
-  test('mute sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('mute sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/mute', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:mute', trackNumber: 1, muted: true});
         done();
       } catch (error) {
         done(error);
@@ -189,10 +159,10 @@ describe('methods send correct messages', () => {
     track.mute();
   });
 
-  test('recordArm sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('recordArm sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/recarm', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:recarm', trackNumber: 1, armed: true});
         done();
       } catch (error) {
         done(error);
@@ -202,10 +172,10 @@ describe('methods send correct messages', () => {
     track.recordArm();
   });
 
-  test('recordDisarm sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('recordDisarm sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/recarm', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:recarm', trackNumber: 1, armed: false});
         done();
       } catch (error) {
         done(error);
@@ -215,11 +185,11 @@ describe('methods send correct messages', () => {
     track.recordDisarm();
   });
 
-  test('rename sends expected message and sets name', done => {
+  test('rename sends expected command and sets name', done => {
     const expected = 'foo';
-    const track = new Track(1, 1, message => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/name', args: [StringArgument(expected)]});
+        expect(command).toMatchObject({type: 'track:name', trackNumber: 1, name: expected});
         done();
       } catch (error) {
         done(error);
@@ -230,10 +200,10 @@ describe('methods send correct messages', () => {
     expect(track.name).toBe(expected);
   });
 
-  test('select sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('select sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/select', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:select', trackNumber: 1, selected: true});
         done();
       } catch (error) {
         done(error);
@@ -243,12 +213,13 @@ describe('methods send correct messages', () => {
     track.select();
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])(
-    'setMonitoringMode sends expected message: %p',
+    'setMonitoringMode sends expected command: %p',
     (expected, done: any) => {
-      const track = new Track(1, 1, message => {
+      const track = new Track(1, 1, (command: ReaperOscCommand) => {
         try {
-          expect(message).toMatchObject({address: '/track/1/monitor', args: [IntArgument(expected)]});
+          expect(command).toMatchObject({type: 'track:monitor', trackNumber: 1, monitor: expected});
           done();
         } catch (error) {
           done(error);
@@ -259,11 +230,11 @@ describe('methods send correct messages', () => {
     },
   );
 
-  test('setPan sends expected message and sets value', done => {
+  test('setPan sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, message => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/pan', args: [FloatArgument(expected)]});
+        expect(command).toMatchObject({type: 'track:pan', trackNumber: 1, pan: expected});
         done();
       } catch (error) {
         done(error);
@@ -274,11 +245,11 @@ describe('methods send correct messages', () => {
     expect(track.pan).toBe(expected);
   });
 
-  test('setPan2 sends expected message and sets value', done => {
+  test('setPan2 sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, message => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/pan2', args: [FloatArgument(expected)]});
+        expect(command).toMatchObject({type: 'track:pan2', trackNumber: 1, pan2: expected});
         done();
       } catch (error) {
         done(error);
@@ -289,11 +260,11 @@ describe('methods send correct messages', () => {
     expect(track.pan2).toBe(expected);
   });
 
-  test('setVolumeDb sends expected message and sets value', done => {
+  test('setVolumeDb sends expected command and sets value', done => {
     const expected = 12;
-    const track = new Track(1, 1, message => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/volume/db', args: [FloatArgument(expected)]});
+        expect(command).toMatchObject({type: 'track:volumeDb', trackNumber: 1, volumeDb: expected});
         done();
       } catch (error) {
         done(error);
@@ -304,11 +275,11 @@ describe('methods send correct messages', () => {
     expect(track.volumeDb).toBe(expected);
   });
 
-  test('setVolumeFaderPosition sends expected message and sets value', done => {
+  test('setVolumeFaderPosition sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, message => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/volume', args: [FloatArgument(expected)]});
+        expect(command).toMatchObject({type: 'track:volume', trackNumber: 1, volume: expected});
         done();
       } catch (error) {
         done(error);
@@ -319,10 +290,10 @@ describe('methods send correct messages', () => {
     expect(track.volumeFaderPosition).toBe(expected);
   });
 
-  test('solo sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('solo sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/solo', args: [BoolArgument(true)]});
+        expect(command).toMatchObject({type: 'track:solo', trackNumber: 1, soloed: true});
         done();
       } catch (error) {
         done(error);
@@ -332,10 +303,10 @@ describe('methods send correct messages', () => {
     track.solo();
   });
 
-  test('toggleMute sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('toggleMute sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/mute/toggle'});
+        expect(command).toMatchObject({type: 'track:mute:toggle', trackNumber: 1});
         done();
       } catch (error) {
         done(error);
@@ -345,10 +316,10 @@ describe('methods send correct messages', () => {
     track.toggleMute();
   });
 
-  test('toggleRecordArm sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('toggleRecordArm sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/recarm/toggle'});
+        expect(command).toMatchObject({type: 'track:recarm:toggle', trackNumber: 1});
         done();
       } catch (error) {
         done(error);
@@ -358,10 +329,10 @@ describe('methods send correct messages', () => {
     track.toggleRecordArm();
   });
 
-  test('toggleSolo sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('toggleSolo sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/solo/toggle'});
+        expect(command).toMatchObject({type: 'track:solo:toggle', trackNumber: 1});
         done();
       } catch (error) {
         done(error);
@@ -371,10 +342,10 @@ describe('methods send correct messages', () => {
     track.toggleSolo();
   });
 
-  test('unmute sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('unmute sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/mute', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:mute', trackNumber: 1, muted: false});
         done();
       } catch (error) {
         done(error);
@@ -384,10 +355,10 @@ describe('methods send correct messages', () => {
     track.unmute();
   });
 
-  test('unsolo sends expected message', done => {
-    const track = new Track(1, 1, message => {
+  test('unsolo sends expected command', done => {
+    const track = new Track(1, 1, (command: ReaperOscCommand) => {
       try {
-        expect(message).toMatchObject({address: '/track/1/solo', args: [BoolArgument(false)]});
+        expect(command).toMatchObject({type: 'track:solo', trackNumber: 1, soloed: false});
         done();
       } catch (error) {
         done(error);
