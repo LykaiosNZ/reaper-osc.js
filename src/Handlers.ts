@@ -1,7 +1,8 @@
 import {OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
-import {TrackFx} from './Fx';
+import {Fx, TrackFx} from './Fx';
+import {SelectedTrack} from './SelectedTrack';
 
 /** An OSC message handler */
 export interface IMessageHandler {
@@ -23,7 +24,6 @@ export class TrackMessageHandler implements IMessageHandler {
     if (message.addressParts[0] === 'track') {
       const trackNumber = parseInt(message.addressParts[1]);
 
-      // If NaN, probably means that it's a message for the selected track - ignore
       if (isNaN(trackNumber)) {
         return false;
       }
@@ -152,6 +152,43 @@ export class StringMessageHandler implements IMessageHandler {
       this._callback(messageValue);
 
       return true;
+    }
+
+    return false;
+  }
+}
+
+/**
+ * Routes `/track/` (no index) messages to the device's selected track
+ */
+export class SelectedTrackMessageHandler implements IMessageHandler {
+  constructor(private readonly selectedTrack: SelectedTrack) {}
+
+  public handle(message: OscMessage): boolean {
+    if (message.addressParts[0] === 'track' && isNaN(parseInt(message.addressParts[1]))) {
+      return this.selectedTrack.receive(message);
+    }
+
+    return false;
+  }
+}
+
+/**
+ * Routes `/fx/` messages to an FX on the device's selected track.
+ * Messages with an index (e.g. `/fx/2/name`) are routed to the indexed FX bank slot.
+ * Messages without an index (e.g. `/fx/name`) are routed to the device's selected FX.
+ */
+export class SelectedTrackFxMessageHandler implements IMessageHandler {
+  constructor(private readonly fxSelector: (fxNumber: number | null) => Fx | null) {}
+
+  public handle(message: OscMessage): boolean {
+    if (message.addressParts[0] === 'fx') {
+      const fxNumber = parseInt(message.addressParts[1]);
+      const fx = this.fxSelector(isNaN(fxNumber) ? null : fxNumber);
+
+      if (fx !== null) {
+        return fx.receive(message);
+      }
     }
 
     return false;

@@ -71,7 +71,11 @@ export class Track implements INotifyPropertyChanged {
     this.initHandlers();
   }
 
-  /** Deselect the track */
+  /**
+   * Deselect the track in the Reaper project.
+   * Note: this affects Reaper's project-level track selection (visible in the UI).
+   * To change which track the OSC device is focused on, use {@link DeviceState.selectTrack} instead.
+   */
   public deselect(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/select', false));
   }
@@ -91,7 +95,11 @@ export class Track implements INotifyPropertyChanged {
     return this._isRecordArmed;
   }
 
-  /** Indicates whether the track is selected*/
+  /**
+   * Indicates whether the track is selected in the Reaper project.
+   * Note: this reflects Reaper's project-level selection, not the OSC device's focused track.
+   * @see {@link DeviceState.selectTrack} and {@link Reaper.selectedTrack}
+   */
   public get isSelected(): boolean {
     return this._isSelected;
   }
@@ -176,7 +184,11 @@ export class Track implements INotifyPropertyChanged {
     this._name = name;
   }
 
-  /** Select the track */
+  /**
+   * Select the track in the Reaper project.
+   * Note: this affects Reaper's project-level track selection (visible in the UI).
+   * To change which track the OSC device is focused on, use {@link DeviceState.selectTrack} instead.
+   */
   public select(): void {
     this._sendOscMessage(new BooleanMessage(this.oscAddress + '/select', true));
   }
