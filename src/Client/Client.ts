@@ -368,7 +368,6 @@ export class ReaperOscClient extends EventEmitter {
     this._osc.on('message', (rawMessage: RawOscMessage) => {
       const message = new OscMessage(rawMessage.address, rawMessage.args);
 
-      // Emit typed event first so state is updated before rawMessage listeners fire
       const event = parseMessage(message);
       this.emit('message', event);
 
