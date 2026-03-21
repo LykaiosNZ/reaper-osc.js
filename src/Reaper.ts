@@ -24,6 +24,12 @@ import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify'
  */
 @notifyOnPropertyChanged
 export class Reaper implements INotifyPropertyChanged {
+  @notify<Reaper>('isAutoRecArmEnabled')
+  private _isAutoRecArmEnabled = false;
+
+  @notify<Reaper>('isAnySoloed')
+  private _isAnySoloed = false;
+
   @notify<Reaper>('isMetronomeEnabled')
   private _isMetronomeEnabled = false;
 
@@ -61,6 +67,16 @@ export class Reaper implements INotifyPropertyChanged {
     for (let i = 0; i < config.numberOfTracks; i++) {
       this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
     }
+  }
+
+  /** Indicates whether auto-rec-arm is enabled */
+  public get isAutoRecArmEnabled(): boolean {
+    return this._isAutoRecArmEnabled;
+  }
+
+  /** Indicates whether any track is soloed */
+  public get isAnySoloed(): boolean {
+    return this._isAnySoloed;
   }
 
   /** Indicates whether the metronome is enabled */
@@ -162,9 +178,19 @@ export class Reaper implements INotifyPropertyChanged {
     return promise;
   }
 
+  /** Toggle auto-rec-arm on or off */
+  public toggleAutoRecArm(): void {
+    this.sendOscMessage(new OscMessage('/autorecarm'));
+  }
+
   /** Toggle the metronome on or off */
   public toggleMetronome(): void {
     this.sendOscMessage(new OscMessage('/click'));
+  }
+
+  /** Reset all solos */
+  public soloReset(): void {
+    this.sendOscMessage(new OscMessage('/soloreset'));
   }
 
   /** The current bank of tracks */
@@ -209,6 +235,8 @@ export class Reaper implements INotifyPropertyChanged {
         return this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null;
       }),
       new TransportMessageHandler(this._transport),
+      new BooleanMessageHandler('/autorecarm', value => (this._isAutoRecArmEnabled = value)),
+      new BooleanMessageHandler('/anysolo', value => (this._isAnySoloed = value)),
       new BooleanMessageHandler('/click', value => (this._isMetronomeEnabled = value)),
     );
   }

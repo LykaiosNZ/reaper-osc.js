@@ -236,7 +236,6 @@ STOP t/stop
 PLAY t/play
 PAUSE t/pause
 
-# TODO Transport additional
 AUTO_REC_ARM t/autorecarm
 SOLO_RESET t/soloreset
 ANY_SOLO b/anysolo

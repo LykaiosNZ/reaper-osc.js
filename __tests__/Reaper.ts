@@ -51,6 +51,34 @@ test.each([-1, 128])('triggerAction should throw when value is less than 0 or gr
 });
 
 describe('properties set by messages', () => {
+  test.each([true, false])('autorecarm message sets isAutoRecArmEnabled: %p', async (value) => {
+    await reaper.start()
+    testOsc.open();
+
+    const message = new BooleanMessage('/autorecarm', value);
+
+    testOsc.send(message);
+
+    return new Promise<void>((res) => setTimeout(() => {
+      expect(reaper.isAutoRecArmEnabled).toBe(value);
+      res()
+    }, 10));
+  });
+
+  test.each([true, false])('anysolo message sets isAnySoloed: %p', async (value) => {
+    await reaper.start()
+    testOsc.open();
+
+    const message = new BooleanMessage('/anysolo', value);
+
+    testOsc.send(message);
+
+    return new Promise<void>((res) => setTimeout(() => {
+      expect(reaper.isAnySoloed).toBe(value);
+      res()
+    }, 10));
+  });
+
   test.each([true, false])('click message sets isMetronomeEnabled: %p', async (value) => {
     await reaper.start()
     testOsc.open();
@@ -67,6 +95,14 @@ describe('properties set by messages', () => {
 });
 
 describe('methods send expected messages', () => {
+  test('toggleAutoRecArm sends expected message', async () => {
+    await expectOscMessage(() => reaper.toggleAutoRecArm(), {address: '/autorecarm', args: []});
+  });
+
+  test('soloReset sends expected message', async () => {
+    await expectOscMessage(() => reaper.soloReset(), {address: '/soloreset', args: []});
+  });
+
   test('toggleMetronome sends expected message', async () => {
     await expectOscMessage(() => reaper.toggleMetronome(), {address: '/click', args: []});
   });
