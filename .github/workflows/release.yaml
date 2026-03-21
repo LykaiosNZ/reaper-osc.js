@@ -1,12 +1,10 @@
-name: Continuous
+name: Release
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_dispatch:
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     permissions:
@@ -26,7 +24,6 @@ jobs:
           node-version: 22
       - run: yarn install
       - run: yarn build
-      - run: yarn test --ci
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

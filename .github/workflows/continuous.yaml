@@ -1,6 +1,9 @@
 name: Continuous
 
 on:
+  push:
+    branches:
+      - 'main'
   pull_request:
     branches:
       - 'main'
