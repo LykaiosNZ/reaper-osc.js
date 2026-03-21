@@ -11,6 +11,8 @@ export * from './Reaper';
 export * from './Tracks';
 export * from './Transport';
 export * from './Fx';
+export * from './Device';
+export * from './SelectedTrack';
 
 export * from './Handlers';
 export * from './Messages';

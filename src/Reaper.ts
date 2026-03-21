@@ -5,8 +5,10 @@
 import {ActionMessage, OscMessage, RawOscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
+import {DeviceState} from './Device';
+import {SelectedTrack} from './SelectedTrack';
 import * as osc from 'osc';
-import {BooleanMessageHandler, IMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
+import {BooleanMessageHandler, IMessageHandler, SelectedTrackFxMessageHandler, SelectedTrackMessageHandler, TrackMessageHandler, TransportMessageHandler} from './Handlers';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 
 /**
@@ -43,6 +45,8 @@ export class Reaper implements INotifyPropertyChanged {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _osc: any;
 
+  private readonly _device: DeviceState = new DeviceState(message => this.sendOscMessage(message));
+  private readonly _selectedTrack: SelectedTrack;
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport = new Transport(message => this.sendOscMessage(message));
 
@@ -58,6 +62,7 @@ export class Reaper implements INotifyPropertyChanged {
 
     this._afterMessageReceived = config.afterMessageReceived;
     this._log = config.log;
+    this._selectedTrack = new SelectedTrack(config.numberOfFx, message => this.sendOscMessage(message));
 
     this.initOsc();
     this.initHandlers();
@@ -67,6 +72,11 @@ export class Reaper implements INotifyPropertyChanged {
     for (let i = 0; i < config.numberOfTracks; i++) {
       this._tracks[i] = new Track(i + 1, config.numberOfFx, message => this.sendOscMessage(message));
     }
+  }
+
+  /** Controls the OSC device's navigation state (track/bank/FX selection) */
+  public get device(): DeviceState {
+    return this._device;
   }
 
   /** Indicates whether auto-rec-arm is enabled */
@@ -193,6 +203,15 @@ export class Reaper implements INotifyPropertyChanged {
     this.sendOscMessage(new OscMessage('/soloreset'));
   }
 
+  /**
+   * The OSC device's currently focused track.
+   * State is populated by the sync burst Reaper sends when the focused track changes.
+   * @see {@link DeviceState.selectTrack}
+   */
+  public get selectedTrack(): SelectedTrack {
+    return this._selectedTrack;
+  }
+
   /** The current bank of tracks */
   public get tracks(): ReadonlyArray<Track> {
     return this._tracks;
@@ -233,6 +252,14 @@ export class Reaper implements INotifyPropertyChanged {
         }
 
         return this._tracks[trackNumber - 1] !== undefined ? this._tracks[trackNumber - 1] : null;
+      }),
+      new SelectedTrackMessageHandler(this._selectedTrack),
+      new SelectedTrackFxMessageHandler(fxNumber => {
+        if (fxNumber === null) {
+          return this._selectedTrack.selectedFx;
+        }
+
+        return this._selectedTrack.fx[fxNumber - 1] ?? null;
       }),
       new TransportMessageHandler(this._transport),
       new BooleanMessageHandler('/autorecarm', value => (this._isAutoRecArmEnabled = value)),
