@@ -1,7 +1,3 @@
-export interface ISendOscMessage {
-  (message: OscMessage): void;
-}
-
 export enum OscArgumentType {
   /** 32-bit Integer */
   INT = 'i',
