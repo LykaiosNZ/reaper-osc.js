@@ -48,6 +48,7 @@
     "docs": "typedoc --options ./typedoc.json",
     "run": "rm -rf dist && tsc && node .",
     "test": "rm -rf dist && tsc && jest",
+    "test:integration": "tsc && jest --config jest.integration.config.js --runInBand",
     "checkFormatting": "prettier --check ./src",
     "format": "prettier --write ./src"
   },

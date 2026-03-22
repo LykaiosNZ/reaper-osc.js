@@ -72,7 +72,20 @@ export abstract class Fx implements INotifyPropertyChanged {
   /** Open the UI of the FX */
   public abstract openUi(): void;
 
-  /** The name of the current preset, if any */
+  /**
+   * The name of the current preset.
+   *
+   * **Update behaviour varies by subclass:**
+   * - `DeviceSelectedFx` — updated in real time whenever the preset changes, because Reaper
+   *   sends `/fx/preset` in response to every preset navigation command.
+   * - `SelectedTrackFxSlot` and `TrackFx` — only updated during a sync burst
+   *   (`refreshControlSurfaces()`), because Reaper only sends `/fx/{n}/preset` and
+   *   `/track/{n}/fx/{m}/preset` as part of the full state refresh, not in response to
+   *   individual preset commands.
+   *
+   * If you need live preset feedback, use `DeviceSelectedFx` (via `selectedTrack.selectedFx`
+   * after calling `device.selectFx(n)` to point it at the desired slot).
+   */
   public get preset(): string {
     return this._preset;
   }
