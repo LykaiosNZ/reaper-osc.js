@@ -21,13 +21,13 @@ import {
 
 function makeTrack(): { track: SelectedTrack; sent: ReaperOscCommand[] } {
   const sent: ReaperOscCommand[] = [];
-  const track = new SelectedTrack(8, command => sent.push(command));
+  const track = new SelectedTrack(8, 0, 0, command => sent.push(command));
   return {track, sent};
 }
 
 test('has correct number of fx', () => {
   const expected = 4;
-  const track2 = new SelectedTrack(expected, () => null);
+  const track2 = new SelectedTrack(expected, 0, 0, () => null);
   expect(track2.fx.length).toBe(expected);
 });
 

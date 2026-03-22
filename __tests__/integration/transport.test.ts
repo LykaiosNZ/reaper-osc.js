@@ -202,11 +202,21 @@ describe('Transport', () => {
   });
 
   it('should set and report loop start', async () => {
-    // Reset to 0 first so we always get a change event when setting the target
-    reaper.transport.setLoopStart(0);
-    await waitForProperty(reaper.transport, 'loopStart', () => reaper.transport.loopStart, t => t < 0.5);
+    const initial = reaper.transport.loopStart;
+    // Pick a target that differs from the current value so we always get a change event
+    const target = Math.abs(initial - 2.0) < 0.5 ? 4.0 : 2.0;
 
-    const target = 2.0;
+    // Reaper silently adjusts loopEnd instead of loopStart when loopStart >= loopEnd.
+    // Ensure loopEnd is large enough to accept any loopStart we set.
+    if (reaper.transport.loopEnd < target + 1) {
+      reaper.transport.setLoopEnd(30.0);
+      await waitForProperty(
+        reaper.transport, 'loopEnd',
+        () => reaper.transport.loopEnd,
+        t => t >= 29.5,
+      );
+    }
+
     reaper.transport.setLoopStart(target);
     await waitForProperty(
       reaper.transport, 'loopStart',
@@ -215,14 +225,17 @@ describe('Transport', () => {
     );
 
     expect(reaper.transport.loopStart).toBeCloseTo(target, 0);
+
+    // Restore
+    reaper.transport.setLoopStart(initial);
+    await delay(200);
   });
 
   it('should set and report loop end', async () => {
-    // Reset to a value different from target first so we always get a change event
-    reaper.transport.setLoopEnd(5.0);
-    await waitForProperty(reaper.transport, 'loopEnd', () => reaper.transport.loopEnd, t => Math.abs(t - 5.0) < 0.5);
+    const initial = reaper.transport.loopEnd;
+    // Pick a target that differs from the current value so we always get a change event
+    const target = Math.abs(initial - 20.0) < 0.5 ? 10.0 : 20.0;
 
-    const target = 20.0;
     reaper.transport.setLoopEnd(target);
     await waitForProperty(
       reaper.transport, 'loopEnd',
@@ -231,6 +244,10 @@ describe('Transport', () => {
     );
 
     expect(reaper.transport.loopEnd).toBeCloseTo(target, 0);
+
+    // Restore
+    reaper.transport.setLoopEnd(initial);
+    await delay(200);
   });
 
   it('should fast-forward and report isFastForwarding', async () => {

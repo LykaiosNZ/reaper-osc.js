@@ -2,6 +2,8 @@
  * @module
  */
 import {TrackFx} from './Fx';
+import {TrackSend} from './Send';
+import {TrackReceive} from './Receive';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
 import {SetTrackSelect, SetTrackMute, ToggleTrackMute, SetTrackSolo, ToggleTrackSolo, SetTrackRecordArm, ToggleTrackRecordArm, SetTrackName, SetTrackPan, SetTrackPan2, SetTrackVolume, SetTrackVolumeDb, SetTrackMonitoringMode, ReaperOscCommand} from './Client/Commands';
@@ -57,18 +59,30 @@ export class Track implements INotifyPropertyChanged {
   private _vuRight = 0;
 
   private readonly _fx: TrackFx[] = [];
+  private readonly _sends: TrackSend[] = [];
+  private readonly _receives: TrackReceive[] = [];
   private readonly _send: SendCommand;
 
   /**
    * @param trackNumber The track's number in the current bank
    * @param numberOfFx The number of FX per FX bank
+   * @param numberOfSends The number of sends per track
+   * @param numberOfReceives The number of receives per track
    * @param send A callback used to send typed commands to Reaper
    */
-  constructor(public readonly trackNumber: number, numberOfFx: number, send: SendCommand) {
+  constructor(public readonly trackNumber: number, numberOfFx: number, numberOfSends: number, numberOfReceives: number, send: SendCommand) {
     this._send = send;
 
     for (let i = 0; i < numberOfFx; i++) {
       this._fx[i] = new TrackFx(trackNumber, i + 1, send);
+    }
+
+    for (let i = 0; i < numberOfSends; i++) {
+      this._sends[i] = new TrackSend(trackNumber, i + 1, send);
+    }
+
+    for (let i = 0; i < numberOfReceives; i++) {
+      this._receives[i] = new TrackReceive(trackNumber, i + 1, send);
     }
   }
 
@@ -81,9 +95,19 @@ export class Track implements INotifyPropertyChanged {
     this._send(SetTrackSelect(this.trackNumber, false));
   }
 
-  /** The track's current FX back */
+  /** The track's current FX bank */
   public get fx(): TrackFx[] {
     return this._fx;
+  }
+
+  /** The track's sends */
+  public get sends(): ReadonlyArray<TrackSend> {
+    return this._sends;
+  }
+
+  /** The track's receives */
+  public get receives(): ReadonlyArray<TrackReceive> {
+    return this._receives;
   }
 
   /**
@@ -113,6 +137,26 @@ export class Track implements INotifyPropertyChanged {
         if (event.trackNumber === this.trackNumber) {
           const fx = this._fx[event.fxNumber - 1];
           if (fx) fx.handleEvent(event);
+        }
+        break;
+      case 'track:send:name':
+      case 'track:send:volume':
+      case 'track:send:volumeStr':
+      case 'track:send:pan':
+      case 'track:send:panStr':
+        if (event.trackNumber === this.trackNumber) {
+          const send = this._sends[event.sendNumber - 1];
+          if (send) send.handleEvent(event);
+        }
+        break;
+      case 'track:recv:name':
+      case 'track:recv:volume':
+      case 'track:recv:volumeStr':
+      case 'track:recv:pan':
+      case 'track:recv:panStr':
+        if (event.trackNumber === this.trackNumber) {
+          const receive = this._receives[event.receiveNumber - 1];
+          if (receive) receive.handleEvent(event);
         }
         break;
     }

@@ -318,14 +318,12 @@ TRACK_PAN n/track/pan n/track/@/pan s/track/pan/str s/track/@/pan/str
 TRACK_PAN2 n/track/pan2 n/track/@/pan2 s/track/pan2/str s/track/@/pan2/str
 TRACK_PAN_MODE s/track/panmode s/track/@/panmode
 
-# TODO Track send
 TRACK_SEND_NAME s/track/send/@/name s/track/@/send/@/name
 TRACK_SEND_VOLUME n/track/send/@/volume n/track/@/send/@/volume
 TRACK_SEND_VOLUME s/track/send/@/volume/str s/track/@/send/@/volume/str
 TRACK_SEND_PAN n/track/send/@/pan n/track/@/send/@/pan
 TRACK_SEND_PAN s/track/send/@/pan/str s/track/@/send/@/pan/str
 
-# TODO Track Receive
 TRACK_RECV_NAME s/track/recv/@/name s/track/@/recv/@/name
 TRACK_RECV_VOLUME n/track/recv/@/volume n/track/@/recv/@/volume
 TRACK_RECV_VOLUME s/track/recv/@/volume/str s/track/@/recv/@/volume/str

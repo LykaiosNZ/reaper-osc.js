@@ -181,6 +181,38 @@ export function NextSelectedFxPreset(): NextSelectedFxPreset { return {type: 'se
 export interface PreviousSelectedFxPreset { type: 'selectedFx:preset:previous' }
 export function PreviousSelectedFxPreset(): PreviousSelectedFxPreset { return {type: 'selectedFx:preset:previous'}; }
 
+// --- Track Send Commands ---
+
+export interface SetTrackSendVolume { type: 'track:send:volume'; trackNumber: number; sendNumber: number; volume: number }
+export function SetTrackSendVolume(trackNumber: number, sendNumber: number, volume: number): SetTrackSendVolume { return {type: 'track:send:volume', trackNumber, sendNumber, volume}; }
+
+export interface SetTrackSendPan { type: 'track:send:pan'; trackNumber: number; sendNumber: number; pan: number }
+export function SetTrackSendPan(trackNumber: number, sendNumber: number, pan: number): SetTrackSendPan { return {type: 'track:send:pan', trackNumber, sendNumber, pan}; }
+
+// --- Track Receive Commands ---
+
+export interface SetTrackReceiveVolume { type: 'track:recv:volume'; trackNumber: number; receiveNumber: number; volume: number }
+export function SetTrackReceiveVolume(trackNumber: number, receiveNumber: number, volume: number): SetTrackReceiveVolume { return {type: 'track:recv:volume', trackNumber, receiveNumber, volume}; }
+
+export interface SetTrackReceivePan { type: 'track:recv:pan'; trackNumber: number; receiveNumber: number; pan: number }
+export function SetTrackReceivePan(trackNumber: number, receiveNumber: number, pan: number): SetTrackReceivePan { return {type: 'track:recv:pan', trackNumber, receiveNumber, pan}; }
+
+// --- Selected Track Send Commands ---
+
+export interface SetSelectedTrackSendVolume { type: 'selectedTrack:send:volume'; sendNumber: number; volume: number }
+export function SetSelectedTrackSendVolume(sendNumber: number, volume: number): SetSelectedTrackSendVolume { return {type: 'selectedTrack:send:volume', sendNumber, volume}; }
+
+export interface SetSelectedTrackSendPan { type: 'selectedTrack:send:pan'; sendNumber: number; pan: number }
+export function SetSelectedTrackSendPan(sendNumber: number, pan: number): SetSelectedTrackSendPan { return {type: 'selectedTrack:send:pan', sendNumber, pan}; }
+
+// --- Selected Track Receive Commands ---
+
+export interface SetSelectedTrackReceiveVolume { type: 'selectedTrack:recv:volume'; receiveNumber: number; volume: number }
+export function SetSelectedTrackReceiveVolume(receiveNumber: number, volume: number): SetSelectedTrackReceiveVolume { return {type: 'selectedTrack:recv:volume', receiveNumber, volume}; }
+
+export interface SetSelectedTrackReceivePan { type: 'selectedTrack:recv:pan'; receiveNumber: number; pan: number }
+export function SetSelectedTrackReceivePan(receiveNumber: number, pan: number): SetSelectedTrackReceivePan { return {type: 'selectedTrack:recv:pan', receiveNumber, pan}; }
+
 // --- Device Navigation Commands ---
 
 export interface SelectDeviceTrack { type: 'device:track:select'; index: number }
@@ -315,6 +347,18 @@ export type ReaperOscCommand =
   | SetSelectedFxOpenUi
   | NextSelectedFxPreset
   | PreviousSelectedFxPreset
+  // Track Sends
+  | SetTrackSendVolume
+  | SetTrackSendPan
+  // Track Receives
+  | SetTrackReceiveVolume
+  | SetTrackReceivePan
+  // Selected Track Sends
+  | SetSelectedTrackSendVolume
+  | SetSelectedTrackSendPan
+  // Selected Track Receives
+  | SetSelectedTrackReceiveVolume
+  | SetSelectedTrackReceivePan
   // Device Navigation
   | SelectDeviceTrack
   | NextDeviceTrack
@@ -410,6 +454,19 @@ export function commandToOscMessage(command: ReaperOscCommand): OscMessage {
     case 'selectedFx:openUi': return new BooleanMessage('/fx/openui', command.open);
     case 'selectedFx:preset:next': return new OscMessage('/fx/preset+');
     case 'selectedFx:preset:previous': return new OscMessage('/fx/preset-');
+
+    // Track sends
+    case 'track:send:volume': return new FloatMessage(`/track/${command.trackNumber}/send/${command.sendNumber}/volume`, command.volume);
+    case 'track:send:pan': return new FloatMessage(`/track/${command.trackNumber}/send/${command.sendNumber}/pan`, command.pan);
+    // Track receives
+    case 'track:recv:volume': return new FloatMessage(`/track/${command.trackNumber}/recv/${command.receiveNumber}/volume`, command.volume);
+    case 'track:recv:pan': return new FloatMessage(`/track/${command.trackNumber}/recv/${command.receiveNumber}/pan`, command.pan);
+    // Selected track sends
+    case 'selectedTrack:send:volume': return new FloatMessage(`/track/send/${command.sendNumber}/volume`, command.volume);
+    case 'selectedTrack:send:pan': return new FloatMessage(`/track/send/${command.sendNumber}/pan`, command.pan);
+    // Selected track receives
+    case 'selectedTrack:recv:volume': return new FloatMessage(`/track/recv/${command.receiveNumber}/volume`, command.volume);
+    case 'selectedTrack:recv:pan': return new FloatMessage(`/track/recv/${command.receiveNumber}/pan`, command.pan);
 
     // Device navigation
     case 'device:track:select': return new OscMessage(`/device/track/select/${command.index}`);

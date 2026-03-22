@@ -62,6 +62,10 @@ If you use a different project, it must satisfy the following requirements:
 - Track 1 must have at least two FX plugins loaded
 - The FX plugin in slot 1 must have at least two presets available for navigation
 
+**Sends and receives**
+- Track 1 must have at least one send configured (e.g. to a bus or reverb track)
+- Track 1 must have at least one receive configured (e.g. from another track)
+
 **Transport**
 - Transport stopped at the start of each run
 - Project long enough to seek to at least 20 seconds
