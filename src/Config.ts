@@ -45,6 +45,10 @@ export class ReaperConfiguration {
   numberOfSends = 4;
   /** Number of receives per track */
   numberOfReceives = 4;
+  /** Number of markers per bank */
+  numberOfMarkers = 8;
+  /** Number of regions per bank */
+  numberOfRegions = 8;
   /** Number of tracks per bank */
   numberOfTracks = 8;
   /** The address to send Reaper OSC messages to */

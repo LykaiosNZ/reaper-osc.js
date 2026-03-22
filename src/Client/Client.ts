@@ -12,6 +12,12 @@ import {
   // Transport
   PlayEvent, StopEvent, PauseEvent, RecordEvent, RewindEvent, FastForwardEvent, RepeatEvent,
   TimeChanged, BeatChanged, FramesChanged, LoopStartChanged, LoopEndChanged,
+  RewindByMarkerEvent, SetLoopEvent,
+  // Marker/Region
+  MarkerNameChanged, MarkerNumberChanged, MarkerTimeChanged,
+  RegionNameChanged, RegionNumberChanged, RegionTimeChanged, RegionLengthChanged,
+  LastMarkerNameChanged, LastMarkerNumberChanged, LastMarkerTimeChanged,
+  LastRegionNameChanged, LastRegionNumberChanged, LastRegionTimeChanged, LastRegionLengthChanged,
   // Track
   TrackMuteEvent, TrackSoloEvent, TrackRecordArmEvent, TrackSelectEvent, TrackNameChanged,
   TrackPanChanged, TrackPan2Changed, TrackPanModeChanged,
@@ -78,6 +84,17 @@ const EXACT_PARSERS = new Map<string, (msg: OscMessage) => ReaperOscEvent>([
   ['/frames/str', msg => FramesChanged(stringFrom(msg))],
   ['/loop/start/time', msg => LoopStartChanged(floatFrom(msg))],
   ['/loop/end/time', msg => LoopEndChanged(floatFrom(msg))],
+  ['/bymarker', msg => RewindByMarkerEvent(boolFrom(msg))],
+  ['/editloop', msg => SetLoopEvent(boolFrom(msg))],
+  // Last marker
+  ['/lastmarker/name', msg => LastMarkerNameChanged(stringFrom(msg))],
+  ['/lastmarker/number/str', msg => LastMarkerNumberChanged(stringFrom(msg))],
+  ['/lastmarker/time', msg => LastMarkerTimeChanged(floatFrom(msg))],
+  // Last region
+  ['/lastregion/name', msg => LastRegionNameChanged(stringFrom(msg))],
+  ['/lastregion/number/str', msg => LastRegionNumberChanged(stringFrom(msg))],
+  ['/lastregion/time', msg => LastRegionTimeChanged(floatFrom(msg))],
+  ['/lastregion/length', msg => LastRegionLengthChanged(floatFrom(msg))],
 ]);
 
 // --- Track property suffix parsers ---
@@ -200,7 +217,46 @@ const SELECTED_FX_PARSERS = new Map<string, SelectedFxParser>([
   ['preset', m => SelectedFxPresetChanged(stringFrom(m))],
 ]);
 
+// --- Marker suffix parsers (for /marker/N/suffix) ---
+
+type IndexedMarkerParser = (slotIndex: number, msg: OscMessage) => ReaperOscEvent;
+
+const MARKER_PARSERS = new Map<string, IndexedMarkerParser>([
+  ['name', (n, m) => MarkerNameChanged(n, stringFrom(m))],
+  ['number/str', (n, m) => MarkerNumberChanged(n, stringFrom(m))],
+  ['time', (n, m) => MarkerTimeChanged(n, floatFrom(m))],
+]);
+
+// --- Region suffix parsers (for /region/N/suffix) ---
+
+type IndexedRegionParser = (slotIndex: number, msg: OscMessage) => ReaperOscEvent;
+
+const REGION_PARSERS = new Map<string, IndexedRegionParser>([
+  ['name', (n, m) => RegionNameChanged(n, stringFrom(m))],
+  ['number/str', (n, m) => RegionNumberChanged(n, stringFrom(m))],
+  ['time', (n, m) => RegionTimeChanged(n, floatFrom(m))],
+  ['length', (n, m) => RegionLengthChanged(n, floatFrom(m))],
+]);
+
 // --- Message parsing ---
+
+function parseMarkerMessage(msg: OscMessage): ReaperOscEvent | null {
+  const parts = msg.addressParts;
+  const slotIndex = parseInt(parts[1]);
+  if (isNaN(slotIndex)) return null;
+  const suffix = parts.slice(2).join('/');
+  const parser = MARKER_PARSERS.get(suffix);
+  return parser ? parser(slotIndex, msg) : null;
+}
+
+function parseRegionMessage(msg: OscMessage): ReaperOscEvent | null {
+  const parts = msg.addressParts;
+  const slotIndex = parseInt(parts[1]);
+  if (isNaN(slotIndex)) return null;
+  const suffix = parts.slice(2).join('/');
+  const parser = REGION_PARSERS.get(suffix);
+  return parser ? parser(slotIndex, msg) : null;
+}
 
 function parseTrackMessage(msg: OscMessage): ReaperOscEvent | null {
   const parts = msg.addressParts;
@@ -280,6 +336,16 @@ export function parseMessage(msg: OscMessage): ReaperOscEvent {
 
   if (firstPart === 'fx') {
     const event = parseFxMessage(msg);
+    if (event) return event;
+  }
+
+  if (firstPart === 'marker') {
+    const event = parseMarkerMessage(msg);
+    if (event) return event;
+  }
+
+  if (firstPart === 'region') {
+    const event = parseRegionMessage(msg);
     if (event) return event;
   }
 

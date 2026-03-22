@@ -4,7 +4,9 @@
  */
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent} from './Client/Events';
-import {SetBeat, SetFrames, SetTime, Pause, Play, ToggleRecord, SetLoopEnd, SetLoopStart, SetFastForward, SetRewind, Stop, ToggleRepeat, ReaperOscCommand} from './Client/Commands';
+import {SetBeat, SetFrames, SetTime, Pause, Play, ToggleRecord, SetLoopEnd, SetLoopStart, SetFastForward, SetRewind, Stop, ToggleRepeat, ToggleRewindByMarker, ToggleSetLoop, GotoMarker, GotoRegion, ReaperOscCommand} from './Client/Commands';
+import {LastMarker} from './Marker';
+import {LastRegion} from './Region';
 
 type SendCommand = (command: ReaperOscCommand) => void;
 
@@ -38,6 +40,12 @@ export class Transport implements INotifyPropertyChanged {
   @notify<Transport>('isStopped')
   private _isStopped = false;
 
+  @notify<Transport>('isRewindByMarker')
+  private _isRewindByMarker = false;
+
+  @notify<Transport>('isSetLoop')
+  private _isSetLoop = false;
+
   @notify<Transport>('loopEnd')
   private _loopEnd = 0;
 
@@ -46,6 +54,9 @@ export class Transport implements INotifyPropertyChanged {
 
   @notify<Transport>('time')
   private _time = 0;
+
+  private readonly _lastMarker = new LastMarker();
+  private readonly _lastRegion = new LastRegion();
 
   private readonly _send: SendCommand;
 
@@ -101,6 +112,26 @@ export class Transport implements INotifyPropertyChanged {
     return this._isRepeatEnabled;
   }
 
+  /** Indicates whether rewind-to-previous-marker is enabled */
+  public get isRewindByMarker(): boolean {
+    return this._isRewindByMarker;
+  }
+
+  /** Indicates whether the set-loop-points mode is enabled */
+  public get isSetLoop(): boolean {
+    return this._isSetLoop;
+  }
+
+  /** The most recently passed marker (populated during playback and from the sync burst) */
+  public get lastMarker(): LastMarker {
+    return this._lastMarker;
+  }
+
+  /** The most recently entered region (populated during playback and from the sync burst) */
+  public get lastRegion(): LastRegion {
+    return this._lastRegion;
+  }
+
   /** Indicates the end time of the loop (in seconds) */
   public get loopEnd() : number {
     return this._loopEnd;
@@ -134,7 +165,11 @@ export class Transport implements INotifyPropertyChanged {
       case 'transport:frames': this._frames = event.frames; break;
       case 'transport:loopStart': this._loopStart = event.time; break;
       case 'transport:loopEnd': this._loopEnd = event.time; break;
+      case 'transport:rewindByMarker': this._isRewindByMarker = event.enabled; break;
+      case 'transport:setLoop': this._isSetLoop = event.enabled; break;
     }
+    this._lastMarker.handleEvent(event);
+    this._lastRegion.handleEvent(event);
   }
 
   /** Jumps to the specified beat (absolute)
@@ -232,6 +267,32 @@ export class Transport implements INotifyPropertyChanged {
   /** Toggle repeat on or off */
   public toggleRepeat(): void {
     this._send(ToggleRepeat());
+  }
+
+  /** Toggle rewind-to-previous-marker on or off */
+  public toggleRewindByMarker(): void {
+    this._send(ToggleRewindByMarker());
+  }
+
+  /** Toggle the set-loop-points mode on or off */
+  public toggleSetLoop(): void {
+    this._send(ToggleSetLoop());
+  }
+
+  /**
+   * Jump to the marker with the given user-assigned number (as shown in Reaper's UI).
+   * @param markerNumber The user-assigned marker number to jump to
+   */
+  public gotoMarker(markerNumber: number): void {
+    this._send(GotoMarker(markerNumber));
+  }
+
+  /**
+   * Jump to the region with the given user-assigned number (as shown in Reaper's UI).
+   * @param regionNumber The user-assigned region number to jump to
+   */
+  public gotoRegion(regionNumber: number): void {
+    this._send(GotoRegion(regionNumber));
   }
 }
 

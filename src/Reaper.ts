@@ -8,6 +8,8 @@ import {Transport} from './Transport';
 import {ViewPort} from './ViewPort';
 import {DeviceState} from './Device';
 import {SelectedTrack} from './SelectedTrack';
+import {Marker} from './Marker';
+import {Region} from './Region';
 import {ReaperOscClient} from './Client/Client';
 import {ToggleAutoRecordArm, ToggleMetronome, ResetSolos, TriggerAction} from './Client/Commands';
 import {ReaperConfiguration} from './Config';
@@ -45,6 +47,8 @@ export class Reaper implements INotifyPropertyChanged {
   private readonly _masterTrack: Track;
 
   private readonly _device: DeviceState;
+  private readonly _markers: Marker[] = [];
+  private readonly _regions: Region[] = [];
   private readonly _selectedTrack: SelectedTrack;
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport;
@@ -77,6 +81,14 @@ export class Reaper implements INotifyPropertyChanged {
       this._tracks[i] = new Track(i + 1, resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
     }
 
+    for (let i = 0; i < resolvedConfig.numberOfMarkers; i++) {
+      this._markers[i] = new Marker(i + 1, send);
+    }
+
+    for (let i = 0; i < resolvedConfig.numberOfRegions; i++) {
+      this._regions[i] = new Region(i + 1, send);
+    }
+
     // Track whether the last parsed event was known (for afterMessageReceived)
     let lastEventWasKnown = false;
 
@@ -100,6 +112,14 @@ export class Reaper implements INotifyPropertyChanged {
         } else {
           this._tracks[trackNumber - 1]?.handleEvent(event);
         }
+      }
+
+      if (event.type === 'marker:name' || event.type === 'marker:number' || event.type === 'marker:time') {
+        this._markers[(event as {slotIndex: number}).slotIndex - 1]?.handleEvent(event);
+      }
+
+      if (event.type === 'region:name' || event.type === 'region:number' || event.type === 'region:time' || event.type === 'region:length') {
+        this._regions[(event as {slotIndex: number}).slotIndex - 1]?.handleEvent(event);
       }
     });
 
@@ -143,6 +163,16 @@ export class Reaper implements INotifyPropertyChanged {
   /** The master track */
   public get master(): Track {
     return this._masterTrack;
+  }
+
+  /** The current bank of markers */
+  public get markers(): ReadonlyArray<Marker> {
+    return this._markers;
+  }
+
+  /** The current bank of regions */
+  public get regions(): ReadonlyArray<Region> {
+    return this._regions;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

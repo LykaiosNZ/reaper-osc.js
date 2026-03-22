@@ -262,6 +262,64 @@ export function SelectedTrackReceivePanChanged(receiveNumber: number, pan: numbe
 export interface SelectedTrackReceivePanStrChanged { type: 'selectedTrack:recv:panStr'; receiveNumber: number; panStr: string }
 export function SelectedTrackReceivePanStrChanged(receiveNumber: number, panStr: string): SelectedTrackReceivePanStrChanged { return {type: 'selectedTrack:recv:panStr', receiveNumber, panStr}; }
 
+// --- Marker/Region Transport Events ---
+
+export interface RewindByMarkerEvent { type: 'transport:rewindByMarker'; enabled: boolean }
+export function RewindByMarkerEvent(enabled: boolean): RewindByMarkerEvent { return {type: 'transport:rewindByMarker', enabled}; }
+
+export interface SetLoopEvent { type: 'transport:setLoop'; enabled: boolean }
+export function SetLoopEvent(enabled: boolean): SetLoopEvent { return {type: 'transport:setLoop', enabled}; }
+
+// --- Banked Marker Events ---
+
+export interface MarkerNameChanged { type: 'marker:name'; slotIndex: number; name: string }
+export function MarkerNameChanged(slotIndex: number, name: string): MarkerNameChanged { return {type: 'marker:name', slotIndex, name}; }
+
+export interface MarkerNumberChanged { type: 'marker:number'; slotIndex: number; number: string }
+export function MarkerNumberChanged(slotIndex: number, number: string): MarkerNumberChanged { return {type: 'marker:number', slotIndex, number}; }
+
+export interface MarkerTimeChanged { type: 'marker:time'; slotIndex: number; time: number }
+export function MarkerTimeChanged(slotIndex: number, time: number): MarkerTimeChanged { return {type: 'marker:time', slotIndex, time}; }
+
+// --- Banked Region Events ---
+
+export interface RegionNameChanged { type: 'region:name'; slotIndex: number; name: string }
+export function RegionNameChanged(slotIndex: number, name: string): RegionNameChanged { return {type: 'region:name', slotIndex, name}; }
+
+export interface RegionNumberChanged { type: 'region:number'; slotIndex: number; number: string }
+export function RegionNumberChanged(slotIndex: number, number: string): RegionNumberChanged { return {type: 'region:number', slotIndex, number}; }
+
+export interface RegionTimeChanged { type: 'region:time'; slotIndex: number; time: number }
+export function RegionTimeChanged(slotIndex: number, time: number): RegionTimeChanged { return {type: 'region:time', slotIndex, time}; }
+
+export interface RegionLengthChanged { type: 'region:length'; slotIndex: number; length: number }
+export function RegionLengthChanged(slotIndex: number, length: number): RegionLengthChanged { return {type: 'region:length', slotIndex, length}; }
+
+// --- Last Marker Events ---
+
+export interface LastMarkerNameChanged { type: 'lastMarker:name'; name: string }
+export function LastMarkerNameChanged(name: string): LastMarkerNameChanged { return {type: 'lastMarker:name', name}; }
+
+export interface LastMarkerNumberChanged { type: 'lastMarker:number'; number: string }
+export function LastMarkerNumberChanged(number: string): LastMarkerNumberChanged { return {type: 'lastMarker:number', number}; }
+
+export interface LastMarkerTimeChanged { type: 'lastMarker:time'; time: number }
+export function LastMarkerTimeChanged(time: number): LastMarkerTimeChanged { return {type: 'lastMarker:time', time}; }
+
+// --- Last Region Events ---
+
+export interface LastRegionNameChanged { type: 'lastRegion:name'; name: string }
+export function LastRegionNameChanged(name: string): LastRegionNameChanged { return {type: 'lastRegion:name', name}; }
+
+export interface LastRegionNumberChanged { type: 'lastRegion:number'; number: string }
+export function LastRegionNumberChanged(number: string): LastRegionNumberChanged { return {type: 'lastRegion:number', number}; }
+
+export interface LastRegionTimeChanged { type: 'lastRegion:time'; time: number }
+export function LastRegionTimeChanged(time: number): LastRegionTimeChanged { return {type: 'lastRegion:time', time}; }
+
+export interface LastRegionLengthChanged { type: 'lastRegion:length'; length: number }
+export function LastRegionLengthChanged(length: number): LastRegionLengthChanged { return {type: 'lastRegion:length', length}; }
+
 // --- Unknown Event ---
 
 export interface UnknownEvent { type: 'unknown'; message: OscMessage }
@@ -286,6 +344,8 @@ export type ReaperOscEvent =
   | FramesChanged
   | LoopStartChanged
   | LoopEndChanged
+  | RewindByMarkerEvent
+  | SetLoopEvent
   // Track
   | TrackMuteEvent
   | TrackSoloEvent
@@ -355,5 +415,23 @@ export type ReaperOscEvent =
   | SelectedTrackReceiveVolumeStrChanged
   | SelectedTrackReceivePanChanged
   | SelectedTrackReceivePanStrChanged
+  // Banked Markers
+  | MarkerNameChanged
+  | MarkerNumberChanged
+  | MarkerTimeChanged
+  // Banked Regions
+  | RegionNameChanged
+  | RegionNumberChanged
+  | RegionTimeChanged
+  | RegionLengthChanged
+  // Last Marker
+  | LastMarkerNameChanged
+  | LastMarkerNumberChanged
+  | LastMarkerTimeChanged
+  // Last Region
+  | LastRegionNameChanged
+  | LastRegionNumberChanged
+  | LastRegionTimeChanged
+  | LastRegionLengthChanged
   // Unknown
   | UnknownEvent;

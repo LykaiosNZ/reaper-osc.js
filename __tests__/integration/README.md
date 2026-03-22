@@ -43,7 +43,9 @@ In Reaper, open **Preferences → Control/OSC/Web** and add a control surface wi
 
 `Listen port` is where Reaper accepts incoming commands. `Device IP`/`Device port` is where Reaper sends feedback to.
 
-The OSC pattern file must be set to `reaper-osc-js.ReaperOSC` (found in the `patterns/` directory). The bank size in the pattern must match the library default of **8 tracks per bank**.
+The OSC pattern file must be set to `reaper-osc-js.ReaperOSC` (found in the `patterns/` directory). The bank sizes in the pattern must match the library defaults: **8 tracks**, **8 markers**, and **8 regions** per bank.
+
+After copying or updating the pattern file, reload the control surface (click **Edit** on the surface then **OK**, or restart Reaper) so Reaper picks up any changes to the device counts.
 
 ### Reaper project
 
@@ -70,3 +72,8 @@ If you use a different project, it must satisfy the following requirements:
 - Transport stopped at the start of each run
 - Project long enough to seek to at least 20 seconds
 - Repeat/loop state does not matter — tests toggle and restore both
+
+**Markers and regions**
+- At least 2 markers in the project (for bank slot 0 and 1 to be populated)
+- At least 1 region in the project
+- Marker/region tests gracefully skip if `DEVICE_MARKER_COUNT`/`DEVICE_REGION_COUNT` are 0 in the pattern file, but to fully exercise them, the counts must be set to 8
