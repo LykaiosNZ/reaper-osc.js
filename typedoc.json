@@ -9,17 +9,10 @@
     ],
     "excludePrivate": true,
     "excludeExternals": true,
-    "plugin": "typedoc-neo-theme",
-    "theme": "./node_modules/typedoc-neo-theme/bin/default",
-    "highlightTheme": "github-light",
-    "source": [
-        {
-            "path": "https://github.com/LykaiosNZ/reaper-osc.js/blob/main/src/",
-            "line": "L"
-        }
-    ],
-    "links": [{
-        "label": "Source",
-        "url": "https://github.com/LykaiosNZ/reaper-osc.js/"
-      }]
+    "plugin": ["typedoc-github-theme"],
+    "highlightLanguages": ["typescript", "javascript"],
+    "sourceLinkTemplate": "https://github.com/LykaiosNZ/reaper-osc.js/blob/main/{path}#L{line}",
+    "navigationLinks": {
+        "Source": "https://github.com/LykaiosNZ/reaper-osc.js/"
+    }
 }
