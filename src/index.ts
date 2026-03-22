@@ -18,6 +18,7 @@ export * from './Fx';
 export * from './Send';
 export * from './Receive';
 export * from './Device';
+export * from './ViewPort';
 export * from './SelectedTrack';
 
 export * from './Messages';

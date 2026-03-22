@@ -213,6 +213,48 @@ export function SetSelectedTrackReceiveVolume(receiveNumber: number, volume: num
 export interface SetSelectedTrackReceivePan { type: 'selectedTrack:recv:pan'; receiveNumber: number; pan: number }
 export function SetSelectedTrackReceivePan(receiveNumber: number, pan: number): SetSelectedTrackReceivePan { return {type: 'selectedTrack:recv:pan', receiveNumber, pan}; }
 
+// --- Viewport Scroll Commands (boolean: held, like rewind/forward) ---
+
+export interface SetScrollLeft { type: 'viewport:scroll:left'; active: boolean }
+export function SetScrollLeft(active: boolean): SetScrollLeft { return {type: 'viewport:scroll:left', active}; }
+
+export interface SetScrollRight { type: 'viewport:scroll:right'; active: boolean }
+export function SetScrollRight(active: boolean): SetScrollRight { return {type: 'viewport:scroll:right', active}; }
+
+export interface SetScrollUp { type: 'viewport:scroll:up'; active: boolean }
+export function SetScrollUp(active: boolean): SetScrollUp { return {type: 'viewport:scroll:up', active}; }
+
+export interface SetScrollDown { type: 'viewport:scroll:down'; active: boolean }
+export function SetScrollDown(active: boolean): SetScrollDown { return {type: 'viewport:scroll:down', active}; }
+
+// --- Viewport Zoom Commands (boolean: held) ---
+
+export interface SetZoomInX { type: 'viewport:zoom:in:x'; active: boolean }
+export function SetZoomInX(active: boolean): SetZoomInX { return {type: 'viewport:zoom:in:x', active}; }
+
+export interface SetZoomOutX { type: 'viewport:zoom:out:x'; active: boolean }
+export function SetZoomOutX(active: boolean): SetZoomOutX { return {type: 'viewport:zoom:out:x', active}; }
+
+export interface SetZoomInY { type: 'viewport:zoom:in:y'; active: boolean }
+export function SetZoomInY(active: boolean): SetZoomInY { return {type: 'viewport:zoom:in:y', active}; }
+
+export interface SetZoomOutY { type: 'viewport:zoom:out:y'; active: boolean }
+export function SetZoomOutY(active: boolean): SetZoomOutY { return {type: 'viewport:zoom:out:y', active}; }
+
+// --- Viewport Scroll/Zoom Commands (rotary: positive = right/down/in, negative = left/up/out) ---
+
+export interface ScrollX { type: 'viewport:scrollX'; value: number }
+export function ScrollX(value: number): ScrollX { return {type: 'viewport:scrollX', value}; }
+
+export interface ScrollY { type: 'viewport:scrollY'; value: number }
+export function ScrollY(value: number): ScrollY { return {type: 'viewport:scrollY', value}; }
+
+export interface ZoomX { type: 'viewport:zoomX'; value: number }
+export function ZoomX(value: number): ZoomX { return {type: 'viewport:zoomX', value}; }
+
+export interface ZoomY { type: 'viewport:zoomY'; value: number }
+export function ZoomY(value: number): ZoomY { return {type: 'viewport:zoomY', value}; }
+
 // --- Device Navigation Commands ---
 
 export interface SelectDeviceTrack { type: 'device:track:select'; index: number }
@@ -359,6 +401,21 @@ export type ReaperOscCommand =
   // Selected Track Receives
   | SetSelectedTrackReceiveVolume
   | SetSelectedTrackReceivePan
+  // Viewport Scroll (boolean)
+  | SetScrollLeft
+  | SetScrollRight
+  | SetScrollUp
+  | SetScrollDown
+  // Viewport Zoom (boolean)
+  | SetZoomInX
+  | SetZoomOutX
+  | SetZoomInY
+  | SetZoomOutY
+  // Viewport Scroll/Zoom (rotary)
+  | ScrollX
+  | ScrollY
+  | ZoomX
+  | ZoomY
   // Device Navigation
   | SelectDeviceTrack
   | NextDeviceTrack
@@ -467,6 +524,22 @@ export function commandToOscMessage(command: ReaperOscCommand): OscMessage {
     // Selected track receives
     case 'selectedTrack:recv:volume': return new FloatMessage(`/track/recv/${command.receiveNumber}/volume`, command.volume);
     case 'selectedTrack:recv:pan': return new FloatMessage(`/track/recv/${command.receiveNumber}/pan`, command.pan);
+
+    // Viewport scroll (boolean)
+    case 'viewport:scroll:left': return new BooleanMessage('/scroll/x/-', command.active);
+    case 'viewport:scroll:right': return new BooleanMessage('/scroll/x/+', command.active);
+    case 'viewport:scroll:up': return new BooleanMessage('/scroll/y/-', command.active);
+    case 'viewport:scroll:down': return new BooleanMessage('/scroll/y/+', command.active);
+    // Viewport zoom (boolean)
+    case 'viewport:zoom:in:x': return new BooleanMessage('/zoom/x/+', command.active);
+    case 'viewport:zoom:out:x': return new BooleanMessage('/zoom/x/-', command.active);
+    case 'viewport:zoom:in:y': return new BooleanMessage('/zoom/y/+', command.active);
+    case 'viewport:zoom:out:y': return new BooleanMessage('/zoom/y/-', command.active);
+    // Viewport scroll/zoom (rotary)
+    case 'viewport:scrollX': return new FloatMessage('/scroll/x', command.value);
+    case 'viewport:scrollY': return new FloatMessage('/scroll/y', command.value);
+    case 'viewport:zoomX': return new FloatMessage('/zoom/x', command.value);
+    case 'viewport:zoomY': return new FloatMessage('/zoom/y', command.value);
 
     // Device navigation
     case 'device:track:select': return new OscMessage(`/device/track/select/${command.index}`);

@@ -212,7 +212,6 @@ DEVICE_ROTARY_CENTER 0
 # The default REAPER OSC pattern configuration follows. To create a custom 
 # configuration, copy this file and edit the copy.
 
-# TODO Viewport
 SCROLL_X- b/scroll/x/- r/scroll/x
 SCROLL_X+ b/scroll/x/+ r/scroll/x
 SCROLL_Y- b/scroll/y/- r/scroll/y
