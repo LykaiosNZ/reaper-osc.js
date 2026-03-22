@@ -5,6 +5,7 @@
 import {OscMessage} from './Messages';
 import {Track} from './Tracks';
 import {Transport} from './Transport';
+import {ViewPort} from './ViewPort';
 import {DeviceState} from './Device';
 import {SelectedTrack} from './SelectedTrack';
 import {ReaperOscClient} from './Client/Client';
@@ -47,6 +48,7 @@ export class Reaper implements INotifyPropertyChanged {
   private readonly _selectedTrack: SelectedTrack;
   private readonly _tracks: Track[] = [];
   private readonly _transport: Transport;
+  private readonly _viewport: ViewPort;
 
   constructor(config?: ReaperConfiguration);
   constructor(client: ReaperOscClient, config?: ReaperConfiguration);
@@ -67,6 +69,7 @@ export class Reaper implements INotifyPropertyChanged {
 
     this._device = new DeviceState(send);
     this._transport = new Transport(send);
+    this._viewport = new ViewPort(send);
     this._selectedTrack = new SelectedTrack(resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
     this._masterTrack = new Track(0, resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
 
@@ -204,6 +207,11 @@ export class Reaper implements INotifyPropertyChanged {
   /** Transport controls */
   public get transport(): Transport {
     return this._transport;
+  }
+
+  /** Arrange-view scroll and zoom controls */
+  public get viewport(): ViewPort {
+    return this._viewport;
   }
 
   /**
