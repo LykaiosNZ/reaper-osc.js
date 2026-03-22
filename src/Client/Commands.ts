@@ -213,6 +213,45 @@ export function SetSelectedTrackReceiveVolume(receiveNumber: number, volume: num
 export interface SetSelectedTrackReceivePan { type: 'selectedTrack:recv:pan'; receiveNumber: number; pan: number }
 export function SetSelectedTrackReceivePan(receiveNumber: number, pan: number): SetSelectedTrackReceivePan { return {type: 'selectedTrack:recv:pan', receiveNumber, pan}; }
 
+// --- Marker/Region Transport Commands ---
+
+export interface ToggleRewindByMarker { type: 'transport:rewindByMarker:toggle' }
+export function ToggleRewindByMarker(): ToggleRewindByMarker { return {type: 'transport:rewindByMarker:toggle'}; }
+
+export interface ToggleSetLoop { type: 'transport:setLoop:toggle' }
+export function ToggleSetLoop(): ToggleSetLoop { return {type: 'transport:setLoop:toggle'}; }
+
+export interface GotoMarker { type: 'transport:gotoMarker'; markerNumber: number }
+export function GotoMarker(markerNumber: number): GotoMarker { return {type: 'transport:gotoMarker', markerNumber}; }
+
+export interface GotoRegion { type: 'transport:gotoRegion'; regionNumber: number }
+export function GotoRegion(regionNumber: number): GotoRegion { return {type: 'transport:gotoRegion', regionNumber}; }
+
+// --- Marker Write-by-ID Commands ---
+
+export interface SetMarkerName { type: 'markerById:name'; id: number; name: string }
+export function SetMarkerName(id: number, name: string): SetMarkerName { return {type: 'markerById:name', id, name}; }
+
+export interface SetMarkerTime { type: 'markerById:time'; id: number; time: number }
+export function SetMarkerTime(id: number, time: number): SetMarkerTime { return {type: 'markerById:time', id, time}; }
+
+export interface SetMarkerNumber { type: 'markerById:number'; id: number; number: number }
+export function SetMarkerNumber(id: number, number: number): SetMarkerNumber { return {type: 'markerById:number', id, number}; }
+
+// --- Region Write-by-ID Commands ---
+
+export interface SetRegionName { type: 'regionById:name'; id: number; name: string }
+export function SetRegionName(id: number, name: string): SetRegionName { return {type: 'regionById:name', id, name}; }
+
+export interface SetRegionTime { type: 'regionById:time'; id: number; time: number }
+export function SetRegionTime(id: number, time: number): SetRegionTime { return {type: 'regionById:time', id, time}; }
+
+export interface SetRegionLength { type: 'regionById:length'; id: number; length: number }
+export function SetRegionLength(id: number, length: number): SetRegionLength { return {type: 'regionById:length', id, length}; }
+
+export interface SetRegionNumber { type: 'regionById:number'; id: number; number: number }
+export function SetRegionNumber(id: number, number: number): SetRegionNumber { return {type: 'regionById:number', id, number}; }
+
 // --- Viewport Scroll Commands (boolean: held, like rewind/forward) ---
 
 export interface SetScrollLeft { type: 'viewport:scroll:left'; active: boolean }
@@ -401,6 +440,20 @@ export type ReaperOscCommand =
   // Selected Track Receives
   | SetSelectedTrackReceiveVolume
   | SetSelectedTrackReceivePan
+  // Marker/Region Transport
+  | ToggleRewindByMarker
+  | ToggleSetLoop
+  | GotoMarker
+  | GotoRegion
+  // Marker Write-by-ID
+  | SetMarkerName
+  | SetMarkerTime
+  | SetMarkerNumber
+  // Region Write-by-ID
+  | SetRegionName
+  | SetRegionTime
+  | SetRegionLength
+  | SetRegionNumber
   // Viewport Scroll (boolean)
   | SetScrollLeft
   | SetScrollRight
@@ -524,6 +577,21 @@ export function commandToOscMessage(command: ReaperOscCommand): OscMessage {
     // Selected track receives
     case 'selectedTrack:recv:volume': return new FloatMessage(`/track/recv/${command.receiveNumber}/volume`, command.volume);
     case 'selectedTrack:recv:pan': return new FloatMessage(`/track/recv/${command.receiveNumber}/pan`, command.pan);
+
+    // Marker/Region transport
+    case 'transport:rewindByMarker:toggle': return new OscMessage('/bymarker');
+    case 'transport:setLoop:toggle': return new OscMessage('/editloop');
+    case 'transport:gotoMarker': return new IntegerMessage('/marker', command.markerNumber);
+    case 'transport:gotoRegion': return new IntegerMessage('/region', command.regionNumber);
+    // Marker write-by-ID
+    case 'markerById:name': return new StringMessage(`/marker_id/${command.id}/name`, command.name);
+    case 'markerById:time': return new FloatMessage(`/marker_id/${command.id}/time`, command.time);
+    case 'markerById:number': return new IntegerMessage(`/marker_id/${command.id}/number`, command.number);
+    // Region write-by-ID
+    case 'regionById:name': return new StringMessage(`/region_id/${command.id}/name`, command.name);
+    case 'regionById:time': return new FloatMessage(`/region_id/${command.id}/time`, command.time);
+    case 'regionById:length': return new FloatMessage(`/region_id/${command.id}/length`, command.length);
+    case 'regionById:number': return new IntegerMessage(`/region_id/${command.id}/number`, command.number);
 
     // Viewport scroll (boolean)
     case 'viewport:scroll:left': return new BooleanMessage('/scroll/x/-', command.active);

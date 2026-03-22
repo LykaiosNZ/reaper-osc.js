@@ -33,8 +33,8 @@ DEVICE_RECEIVE_COUNT 4
 DEVICE_FX_COUNT 8
 DEVICE_FX_PARAM_COUNT 16
 DEVICE_FX_INST_PARAM_COUNT 16
-DEVICE_MARKER_COUNT 0
-DEVICE_REGION_COUNT 0
+DEVICE_MARKER_COUNT 8
+DEVICE_REGION_COUNT 8
 
 # ----------------------------------------------------------------
 
@@ -242,7 +242,6 @@ ANY_SOLO b/anysolo
 REWIND b/rewind
 FORWARD b/forward
 
-# TODO Markers
 REWIND_FORWARD_BYMARKER t/bymarker
 REWIND_FORWARD_SETLOOP t/editloop
 GOTO_MARKER i/marker t/marker/@
@@ -255,7 +254,6 @@ SCRUB r/scrub
 PLAY_RATE n/playrate f/playrate/raw r/playrate/rotary s/playrate/str
 TEMPO n/tempo f/tempo/raw r/tempo/rotary s/tempo/str
 
-# TODO Markers
 # writing a marker or region time may change its index -- you should use the *ID_ versions below if needed
 MARKER_NAME s/marker/@/name
 MARKER_NUMBER s/marker/@/number/str
@@ -272,7 +270,6 @@ LAST_REGION_NUMBER s/lastregion/number/str
 LAST_REGION_TIME f/lastregion/time
 LAST_REGION_LENGTH f/lastregion/length
 
-# TODO Markers
 # these are write-only, ID is the "NUMBER" field from above -- if not found, creates the marker/region
 MARKERID_NAME s/marker_id/@/name
 MARKERID_TIME f/marker_id/@/time

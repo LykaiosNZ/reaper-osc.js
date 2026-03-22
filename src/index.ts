@@ -19,6 +19,8 @@ export * from './Send';
 export * from './Receive';
 export * from './Device';
 export * from './ViewPort';
+export * from './Marker';
+export * from './Region';
 export * from './SelectedTrack';
 
 export * from './Messages';
