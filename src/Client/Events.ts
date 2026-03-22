@@ -194,6 +194,74 @@ export function SelectedFxOpenUiEvent(open: boolean): SelectedFxOpenUiEvent { re
 export interface SelectedFxPresetChanged { type: 'selectedFx:preset'; preset: string }
 export function SelectedFxPresetChanged(preset: string): SelectedFxPresetChanged { return {type: 'selectedFx:preset', preset}; }
 
+// --- Track Send Events ---
+
+export interface TrackSendNameChanged { type: 'track:send:name'; trackNumber: number; sendNumber: number; name: string }
+export function TrackSendNameChanged(trackNumber: number, sendNumber: number, name: string): TrackSendNameChanged { return {type: 'track:send:name', trackNumber, sendNumber, name}; }
+
+export interface TrackSendVolumeChanged { type: 'track:send:volume'; trackNumber: number; sendNumber: number; volume: number }
+export function TrackSendVolumeChanged(trackNumber: number, sendNumber: number, volume: number): TrackSendVolumeChanged { return {type: 'track:send:volume', trackNumber, sendNumber, volume}; }
+
+export interface TrackSendVolumeStrChanged { type: 'track:send:volumeStr'; trackNumber: number; sendNumber: number; volumeStr: string }
+export function TrackSendVolumeStrChanged(trackNumber: number, sendNumber: number, volumeStr: string): TrackSendVolumeStrChanged { return {type: 'track:send:volumeStr', trackNumber, sendNumber, volumeStr}; }
+
+export interface TrackSendPanChanged { type: 'track:send:pan'; trackNumber: number; sendNumber: number; pan: number }
+export function TrackSendPanChanged(trackNumber: number, sendNumber: number, pan: number): TrackSendPanChanged { return {type: 'track:send:pan', trackNumber, sendNumber, pan}; }
+
+export interface TrackSendPanStrChanged { type: 'track:send:panStr'; trackNumber: number; sendNumber: number; panStr: string }
+export function TrackSendPanStrChanged(trackNumber: number, sendNumber: number, panStr: string): TrackSendPanStrChanged { return {type: 'track:send:panStr', trackNumber, sendNumber, panStr}; }
+
+// --- Track Receive Events ---
+
+export interface TrackReceiveNameChanged { type: 'track:recv:name'; trackNumber: number; receiveNumber: number; name: string }
+export function TrackReceiveNameChanged(trackNumber: number, receiveNumber: number, name: string): TrackReceiveNameChanged { return {type: 'track:recv:name', trackNumber, receiveNumber, name}; }
+
+export interface TrackReceiveVolumeChanged { type: 'track:recv:volume'; trackNumber: number; receiveNumber: number; volume: number }
+export function TrackReceiveVolumeChanged(trackNumber: number, receiveNumber: number, volume: number): TrackReceiveVolumeChanged { return {type: 'track:recv:volume', trackNumber, receiveNumber, volume}; }
+
+export interface TrackReceiveVolumeStrChanged { type: 'track:recv:volumeStr'; trackNumber: number; receiveNumber: number; volumeStr: string }
+export function TrackReceiveVolumeStrChanged(trackNumber: number, receiveNumber: number, volumeStr: string): TrackReceiveVolumeStrChanged { return {type: 'track:recv:volumeStr', trackNumber, receiveNumber, volumeStr}; }
+
+export interface TrackReceivePanChanged { type: 'track:recv:pan'; trackNumber: number; receiveNumber: number; pan: number }
+export function TrackReceivePanChanged(trackNumber: number, receiveNumber: number, pan: number): TrackReceivePanChanged { return {type: 'track:recv:pan', trackNumber, receiveNumber, pan}; }
+
+export interface TrackReceivePanStrChanged { type: 'track:recv:panStr'; trackNumber: number; receiveNumber: number; panStr: string }
+export function TrackReceivePanStrChanged(trackNumber: number, receiveNumber: number, panStr: string): TrackReceivePanStrChanged { return {type: 'track:recv:panStr', trackNumber, receiveNumber, panStr}; }
+
+// --- Selected Track Send Events ---
+
+export interface SelectedTrackSendNameChanged { type: 'selectedTrack:send:name'; sendNumber: number; name: string }
+export function SelectedTrackSendNameChanged(sendNumber: number, name: string): SelectedTrackSendNameChanged { return {type: 'selectedTrack:send:name', sendNumber, name}; }
+
+export interface SelectedTrackSendVolumeChanged { type: 'selectedTrack:send:volume'; sendNumber: number; volume: number }
+export function SelectedTrackSendVolumeChanged(sendNumber: number, volume: number): SelectedTrackSendVolumeChanged { return {type: 'selectedTrack:send:volume', sendNumber, volume}; }
+
+export interface SelectedTrackSendVolumeStrChanged { type: 'selectedTrack:send:volumeStr'; sendNumber: number; volumeStr: string }
+export function SelectedTrackSendVolumeStrChanged(sendNumber: number, volumeStr: string): SelectedTrackSendVolumeStrChanged { return {type: 'selectedTrack:send:volumeStr', sendNumber, volumeStr}; }
+
+export interface SelectedTrackSendPanChanged { type: 'selectedTrack:send:pan'; sendNumber: number; pan: number }
+export function SelectedTrackSendPanChanged(sendNumber: number, pan: number): SelectedTrackSendPanChanged { return {type: 'selectedTrack:send:pan', sendNumber, pan}; }
+
+export interface SelectedTrackSendPanStrChanged { type: 'selectedTrack:send:panStr'; sendNumber: number; panStr: string }
+export function SelectedTrackSendPanStrChanged(sendNumber: number, panStr: string): SelectedTrackSendPanStrChanged { return {type: 'selectedTrack:send:panStr', sendNumber, panStr}; }
+
+// --- Selected Track Receive Events ---
+
+export interface SelectedTrackReceiveNameChanged { type: 'selectedTrack:recv:name'; receiveNumber: number; name: string }
+export function SelectedTrackReceiveNameChanged(receiveNumber: number, name: string): SelectedTrackReceiveNameChanged { return {type: 'selectedTrack:recv:name', receiveNumber, name}; }
+
+export interface SelectedTrackReceiveVolumeChanged { type: 'selectedTrack:recv:volume'; receiveNumber: number; volume: number }
+export function SelectedTrackReceiveVolumeChanged(receiveNumber: number, volume: number): SelectedTrackReceiveVolumeChanged { return {type: 'selectedTrack:recv:volume', receiveNumber, volume}; }
+
+export interface SelectedTrackReceiveVolumeStrChanged { type: 'selectedTrack:recv:volumeStr'; receiveNumber: number; volumeStr: string }
+export function SelectedTrackReceiveVolumeStrChanged(receiveNumber: number, volumeStr: string): SelectedTrackReceiveVolumeStrChanged { return {type: 'selectedTrack:recv:volumeStr', receiveNumber, volumeStr}; }
+
+export interface SelectedTrackReceivePanChanged { type: 'selectedTrack:recv:pan'; receiveNumber: number; pan: number }
+export function SelectedTrackReceivePanChanged(receiveNumber: number, pan: number): SelectedTrackReceivePanChanged { return {type: 'selectedTrack:recv:pan', receiveNumber, pan}; }
+
+export interface SelectedTrackReceivePanStrChanged { type: 'selectedTrack:recv:panStr'; receiveNumber: number; panStr: string }
+export function SelectedTrackReceivePanStrChanged(receiveNumber: number, panStr: string): SelectedTrackReceivePanStrChanged { return {type: 'selectedTrack:recv:panStr', receiveNumber, panStr}; }
+
 // --- Unknown Event ---
 
 export interface UnknownEvent { type: 'unknown'; message: OscMessage }
@@ -263,5 +331,29 @@ export type ReaperOscEvent =
   | SelectedFxBypassEvent
   | SelectedFxOpenUiEvent
   | SelectedFxPresetChanged
+  // Track Sends
+  | TrackSendNameChanged
+  | TrackSendVolumeChanged
+  | TrackSendVolumeStrChanged
+  | TrackSendPanChanged
+  | TrackSendPanStrChanged
+  // Track Receives
+  | TrackReceiveNameChanged
+  | TrackReceiveVolumeChanged
+  | TrackReceiveVolumeStrChanged
+  | TrackReceivePanChanged
+  | TrackReceivePanStrChanged
+  // Selected Track Sends
+  | SelectedTrackSendNameChanged
+  | SelectedTrackSendVolumeChanged
+  | SelectedTrackSendVolumeStrChanged
+  | SelectedTrackSendPanChanged
+  | SelectedTrackSendPanStrChanged
+  // Selected Track Receives
+  | SelectedTrackReceiveNameChanged
+  | SelectedTrackReceiveVolumeChanged
+  | SelectedTrackReceiveVolumeStrChanged
+  | SelectedTrackReceivePanChanged
+  | SelectedTrackReceivePanStrChanged
   // Unknown
   | UnknownEvent;

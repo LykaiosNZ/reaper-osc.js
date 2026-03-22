@@ -67,11 +67,11 @@ export class Reaper implements INotifyPropertyChanged {
 
     this._device = new DeviceState(send);
     this._transport = new Transport(send);
-    this._selectedTrack = new SelectedTrack(resolvedConfig.numberOfFx, send);
-    this._masterTrack = new Track(0, resolvedConfig.numberOfFx, send);
+    this._selectedTrack = new SelectedTrack(resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
+    this._masterTrack = new Track(0, resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
 
     for (let i = 0; i < resolvedConfig.numberOfTracks; i++) {
-      this._tracks[i] = new Track(i + 1, resolvedConfig.numberOfFx, send);
+      this._tracks[i] = new Track(i + 1, resolvedConfig.numberOfFx, resolvedConfig.numberOfSends, resolvedConfig.numberOfReceives, send);
     }
 
     // Track whether the last parsed event was known (for afterMessageReceived)

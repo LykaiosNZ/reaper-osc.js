@@ -19,6 +19,10 @@ import {
   TrackVuChanged, TrackVuLeftChanged, TrackVuRightChanged, TrackMonitoringModeChanged,
   // Track FX
   TrackFxNameChanged, TrackFxBypassEvent, TrackFxOpenUiEvent, TrackFxPresetChanged,
+  // Track Sends
+  TrackSendNameChanged, TrackSendVolumeChanged, TrackSendVolumeStrChanged, TrackSendPanChanged, TrackSendPanStrChanged,
+  // Track Receives
+  TrackReceiveNameChanged, TrackReceiveVolumeChanged, TrackReceiveVolumeStrChanged, TrackReceivePanChanged, TrackReceivePanStrChanged,
   // Selected Track
   SelectedTrackMuteEvent, SelectedTrackSoloEvent, SelectedTrackRecordArmEvent, SelectedTrackSelectEvent,
   SelectedTrackNameChanged, SelectedTrackPanChanged, SelectedTrackPan2Changed, SelectedTrackPanModeChanged,
@@ -26,6 +30,10 @@ import {
   SelectedTrackVuChanged, SelectedTrackVuLeftChanged, SelectedTrackVuRightChanged, SelectedTrackMonitoringModeChanged,
   // Selected Track FX
   SelectedTrackFxNameChanged, SelectedTrackFxBypassEvent, SelectedTrackFxOpenUiEvent, SelectedTrackFxPresetChanged,
+  // Selected Track Sends
+  SelectedTrackSendNameChanged, SelectedTrackSendVolumeChanged, SelectedTrackSendVolumeStrChanged, SelectedTrackSendPanChanged, SelectedTrackSendPanStrChanged,
+  // Selected Track Receives
+  SelectedTrackReceiveNameChanged, SelectedTrackReceiveVolumeChanged, SelectedTrackReceiveVolumeStrChanged, SelectedTrackReceivePanChanged, SelectedTrackReceivePanStrChanged,
   // Selected FX
   SelectedFxNameChanged, SelectedFxBypassEvent, SelectedFxOpenUiEvent, SelectedFxPresetChanged,
 } from './Events';
@@ -105,6 +113,50 @@ const TRACK_FX_PARSERS = new Map<string, IndexedFxParser>([
   ['preset', (t, f, m) => TrackFxPresetChanged(t, f, stringFrom(m))],
 ]);
 
+// --- Track send suffix parsers (for /track/N/send/M/suffix) ---
+
+type IndexedSendParser = (trackNumber: number, sendNumber: number, msg: OscMessage) => ReaperOscEvent;
+
+const TRACK_SEND_PARSERS = new Map<string, IndexedSendParser>([
+  ['name', (t, s, m) => TrackSendNameChanged(t, s, stringFrom(m))],
+  ['volume', (t, s, m) => TrackSendVolumeChanged(t, s, floatFrom(m))],
+  ['volume/str', (t, s, m) => TrackSendVolumeStrChanged(t, s, stringFrom(m))],
+  ['pan', (t, s, m) => TrackSendPanChanged(t, s, floatFrom(m))],
+  ['pan/str', (t, s, m) => TrackSendPanStrChanged(t, s, stringFrom(m))],
+]);
+
+// --- Track receive suffix parsers (for /track/N/recv/M/suffix) ---
+
+const TRACK_RECV_PARSERS = new Map<string, IndexedSendParser>([
+  ['name', (t, r, m) => TrackReceiveNameChanged(t, r, stringFrom(m))],
+  ['volume', (t, r, m) => TrackReceiveVolumeChanged(t, r, floatFrom(m))],
+  ['volume/str', (t, r, m) => TrackReceiveVolumeStrChanged(t, r, stringFrom(m))],
+  ['pan', (t, r, m) => TrackReceivePanChanged(t, r, floatFrom(m))],
+  ['pan/str', (t, r, m) => TrackReceivePanStrChanged(t, r, stringFrom(m))],
+]);
+
+// --- Selected track send suffix parsers (for /track/send/M/suffix) ---
+
+type IndexedSelectedSendParser = (sendNumber: number, msg: OscMessage) => ReaperOscEvent;
+
+const SELECTED_TRACK_SEND_PARSERS = new Map<string, IndexedSelectedSendParser>([
+  ['name', (s, m) => SelectedTrackSendNameChanged(s, stringFrom(m))],
+  ['volume', (s, m) => SelectedTrackSendVolumeChanged(s, floatFrom(m))],
+  ['volume/str', (s, m) => SelectedTrackSendVolumeStrChanged(s, stringFrom(m))],
+  ['pan', (s, m) => SelectedTrackSendPanChanged(s, floatFrom(m))],
+  ['pan/str', (s, m) => SelectedTrackSendPanStrChanged(s, stringFrom(m))],
+]);
+
+// --- Selected track receive suffix parsers (for /track/recv/M/suffix) ---
+
+const SELECTED_TRACK_RECV_PARSERS = new Map<string, IndexedSelectedSendParser>([
+  ['name', (r, m) => SelectedTrackReceiveNameChanged(r, stringFrom(m))],
+  ['volume', (r, m) => SelectedTrackReceiveVolumeChanged(r, floatFrom(m))],
+  ['volume/str', (r, m) => SelectedTrackReceiveVolumeStrChanged(r, stringFrom(m))],
+  ['pan', (r, m) => SelectedTrackReceivePanChanged(r, floatFrom(m))],
+  ['pan/str', (r, m) => SelectedTrackReceivePanStrChanged(r, stringFrom(m))],
+]);
+
 // --- Selected track suffix parsers (for /track/suffix, no track number) ---
 
 type SelectedTrackParser = (msg: OscMessage) => ReaperOscEvent;
@@ -155,7 +207,17 @@ function parseTrackMessage(msg: OscMessage): ReaperOscEvent | null {
   const trackNumber = parseInt(parts[1]);
 
   if (isNaN(trackNumber)) {
-    // Selected track: /track/mute, /track/name, etc.
+    // Selected track sends/receives: /track/send/N/suffix, /track/recv/N/suffix
+    if (parts[1] === 'send' || parts[1] === 'recv') {
+      const sendNumber = parseInt(parts[2]);
+      if (isNaN(sendNumber)) return null;
+      const suffix = parts.slice(3).join('/');
+      const parsers = parts[1] === 'send' ? SELECTED_TRACK_SEND_PARSERS : SELECTED_TRACK_RECV_PARSERS;
+      const parser = parsers.get(suffix);
+      return parser ? parser(sendNumber, msg) : null;
+    }
+
+    // Selected track property: /track/mute, /track/name, etc.
     const suffix = parts.slice(1).join('/');
     const parser = SELECTED_TRACK_PARSERS.get(suffix);
     return parser ? parser(msg) : null;
@@ -168,6 +230,16 @@ function parseTrackMessage(msg: OscMessage): ReaperOscEvent | null {
     const suffix = parts.slice(4).join('/');
     const parser = TRACK_FX_PARSERS.get(suffix);
     return parser ? parser(trackNumber, fxNumber, msg) : null;
+  }
+
+  // Track sends/receives: /track/N/send/M/suffix, /track/N/recv/M/suffix
+  if (parts[2] === 'send' || parts[2] === 'recv') {
+    const sendNumber = parseInt(parts[3]);
+    if (isNaN(sendNumber)) return null;
+    const suffix = parts.slice(4).join('/');
+    const parsers = parts[2] === 'send' ? TRACK_SEND_PARSERS : TRACK_RECV_PARSERS;
+    const parser = parsers.get(suffix);
+    return parser ? parser(trackNumber, sendNumber, msg) : null;
   }
 
   // Track property: /track/N/property

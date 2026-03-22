@@ -14,12 +14,12 @@ import {
 
 test('has correct number of fx', () => {
   const expected = 8;
-  const track = new Track(1, expected, () => null);
+  const track = new Track(1, expected, 0, 0, () => null);
   expect(track.fx.length).toBe(expected);
 });
 
 test('fx are initialized with correct track and fx number', () => {
-  const track = new Track(9, 4, () => null);
+  const track = new Track(9, 4, 0, 0, () => null);
 
   track.fx.forEach((fx, index) => {
     expect(fx.trackNumber).toBe(track.trackNumber);
@@ -29,27 +29,27 @@ test('fx are initialized with correct track and fx number', () => {
 
 test('has correct track number', () => {
   const expected = 9874;
-  const track = new Track(expected, 1, () => null);
+  const track = new Track(expected, 1, 0, 0, () => null);
   expect(track.trackNumber).toBe(expected);
 });
 
 test.each([-1.1, 1.1])('setPan throws when less than -1 or greater than 1: %p', value => {
-  const track = new Track(1, 1, () => null);
+  const track = new Track(1, 1, 0, 0,() => null);
   expect(() => track.setPan(value)).toThrow(RangeError);
 });
 
 test.each([-1.1, 1.1])('setPan2 throws when less than -1 or greater than 1: %p', value => {
-  const track = new Track(1, 1, () => null);
+  const track = new Track(1, 1, 0, 0,() => null);
   expect(() => track.setPan2(value)).toThrow(RangeError);
 });
 
 test.each([-100.1, 12.1])('setVolumeDb throws when less than -100 or greater than 12: %p', value => {
-  const track = new Track(1, 1, () => null);
+  const track = new Track(1, 1, 0, 0,() => null);
   expect(() => track.setVolumeDb(value)).toThrow(RangeError);
 });
 
 test.each([-0.1, 1.1])('setVolumeFaderPosition throws when less than 0 or greater than 1: %p', value => {
-  const track = new Track(1, 1, () => null);
+  const track = new Track(1, 1, 0, 0,() => null);
   expect(() => track.setVolumeFaderPosition(value)).toThrow(RangeError);
 });
 
@@ -57,7 +57,7 @@ describe('properties set by events', () => {
   let track: Track;
 
   beforeEach(() => {
-    track = new Track(1, 1, () => null);
+    track = new Track(1, 1, 0, 0,() => null);
   });
 
   test.each([true, false])('mute event sets isMuted: %p', value => {
@@ -145,7 +145,7 @@ describe('properties set by events', () => {
 
 describe('methods send expected commands', () => {
   test('deselect sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackSelect(1, false));
         done();
@@ -158,7 +158,7 @@ describe('methods send expected commands', () => {
   });
 
   test('mute sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackMute(1, true));
         done();
@@ -171,7 +171,7 @@ describe('methods send expected commands', () => {
   });
 
   test('recordArm sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackRecordArm(1, true));
         done();
@@ -184,7 +184,7 @@ describe('methods send expected commands', () => {
   });
 
   test('recordDisarm sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackRecordArm(1, false));
         done();
@@ -198,7 +198,7 @@ describe('methods send expected commands', () => {
 
   test('rename sends expected command and sets name', done => {
     const expected = 'foo';
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackName(1, expected));
         done();
@@ -212,7 +212,7 @@ describe('methods send expected commands', () => {
   });
 
   test('select sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackSelect(1, true));
         done();
@@ -228,7 +228,7 @@ describe('methods send expected commands', () => {
   test.each([RecordMonitoringMode.ON, RecordMonitoringMode.OFF, RecordMonitoringMode.AUTO])(
     'setMonitoringMode sends expected command: %p',
     (expected, done: any) => {
-      const track = new Track(1, 1, (command: ReaperOscCommand) => {
+      const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
         try {
           expect(command).toMatchObject(SetTrackMonitoringMode(1, expected));
           done();
@@ -243,7 +243,7 @@ describe('methods send expected commands', () => {
 
   test('setPan sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackPan(1, expected));
         done();
@@ -258,7 +258,7 @@ describe('methods send expected commands', () => {
 
   test('setPan2 sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackPan2(1, expected));
         done();
@@ -273,7 +273,7 @@ describe('methods send expected commands', () => {
 
   test('setVolumeDb sends expected command and sets value', done => {
     const expected = 12;
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackVolumeDb(1, expected));
         done();
@@ -288,7 +288,7 @@ describe('methods send expected commands', () => {
 
   test('setVolumeFaderPosition sends expected command and sets value', done => {
     const expected = 0.12345;
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackVolume(1, expected));
         done();
@@ -302,7 +302,7 @@ describe('methods send expected commands', () => {
   });
 
   test('solo sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackSolo(1, true));
         done();
@@ -315,7 +315,7 @@ describe('methods send expected commands', () => {
   });
 
   test('toggleMute sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(ToggleTrackMute(1));
         done();
@@ -328,7 +328,7 @@ describe('methods send expected commands', () => {
   });
 
   test('toggleRecordArm sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(ToggleTrackRecordArm(1));
         done();
@@ -341,7 +341,7 @@ describe('methods send expected commands', () => {
   });
 
   test('toggleSolo sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(ToggleTrackSolo(1));
         done();
@@ -354,7 +354,7 @@ describe('methods send expected commands', () => {
   });
 
   test('unmute sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackMute(1, false));
         done();
@@ -367,7 +367,7 @@ describe('methods send expected commands', () => {
   });
 
   test('unsolo sends expected command', done => {
-    const track = new Track(1, 1, (command: ReaperOscCommand) => {
+    const track = new Track(1, 1, 0, 0,(command: ReaperOscCommand) => {
       try {
         expect(command).toMatchObject(SetTrackSolo(1, false));
         done();

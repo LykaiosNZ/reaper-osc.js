@@ -3,6 +3,8 @@
  * @module
  */
 import {DeviceSelectedFx, Fx, SelectedTrackFxSlot} from './Fx';
+import {SelectedTrackSend} from './Send';
+import {SelectedTrackReceive} from './Receive';
 import {INotifyPropertyChanged, notify, notifyOnPropertyChanged} from './Notify';
 import {ReaperOscEvent, RecordMonitoringMode} from './Client/Events';
 import {SetSelectedTrackSelect, SetSelectedTrackMute, ToggleSelectedTrackMute, SetSelectedTrackSolo, ToggleSelectedTrackSolo, SetSelectedTrackRecordArm, ToggleSelectedTrackRecordArm, SetSelectedTrackName, SetSelectedTrackPan, SetSelectedTrackPan2, SetSelectedTrackVolume, SetSelectedTrackVolumeDb, SetSelectedTrackMonitoringMode, ReaperOscCommand} from './Client/Commands';
@@ -63,13 +65,17 @@ export class SelectedTrack implements INotifyPropertyChanged {
 
   private readonly _fx: SelectedTrackFxSlot[] = [];
   private readonly _selectedFx: DeviceSelectedFx;
+  private readonly _sends: SelectedTrackSend[] = [];
+  private readonly _receives: SelectedTrackReceive[] = [];
   private readonly _send: SendCommand;
 
   /**
    * @param numberOfFx The number of FX slots in the device FX bank
+   * @param numberOfSends The number of sends in the device send bank
+   * @param numberOfReceives The number of receives in the device receive bank
    * @param send A callback used to send typed commands to Reaper
    */
-  constructor(numberOfFx: number, send: SendCommand) {
+  constructor(numberOfFx: number, numberOfSends: number, numberOfReceives: number, send: SendCommand) {
     this._send = send;
 
     for (let i = 0; i < numberOfFx; i++) {
@@ -77,6 +83,14 @@ export class SelectedTrack implements INotifyPropertyChanged {
     }
 
     this._selectedFx = new DeviceSelectedFx(send);
+
+    for (let i = 0; i < numberOfSends; i++) {
+      this._sends[i] = new SelectedTrackSend(i + 1, send);
+    }
+
+    for (let i = 0; i < numberOfReceives; i++) {
+      this._receives[i] = new SelectedTrackReceive(i + 1, send);
+    }
   }
 
   /** Deselect this track in Reaper */
@@ -87,6 +101,16 @@ export class SelectedTrack implements INotifyPropertyChanged {
   /** The FX bank for this track */
   public get fx(): ReadonlyArray<Fx> {
     return this._fx;
+  }
+
+  /** The sends for this track */
+  public get sends(): ReadonlyArray<SelectedTrackSend> {
+    return this._sends;
+  }
+
+  /** The receives for this track */
+  public get receives(): ReadonlyArray<SelectedTrackReceive> {
+    return this._receives;
   }
 
   /**
@@ -123,6 +147,24 @@ export class SelectedTrack implements INotifyPropertyChanged {
       case 'selectedFx:preset':
         this._selectedFx.handleEvent(event);
         break;
+      case 'selectedTrack:send:name':
+      case 'selectedTrack:send:volume':
+      case 'selectedTrack:send:volumeStr':
+      case 'selectedTrack:send:pan':
+      case 'selectedTrack:send:panStr': {
+        const send = this._sends[event.sendNumber - 1];
+        if (send) send.handleEvent(event);
+        break;
+      }
+      case 'selectedTrack:recv:name':
+      case 'selectedTrack:recv:volume':
+      case 'selectedTrack:recv:volumeStr':
+      case 'selectedTrack:recv:pan':
+      case 'selectedTrack:recv:panStr': {
+        const receive = this._receives[event.receiveNumber - 1];
+        if (receive) receive.handleEvent(event);
+        break;
+      }
     }
   }
 

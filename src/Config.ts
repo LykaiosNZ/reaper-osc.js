@@ -41,6 +41,10 @@ export class ReaperConfiguration {
   log: Logger = ConsoleLogger;
   /** Number of FX per track */
   numberOfFx = 8;
+  /** Number of sends per track */
+  numberOfSends = 4;
+  /** Number of receives per track */
+  numberOfReceives = 4;
   /** Number of tracks per bank */
   numberOfTracks = 8;
   /** The address to send Reaper OSC messages to */

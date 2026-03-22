@@ -1,4 +1,4 @@
-<REAPER_PROJECT 0.1 "7.66/win64" 1774147093 0
+<REAPER_PROJECT 0.1 "7.66/win64" 1774150965 0
   RIPPLE 0 0
   GROUPOVERRIDE 0 0 0 0
   AUTOXFADE 129
@@ -16,8 +16,8 @@
   VIDEO_CONFIG 0 0 256
   PANMODE 3
   CURSOR 0
-  ZOOM 100.48782760000499 0 0
-  VZOOMEX 3 0
+  ZOOM 394.43260047216728 0 0
+  VZOOMEX 0 0
   USE_REC_CFG 0
   RECMODE 1
   SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
@@ -126,7 +126,7 @@
     FX 1
     TRACKID {500D4B8C-55D7-4676-BF69-1B8165728394}
     PERF 0
-    AUXRECV 9 0 1 0 0 0 0 0 0 -1:U 0 -1 ''
+    AUXRECV 9 0 1 -1 0 0 0 0 0 -1:U 0 -1 ''
     MIDIOUT -1
     MAINSEND 1 0
     <FXCHAIN
@@ -180,6 +180,7 @@
     FX 1
     TRACKID {8F0E83CB-1532-4562-98DF-1D67A0752D5F}
     PERF 0
+    AUXRECV 0 0 0 -1 0 0 0 0 0 -1:U 0 -1 ''
     MIDIOUT -1
     MAINSEND 1 0
   >
@@ -406,7 +407,7 @@
       <JS synthesis/tonegenerator ""
         -12 -6 440 0 0 0 1 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       >
-      WET 0.108225 0
+      WET 0.485573 0
       FLOATPOS 1209 1154 756 357
       FXID {DF608A98-6D5B-437E-AD1C-75D17E710774}
       <PROGRAMENV 8:wet 0 "Wet / Tone Generator"
