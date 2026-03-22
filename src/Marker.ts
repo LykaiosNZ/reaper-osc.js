@@ -83,7 +83,7 @@ export class Marker implements INotifyPropertyChanged {
   }
 }
 
-/** The most recently passed marker during playback (or the last one from the sync burst) */
+/** The most recently passed marker during playback */
 @notifyOnPropertyChanged
 export class LastMarker implements INotifyPropertyChanged {
   @notify<LastMarker>('name')

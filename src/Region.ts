@@ -98,7 +98,7 @@ export class Region implements INotifyPropertyChanged {
   }
 }
 
-/** The most recently entered region during playback (or the last one from the sync burst) */
+/** The most recently entered region during playback */
 @notifyOnPropertyChanged
 export class LastRegion implements INotifyPropertyChanged {
   @notify<LastRegion>('name')

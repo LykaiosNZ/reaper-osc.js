@@ -122,12 +122,12 @@ export class Transport implements INotifyPropertyChanged {
     return this._isSetLoop;
   }
 
-  /** The most recently passed marker (populated during playback and from the sync burst) */
+  /** The most recently passed marker */
   public get lastMarker(): LastMarker {
     return this._lastMarker;
   }
 
-  /** The most recently entered region (populated during playback and from the sync burst) */
+  /** The most recently entered region */
   public get lastRegion(): LastRegion {
     return this._lastRegion;
   }
